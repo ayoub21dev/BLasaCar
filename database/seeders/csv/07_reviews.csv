@@ -1,0 +1,7 @@
+id,reviewer_id,reviewed_user_id,ride_id,rating,comment,created_at,updated_at
+1,8,2,3,5,Very punctual and the ride was comfortable,2026-03-08 22:00:00,2026-03-08 22:00:00
+2,1,2,3,4,Good communication and smooth driving,2026-03-08 22:10:00,2026-03-08 22:10:00
+3,2,8,3,5,Traveler was respectful and arrived on time,2026-03-08 22:20:00,2026-03-08 22:20:00
+4,3,5,4,5,Passenger was easy to coordinate with,2026-03-09 14:10:00,2026-03-09 14:10:00
+5,5,3,4,5,Excellent trip and clean car,2026-03-09 14:20:00,2026-03-09 14:20:00
+6,5,2,3,4,Friendly driver and clear meeting point,2026-03-09 18:00:00,2026-03-09 18:00:00
