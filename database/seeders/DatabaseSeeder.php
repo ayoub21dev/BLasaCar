@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Schema;
 use RuntimeException;
 
 class DatabaseSeeder extends Seeder
@@ -16,7 +17,7 @@ class DatabaseSeeder extends Seeder
      */
     public function run(): void
     {
-        DB::statement('SET FOREIGN_KEY_CHECKS=0');
+        Schema::disableForeignKeyConstraints();
 
         foreach ([
             'notifications',
@@ -28,10 +29,10 @@ class DatabaseSeeder extends Seeder
             'cities',
             'users',
         ] as $table) {
-            DB::table($table)->truncate();
+            DB::table($table)->delete();
         }
 
-        DB::statement('SET FOREIGN_KEY_CHECKS=1');
+        Schema::enableForeignKeyConstraints();
 
         foreach ($this->csvSeedMap() as $table => $file) {
             DB::table($table)->insert($this->readCsv($file));

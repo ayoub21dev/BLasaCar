@@ -1,0 +1,350 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Dashboard Component</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@preline/preline@2.0.3/dist/preline.min.css">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            sky: {
+              50: '#f0f9ff', 100: '#e0f2fe', 500: '#0ea5e9', 600: '#0284c7', 700: '#0369a1'
+            }
+          }
+        }
+      }
+    }
+  </script>
+</head>
+<body class="bg-gray-50 flex flex-col min-h-screen">
+<header class="sticky top-0 z-50 w-full bg-white border-b border-gray-200">
+  <nav class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+    <div class="flex items-center justify-between h-20">
+      
+      <!-- Logo -->
+      <div class="flex items-center gap-3">
+        <a href="../website.html" class="flex items-center" aria-label="BlassaCar Home">
+          <img src="../assets/blasacar-logo.png" alt="BlassaCar logo" class="h-14 w-auto object-contain">
+        </a>
+      </div>
+
+      <!-- Desktop Navigation -->
+      <div class="hidden md:flex items-center gap-1">
+        <a href="search-rides.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-sky-600 font-medium transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="11" cy="11" r="8"/>
+            <path d="m21 21-4.3-4.3"/>
+          </svg>
+          Search
+        </a>
+        <a href="04-trip-post-form.html" class="flex items-center gap-2 px-4 py-2 text-gray-700 hover:text-sky-600 font-medium transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <circle cx="12" cy="12" r="10"/>
+            <line x1="12" x2="12" y1="8" y2="16"/>
+            <line x1="8" x2="16" y1="12" y2="12"/>
+          </svg>
+          Publish a ride
+        </a>
+        
+      </div>
+
+        <!-- User Menu (Logged In) -->
+        <div class="hs-dropdown relative inline-flex">
+          <button id="user-menu" class="hs-dropdown-toggle flex items-center gap-2 text-gray-700 hover:text-gray-900 focus:outline-none">
+            <div class="w-9 h-9 rounded-full bg-gradient-to-br from-sky-500 to-blue-600 flex items-center justify-center text-white font-medium text-sm">
+              MJ
+            </div>
+            <svg class="w-4 h-4 hs-dropdown-open:rotate-180 transition-transform" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="m6 9 6 6 6-6"/>
+            </svg>
+          </button>
+          
+          <div class="hs-dropdown-menu hidden absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-lg border border-gray-200 py-2">
+            <div class="px-4 py-3 border-b border-gray-100">
+              <p class="text-sm font-medium text-gray-900">Mohamed Jalyta</p>
+              <p class="text-xs text-gray-500">mohamed@email.com</p>
+            </div>
+            <a href="../website.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              My Profile
+            </a>
+            <a href="../website.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M12 8v4l3 3m6-3a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/>
+              </svg>
+              My Trips
+            </a>
+            <a href="../website.html" class="flex items-center gap-3 px-4 py-2 text-sm text-gray-700 hover:bg-gray-50">
+              <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+              </svg>
+              Messages
+            </a>
+            <div class="border-t border-gray-100 mt-2 pt-2">
+              <a href="../website.html" class="flex items-center gap-3 px-4 py-2 text-sm text-red-600 hover:bg-red-50">
+                <svg class="w-4 h-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/>
+                  <polyline points="16 17 21 12 16 7"/>
+                  <line x1="21" x2="9" y1="12" y2="12"/>
+                </svg>
+                Sign Out
+              </a>
+            </div>
+          </div>
+        </div>
+
+        <!-- Mobile Menu Button -->
+        <button class="md:hidden p-2 text-gray-600 hover:text-gray-900" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')">
+          <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="3" x2="21" y1="6" y2="6"/>
+            <line x1="3" x2="21" y1="12" y2="12"/>
+            <line x1="3" x2="21" y1="18" y2="18"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="hidden md:hidden border-t border-gray-200 py-4">
+      <div class="flex flex-col gap-2">
+        <a href="search-rides.html" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">Search Rides</a>
+        <a href="04-trip-post-form.html" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">Post a Ride</a>
+        <a href="../website.html" class="px-4 py-2 text-sm font-medium text-gray-700 hover:bg-gray-50 rounded-lg">How it Works</a>
+      </div>
+    </div>
+  </nav>
+</header>
+<div class="flex flex-1 max-w-7xl mx-auto w-full">
+  
+
+<aside class="w-64 bg-white border-r border-gray-200 hidden md:block shrink-0">
+  <div class="h-full flex flex-col py-6 px-4 sticky top-20">
+    <div class="mb-8 px-2">
+      <p class="text-xs font-semibold text-gray-400 uppercase tracking-wider">Traveler Dashboard</p>
+    </div>
+    <nav class="space-y-2 flex-1">
+      <a href="13-traveler-dashboard.html" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors bg-sky-50 text-sky-600 font-medium">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+        Overview
+      </a>
+      <a href="search-rides.html" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-sky-600">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>
+        Find a Ride
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-sky-600">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/></svg>
+        My Bookings
+      </a>
+      <a href="07-review-card.html" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-sky-600">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+        My Reviews
+      </a>
+      <a href="06-user-profile-card.html" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-sky-600">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+        Profile
+      </a>
+      <a href="#" class="flex items-center gap-3 px-3 py-2 rounded-lg transition-colors text-gray-600 hover:bg-gray-50 hover:text-sky-600">
+        <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 0 1 0 2.83 2 2 0 0 1-2.83 0l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-2 2 2 2 0 0 1-2-2v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 0 1-2.83 0 2 2 0 0 1 0-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1-2-2 2 2 0 0 1 2-2h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 0 1 0-2.83 2 2 0 0 1 2.83 0l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 2-2 2 2 0 0 1 2 2v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 0 1 2.83 0 2 2 0 0 1 0 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 2 2 2 2 0 0 1-2 2h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+        Settings
+      </a>
+
+      <div class="border-t border-gray-100 my-4 pt-4">
+        <a href="../website.html" class="flex items-center gap-3 px-3 py-2 text-gray-600 hover:bg-gray-50 hover:text-sky-600 rounded-lg transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>
+          Back to Website
+        </a>
+        <a href="../website.html" class="flex items-center gap-3 px-3 py-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors">
+          <svg class="w-5 h-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" x2="9" y1="12" y2="12"/></svg>
+          Logout
+        </a>
+      </div>
+    </nav>
+  </div>
+</aside>
+
+
+  <main class="flex-1 p-6 lg:p-8 overflow-x-hidden">
+    <!-- ============================================ -->
+<!-- BlassaCar Traveler Dashboard Component       -->
+<!-- ============================================ -->
+
+<div class="max-w-6xl mx-auto space-y-6 px-4">
+  <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+    <div class="flex flex-col md:flex-row md:items-center md:justify-between gap-4">
+      <div>
+        <p class="text-sm font-medium text-sky-600">Traveler Dashboard</p>
+        <h1 class="text-2xl font-bold text-gray-900 mt-1">Hello, Fatima</h1>
+        <p class="text-sm text-gray-500 mt-1">Track your trips, bookings, and savings in one place.</p>
+      </div>
+      <button class="px-5 py-2.5 bg-sky-600 text-white font-medium rounded-xl hover:bg-sky-700 transition-colors">
+        Find a Ride
+      </button>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Upcoming Trips</p>
+      <p class="text-2xl font-bold text-gray-900 mt-1">3</p>
+      <p class="text-xs text-sky-600 mt-2">Next ride in 4 hours</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Completed Trips</p>
+      <p class="text-2xl font-bold text-gray-900 mt-1">21</p>
+      <p class="text-xs text-green-600 mt-2">+2 this month</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">On-time Trips</p>
+      <p class="text-2xl font-bold text-gray-900 mt-1">94%</p>
+      <p class="text-xs text-green-600 mt-2">Reliable departures</p>
+    </div>
+    <div class="bg-white rounded-2xl border border-gray-200 p-5 shadow-sm">
+      <p class="text-sm text-gray-500">Avg. Driver Rating</p>
+      <p class="text-2xl font-bold text-gray-900 mt-1">4.9</p>
+      <p class="text-xs text-amber-600 mt-2">Trusted rides only</p>
+    </div>
+  </div>
+
+  <div class="grid grid-cols-1 gap-6">
+    <div class="bg-white rounded-2xl border border-gray-200 p-6 shadow-sm">
+      <h3 class="text-lg font-semibold text-gray-900 mb-4">Next Confirmed Trip</h3>
+      <div class="rounded-2xl border border-sky-200 bg-sky-50 p-5">
+        <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+          <div>
+            <p class="text-xl font-bold text-gray-900">Casablanca → Rabat</p>
+            <p class="text-sm text-gray-600 mt-1">Today at 18:00 • Pickup: Maarif, Casa</p>
+          </div>
+          <span class="px-3 py-1 text-xs font-medium text-emerald-700 bg-emerald-100 rounded-full">Confirmed</span>
+        </div>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3 mt-5">
+          <div class="bg-white rounded-xl p-3 border border-sky-100">
+            <p class="text-xs text-gray-500">Driver</p>
+            <p class="text-sm font-semibold text-gray-900 mt-1">Ahmed Benali</p>
+          </div>
+          <div class="bg-white rounded-xl p-3 border border-sky-100">
+            <p class="text-xs text-gray-500">Seat</p>
+            <p class="text-sm font-semibold text-gray-900 mt-1">1 Passenger</p>
+          </div>
+          <div class="bg-white rounded-xl p-3 border border-sky-100">
+            <p class="text-xs text-gray-500">Price</p>
+            <p class="text-sm font-semibold text-gray-900 mt-1">70 DH</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="bg-white rounded-2xl border border-gray-200 overflow-hidden shadow-sm">
+    <div class="px-6 py-4 border-b border-gray-100 flex items-center justify-between">
+      <h3 class="text-lg font-semibold text-gray-900">My Booking History</h3>
+      <button class="text-sm text-sky-600 font-medium hover:text-sky-700">View All</button>
+    </div>
+    <div class="overflow-x-auto">
+      <table class="w-full">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Route</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Date</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Driver</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Price</th>
+            <th class="px-6 py-3 text-left text-xs font-semibold text-gray-500 uppercase">Status</th>
+          </tr>
+        </thead>
+        <tbody class="divide-y divide-gray-100 text-sm">
+          <tr>
+            <td class="px-6 py-4 font-medium text-gray-900">Casa → Rabat</td>
+            <td class="px-6 py-4 text-gray-600">Mar 10, 2026</td>
+            <td class="px-6 py-4 text-gray-600">Ahmed B.</td>
+            <td class="px-6 py-4 text-gray-600">70 DH</td>
+            <td class="px-6 py-4"><span class="px-2 py-1 text-xs bg-emerald-100 text-emerald-700 rounded-full">Confirmed</span></td>
+          </tr>
+          <tr>
+            <td class="px-6 py-4 font-medium text-gray-900">Rabat → Fes</td>
+            <td class="px-6 py-4 text-gray-600">Mar 2, 2026</td>
+            <td class="px-6 py-4 text-gray-600">Youssef M.</td>
+            <td class="px-6 py-4 text-gray-600">95 DH</td>
+            <td class="px-6 py-4"><span class="px-2 py-1 text-xs bg-gray-100 text-gray-700 rounded-full">Completed</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>
+  </main>
+</div>
+<footer class="bg-[#eef0f2] border-t border-[#d8dfe6]">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-14">
+      <div>
+        <a href="../website.html" class="inline-flex items-center mb-6" aria-label="BlassaCar Home">
+          <img src="../assets/blasacar-logo.png" alt="BlassaCar logo" class="h-10 w-auto object-contain">
+        </a>
+        <p class="text-[#0b4a63] text-lg sm:text-xl leading-snug max-w-sm mb-8">
+          The modern carpooling platform connecting drivers and passengers safely.
+        </p>
+        <div class="flex items-center gap-5 text-[#0b4a63]">
+          <a href="../website.html" class="hover:text-sky-600 transition-colors" aria-label="Facebook">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M18 2h-3a5 5 0 0 0-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 0 1 1-1h3z"/>
+            </svg>
+          </a>
+          <a href="../website.html" class="hover:text-sky-600 transition-colors" aria-label="Instagram">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect width="20" height="20" x="2" y="2" rx="5" ry="5"/>
+              <path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/>
+              <line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/>
+            </svg>
+          </a>
+          <a href="../website.html" class="hover:text-sky-600 transition-colors" aria-label="X">
+            <svg class="w-6 h-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 4l16 16M20 4 4 20"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-bold text-[#07394d] mb-6">Top carpool routes</h4>
+        <ul class="space-y-4">
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Casablanca → Rabat</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Rabat → Casablanca</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Marrakech → Casablanca</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Casablanca → Marrakech</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-bold text-[#07394d] mb-6">About</h4>
+        <ul class="space-y-4">
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">How it works</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">About us</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Help centre</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Press</a></li>
+        </ul>
+      </div>
+
+      <div>
+        <h4 class="text-xl font-bold text-[#07394d] mb-6">Legal</h4>
+        <ul class="space-y-4">
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Terms and Conditions</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Privacy Policy</a></li>
+          <li><a href="../website.html" class="text-[#0b4a63] text-lg hover:text-sky-600 transition-colors">Cookie Policy</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="mt-12 pt-8 border-t border-[#d5dce3]">
+      <p class="text-[#0b4a63] text-lg font-medium">© 2026 BlassaCar. All rights reserved.</p>
+    </div>
+  </div>
+</footer>
+<script src="https://cdn.jsdelivr.net/npm/@preline/preline@2.0.3/dist/preline.min.js"></script>
+</body>
+</html>

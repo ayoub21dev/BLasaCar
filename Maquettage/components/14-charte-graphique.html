@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Charte Graphique - BlassaCar</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'sans-serif'],
+          },
+          colors: {
+            sky: {
+              50: '#f0f9ff',
+              100: '#e0f2fe',
+              200: '#bae6fd',
+              300: '#7dd3fc',
+              400: '#38bdf8',
+              500: '#0ea5e9',
+              600: '#0284c7',
+              700: '#0369a1',
+              800: '#075985',
+              900: '#0c4a6e',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    .color-card:hover .hex-code { opacity: 1; }
+    .hex-code { opacity: 0.7; transition: opacity 0.2s; }
+  </style>
+</head>
+<body class="bg-gray-50 font-sans p-8">
+  <div class="max-w-6xl mx-auto space-y-16">
+    <!-- Header -->
+    <header class="text-center space-y-4">
+      <div class="inline-flex items-center justify-center w-20 h-20 bg-sky-500 rounded-3xl shadow-xl shadow-sky-200 mb-4 transform -rotate-3 hover:rotate-0 transition-transform cursor-pointer">
+        <svg class="w-10 h-10 text-white" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+          <path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/>
+          <circle cx="6.5" cy="16.5" r="2.5"/>
+          <circle cx="16.5" cy="16.5" r="2.5"/>
+        </svg>
+      </div>
+      <h1 class="text-4xl font-black text-gray-900 tracking-tight">Charte Graphique</h1>
+      <p class="max-w-2xl mx-auto text-lg text-gray-600 leading-relaxed font-medium">
+        BlassaCar Visual Identity System. A comprehensive guide to our brand colors, typography, and UI patterns.
+      </p>
+    </header>
+
+    <!-- 1. Primary Brand Colors (Sky) -->
+    <section class="space-y-8">
+      <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-sky-500 rounded-2xl text-white shadow-lg shadow-sky-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 21a4 4 0 0 1-4-4V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v12a4 4 0 0 1-4 4zm0 0h12a2 2 0 0 0 2-2v-4a2 2 0 0 0-2-2h-2.343M11 7.343l1.657-1.657a2 2 0 0 1 2.828 0l2.828 2.828a2 2 0 0 1 0 2.828l-8.486 8.486L11 7.343z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Primary Branding</h2>
+            <p class="text-gray-500 text-sm">Our core identity. Used for primary calls to action, branding, and emphasis.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-4">
+        <!-- Sky Scale -->
+        <template id="color-item">
+          <div class="space-y-2 group">
+            <div class="h-24 rounded-2xl shadow-sm border border-gray-100 transition-all hover:scale-105 hover:shadow-lg cursor-copy relative overflow-hidden">
+              <div class="absolute inset-x-0 bottom-0 p-2 bg-black/10 backdrop-blur-sm opacity-0 group-hover:opacity-100 transition-opacity">
+                <span class="text-[10px] text-white font-mono font-medium block text-center uppercase">Copy</span>
+              </div>
+            </div>
+            <div class="px-1 text-center">
+              <span class="block text-[11px] font-bold text-gray-400 uppercase tracking-widest leading-none mb-1">Sky 50</span>
+              <span class="block text-[10px] font-mono text-gray-500 uppercase">#F0F9FF</span>
+            </div>
+          </div>
+        </template>
+        
+        <!-- Generated Sky items (Manual in this case for precise control) -->
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-50 border border-sky-100 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">50</p><p class="text-[9px] font-mono text-gray-500">#F0F9FF</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-100 border border-sky-200 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">100</p><p class="text-[9px] font-mono text-gray-500">#E0F2FE</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-200 border border-sky-300 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">200</p><p class="text-[9px] font-mono text-gray-500">#BAE6FD</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-300 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">300</p><p class="text-[9px] font-mono text-gray-500">#7DD3FC</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-400 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">400</p><p class="text-[9px] font-mono text-gray-500">#38BDF8</p></div></div>
+        <div class="space-y-3 group"><div class="h-24 rounded-2xl bg-sky-500 shadow-xl shadow-sky-100 hover:scale-110 transition-transform relative border-4 border-white"><span class="absolute top-2 right-2 flex h-2 w-2"><span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-white opacity-75"></span><span class="relative inline-flex rounded-full h-2 w-2 bg-white"></span></span></div><div class="text-center"><p class="text-[10px] font-bold text-sky-600 mb-1 leading-none">PRIMARY (500)</p><p class="text-[9px] font-mono text-gray-500">#0EA5E9</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-600 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">600</p><p class="text-[9px] font-mono text-gray-500">#0284C7</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-700 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">700</p><p class="text-[9px] font-mono text-gray-500">#0369A1</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-800 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">800</p><p class="text-[9px] font-mono text-gray-500">#075985</p></div></div>
+        <div class="space-y-3"><div class="h-24 rounded-2xl bg-sky-900 hover:scale-105 transition-transform"></div><div class="text-center"><p class="text-[10px] font-bold text-gray-400 mb-1">900</p><p class="text-[9px] font-mono text-gray-500">#0C4A6E</p></div></div>
+      </div>
+    </section>
+
+    <!-- 2. Semantic & Status Colors -->
+    <section class="space-y-8">
+      <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-white border border-gray-200 rounded-2xl text-gray-900 shadow-sm">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 1 1-18 0 9 9 0 0 1 18 0z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Semantic & Status</h2>
+            <p class="text-gray-500 text-sm">Used for feedback, validation, and states across dashboards and forms.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+        <!-- Success/Verified -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-green-500"></span> Success (Green)
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-green-500 flex-shrink-0"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Verified Badge</p>
+                 <p class="text-[9px] font-mono text-gray-400">#22C55E</p>
+               </div>
+             </div>
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-green-50 flex-shrink-0 border border-green-100"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Success BG</p>
+                 <p class="text-[9px] font-mono text-gray-400">#F0FDF4</p>
+               </div>
+             </div>
+          </div>
+        </div>
+
+        <!-- Warning/Ratings -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-amber-400"></span> Warning (Amber)
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-amber-400 flex-shrink-0"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Stars / Alerts</p>
+                 <p class="text-[9px] font-mono text-gray-400">#F59E0B</p>
+               </div>
+             </div>
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-amber-50 flex-shrink-0 border border-amber-100"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Warning BG</p>
+                 <p class="text-[9px] font-mono text-gray-400">#FFFBEB</p>
+               </div>
+             </div>
+          </div>
+        </div>
+
+        <!-- Error/Critical -->
+        <div class="space-y-4">
+          <h3 class="text-xs font-bold text-gray-400 uppercase tracking-widest flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full bg-red-500"></span> Danger (Red)
+          </h3>
+          <div class="grid grid-cols-2 gap-3">
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-red-500 flex-shrink-0"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Critical / Delete</p>
+                 <p class="text-[9px] font-mono text-gray-400">#EF4444</p>
+               </div>
+             </div>
+             <div class="p-3 bg-white rounded-xl border border-gray-200 flex items-center gap-3">
+               <div class="w-10 h-10 rounded-lg bg-red-50 flex-shrink-0 border border-red-100"></div>
+               <div class="min-w-0">
+                 <p class="text-[10px] font-bold text-gray-900">Error BG</p>
+                 <p class="text-[9px] font-mono text-gray-400">#FEF2F2</p>
+               </div>
+             </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 3. Accent Accents (Found in Rides/Dashboard) -->
+    <section class="space-y-8">
+       <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-purple-500 rounded-2xl text-white shadow-lg shadow-purple-100">
+            <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M5 3v4M3 5h4M6 17v4m-2-2h4m5-16l2.286 6.857L21 12l-5.714 2.143L13 21l-2.286-6.857L5 12l5.714-2.143L13 3z"/></svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Accent Accents</h2>
+            <p class="text-gray-500 text-sm">Used for preference tags, categorized information and decorative elements.</p>
+          </div>
+        </div>
+      </div>
+      <div class="flex flex-wrap gap-6">
+        <div class="p-4 bg-white border border-gray-200 rounded-3xl flex items-center gap-4 min-w-[200px] shadow-sm">
+          <div class="w-12 h-12 bg-purple-500 rounded-2xl shadow-lg shadow-purple-100 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-bold text-gray-900">Purple Accent</p>
+            <p class="text-[10px] text-gray-500">Music / Tags</p>
+            <p class="text-[9px] font-mono font-medium text-purple-600 mt-0.5">PURPLE-500</p>
+          </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-3xl flex items-center gap-4 min-w-[200px] shadow-sm">
+          <div class="w-12 h-12 bg-blue-600 rounded-2xl shadow-lg shadow-blue-100 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-bold text-gray-900">Blue Accent</p>
+            <p class="text-[10px] text-gray-500">AC / Info Tags</p>
+            <p class="text-[9px] font-mono font-medium text-blue-600 mt-0.5">BLUE-600</p>
+          </div>
+        </div>
+        <div class="p-4 bg-white border border-gray-200 rounded-3xl flex items-center gap-4 min-w-[200px] shadow-sm group">
+          <div class="w-12 h-12 bg-emerald-500 rounded-2xl shadow-lg shadow-emerald-100 flex-shrink-0"></div>
+          <div>
+            <p class="text-xs font-bold text-gray-900">Emerald</p>
+            <p class="text-[10px] text-gray-500">Alternative Success</p>
+            <p class="text-[9px] font-mono font-medium text-emerald-600 mt-0.5">EMERALD-500</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 4. Neutral Grays Scale -->
+    <section class="space-y-8">
+      <div class="flex items-center justify-between border-b border-gray-200 pb-4">
+        <div class="flex items-center gap-4">
+          <div class="p-3 bg-gray-900 rounded-2xl text-white shadow-lg">
+             <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 10h16M4 14h16M4 18h16"/></svg>
+          </div>
+          <div>
+            <h2 class="text-2xl font-bold text-gray-900">Neutral Grays</h2>
+            <p class="text-gray-500 text-sm">Our structural palette. Used for backgrounds, borders, and typography hierarchy.</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 sm:grid-cols-5 lg:grid-cols-10 gap-4">
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-50 border border-gray-200"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#F9FAFB</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-100 border border-gray-200"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#F3F4F6</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-200"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#E5E7EB</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-300"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#D1D5DB</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-400"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#9CA3AF</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-500"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#6B7280</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-600"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#4B5563</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-700"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#374151</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-800"></div><div class="text-center font-mono text-[9px] text-gray-500 uppercase">#1F2937</div></div>
+        <div class="space-y-2"><div class="h-16 rounded-2xl bg-gray-900 border-2 border-sky-400 shadow-lg shadow-gray-200"></div><div class="text-center font-serif text-[9px] text-gray-900 font-bold uppercase">BRAND TEXT</div></div>
+      </div>
+    </section>
+
+    <!-- Footer Meta -->
+    <footer class="pt-8 border-t border-gray-200 text-center text-gray-400 text-xs pb-16">
+      &copy; 2024 BlassaCar Design System • Version 2.0 (Updated from all components)
+    </footer>
+  </div>
+</body>
+</html>
