@@ -20,6 +20,8 @@ class User extends Authenticatable
         'profile_photo',
         'email_verified',
         'phone_verified',
+        'account_status',
+        'suspended_at',
     ];
 
     protected $hidden = [
@@ -32,6 +34,7 @@ class User extends Authenticatable
             'email_verified' => 'boolean',
             'phone_verified' => 'boolean',
             'password_hash' => 'hashed',
+            'suspended_at' => 'datetime',
         ];
     }
 

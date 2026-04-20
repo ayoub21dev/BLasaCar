@@ -22,6 +22,7 @@ class Ride extends Model
         'available_seats',
         'meeting_point',
         'notes',
+        'admin_note',
         'status',
     ];
 

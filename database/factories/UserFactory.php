@@ -20,6 +20,8 @@ class UserFactory extends Factory
             'profile_photo' => null,
             'email_verified' => true,
             'phone_verified' => false,
+            'account_status' => 'active',
+            'suspended_at' => null,
         ];
     }
 

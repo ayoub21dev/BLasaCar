@@ -1,0 +1,53 @@
+@startuml Sprint2
+left to right direction
+
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #EEFFF4
+  BorderColor #2ECC71
+  FontSize 13
+}
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 11
+skinparam linetype ortho
+
+title BlassaCar - Sprint 2 : Improvements (Web App + Admin)
+
+actor "Driver" as D #lightblue
+actor "Traveler" as T #lightgreen
+actor "Admin" as A #lightyellow
+
+rectangle "Sprint 2 - Improvements" {
+  usecase "Edit Ride" as UC1
+  usecase "Cancel Ride" as UC2
+  usecase "Mark Ride as Completed" as UC3
+
+  usecase "Cancel Booking" as UC4
+  usecase "Leave Review" as UC5
+
+  usecase "View Users" as UC6
+  usecase "Suspend User" as UC7
+  usecase "View Rides" as UC8
+  usecase "Moderate Rides" as UC9
+  usecase "View Statistics" as UC10
+}
+
+D --> UC1
+D --> UC2
+D --> UC3
+
+T --> UC4
+T --> UC5
+
+A --> UC6
+A --> UC7
+A --> UC8
+A --> UC9
+A --> UC10
+
+note right of UC5
+Allowed only after
+a completed trip
+end note
+
+@enduml

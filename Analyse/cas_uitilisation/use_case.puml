@@ -1,0 +1,82 @@
+@startuml
+top to bottom direction
+
+skinparam actorStyle awesome
+skinparam usecase {
+  BackgroundColor #F0F4FF
+  BorderColor #3A7BD5
+  FontSize 13
+}
+skinparam ArrowColor #555555
+skinparam ArrowFontSize 11
+
+title BlassaCar — Use Case Diagram(Mobile + Web)
+
+actor Driver   as C #lightblue
+actor Traveler as V #lightgreen
+actor Admin    as A #lightyellow
+actor "WhatsApp API" as W #lightgray
+
+package "Authentication" {
+  usecase "Register" as UC1
+  usecase "Login" as UC2
+}
+
+package "Ride Management (Driver)" {
+  usecase "Post a Ride" as UC3
+  usecase "Edit a Ride" as UC4
+  usecase "Cancel a Ride" as UC5
+  usecase "Confirm/Reject Booking" as UC16
+}
+
+package "Booking (Traveler)" {
+  usecase "Search for a Ride" as UC6
+  usecase "Book a Seat" as UC7
+  usecase "Cancel a Booking" as UC8
+  usecase "Leave a Review" as UC9
+}
+
+package "Notifications (WhatsApp)" {
+  usecase "Send WhatsApp\nNotification" as UC10
+}
+
+package "Administration" {
+  usecase "Manage Users" as UC13
+  usecase "Moderate Rides" as UC14
+  usecase "View Statistics" as UC15
+}
+
+' Actors -> Use cases
+C --> UC1
+C --> UC2
+C --> UC3
+C --> UC4
+C --> UC5
+C --> UC16
+
+V --> UC1
+V --> UC2
+V --> UC6
+V --> UC7
+V --> UC8
+V --> UC9
+
+A --> UC13
+A --> UC14
+A --> UC15
+
+W --> UC10
+
+' Includes (simple + correct)
+UC7 ..> UC6  : <<include>>
+UC7 ..> UC10 : <<include>>
+UC8 ..> UC10 : <<include>>
+UC5 ..> UC10 : <<include>>
+UC16 ..> UC10 : <<include>>
+
+' Review rule (correct: not extend Book)
+note right of UC9
+Only after a completed trip
+end note
+
+@enduml

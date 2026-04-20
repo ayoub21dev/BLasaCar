@@ -1,0 +1,131 @@
+@startuml BlassaCarFullClassDiagram
+top to bottom direction
+hide methods
+skinparam classAttributeIconSize 0
+skinparam linetype polyline
+skinparam shadowing false
+
+title BlassaCar - Full Project Class Diagram
+
+class User {
+  id : bigint
+  firstName : string
+  lastName : string
+  email : string
+  phone : string
+  passwordHash : string
+  profilePhoto : string
+  emailVerified : boolean
+  phoneVerified : boolean
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class DriverProfile {
+  id : bigint
+  user_id : bigint
+  cinNumber : string
+  cinPhoto : string
+  cinVerified : boolean
+  avgRating : decimal
+  totalTrips : int
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class Vehicle {
+  id : bigint
+  driver_profile_id : bigint
+  brand : string
+  model : string
+  photo : string
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class City {
+  id : bigint
+  name : string
+}
+
+class Ride {
+  id : bigint
+  user_id : bigint
+  vehicle_id : bigint
+  departureCityId : bigint
+  arrivalCityId : bigint
+  departureTime : datetime
+  pricePerSeat : decimal
+  totalSeats : int
+  availableSeats : int
+  meetingPoint : string
+  notes : text
+  status : string
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class Booking {
+  id : bigint
+  ride_id : bigint
+  traveler_id : bigint
+  seatsReserved : int
+  status : string
+  bookedAt : datetime
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class Review {
+  id : bigint
+  reviewer_id : bigint
+  reviewed_user_id : bigint
+  ride_id : bigint
+  rating : int
+  comment : text
+  createdAt : datetime
+  updatedAt : datetime
+}
+
+class Notification {
+  id : bigint
+  user_id : bigint
+  type : string
+  channel : string
+  title : string
+  message : text
+  relatedEntityType : string
+  relatedEntityId : bigint
+  isRead : boolean
+  createdAt : datetime
+}
+
+' ---- layout control ----
+DriverProfile -[hidden]down- Vehicle
+Vehicle -[hidden]down- Ride
+Ride -[hidden]left- Booking
+Ride -[hidden]right- Review
+User -[hidden]left- DriverProfile
+User -[hidden]right- Notification
+Booking -[hidden]right- City
+City -[hidden]right- Review
+
+' ---- real relationships ----
+User "1" --> "0..1" DriverProfile : has
+DriverProfile "1" --> "0..*" Vehicle : owns
+
+User "1" --> "0..*" Ride : publishes
+Vehicle "1" --> "0..*" Ride : used in
+
+Ride "0..*" --> "1" City : departure
+Ride "0..*" --> "1" City : arrival
+
+User "1" --> "0..*" Booking : makes
+Ride "1" --> "0..*" Booking : has
+
+User "1" --> "0..*" Review : writes
+User "1" --> "0..*" Review : receives
+Ride "1" --> "0..*" Review : related to
+
+User "1" --> "0..*" Notification : receives
+@enduml
