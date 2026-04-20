@@ -27,26 +27,37 @@
                 @endforeach
             </div>
 
-            <div class="hidden items-center gap-2 xl:flex">
-                <span class="rounded-full bg-white px-3 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">
-                    Previews
-                </span>
-                @foreach ($previewLinks as $link)
-                    <a href="{{ route($link['route']) }}"
-                       class="nav-link {{ request()->routeIs($link['route']) ? 'nav-link-active' : '' }}">
-                        {{ $link['label'] }}
-                    </a>
-                @endforeach
-            </div>
-
             <div class="hidden items-center gap-3 lg:flex">
-                <a href="{{ route('login') }}"
-                   class="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:text-brand-700">
-                    Log in
-                </a>
-                <a href="{{ route('signup') }}" class="brand-button text-sm">
-                    Sign up
-                </a>
+                @guest
+                    <a href="{{ route('login') }}"
+                       class="rounded-full px-4 py-2 text-sm font-medium text-slate-600 transition hover:text-brand-700">
+                        Log in
+                    </a>
+                    <a href="{{ route('signup') }}" class="brand-button text-sm">
+                        Sign up
+                    </a>
+                @endguest
+
+                @auth
+                    @php
+                        $user = auth()->user();
+                        $dashboardRoute = 'dashboards.traveler';
+                        if ($user->account_status === 'admin' || current(preg_grep('/admin/i', $user->getAttributes() ?? []))) {
+                            $dashboardRoute = 'dashboards.admin';
+                        } elseif ($user->driverProfile) {
+                            $dashboardRoute = 'dashboards.driver';
+                        }
+                    @endphp
+                    <a href="{{ route($dashboardRoute) }}" class="nav-link font-bold text-brand-700">
+                        My Dashboard
+                    </a>
+                    <form method="POST" action="{{ route('logout') }}" class="inline">
+                        @csrf
+                        <button type="submit" class="nav-link">
+                            Log out
+                        </button>
+                    </form>
+                @endauth
             </div>
 
             <details class="group lg:hidden">
@@ -63,20 +74,37 @@
                 </summary>
                 <div class="absolute inset-x-4 top-[calc(100%+0.75rem)] rounded-[1.75rem] border border-slate-200 bg-white p-4 shadow-2xl shadow-slate-900/10">
                     <div class="space-y-2">
-                        @foreach (array_merge($primaryLinks, $previewLinks) as $link)
+                        @foreach ($primaryLinks as $link)
                             <a href="{{ route($link['route']) }}"
                                class="block rounded-2xl px-4 py-3 text-sm font-medium text-slate-700 transition hover:bg-brand-50 hover:text-brand-700">
                                 {{ $link['label'] }}
                             </a>
                         @endforeach
                     </div>
-                    <div class="mt-4 grid grid-cols-2 gap-3 border-t border-slate-100 pt-4">
-                        <a href="{{ route('login') }}" class="brand-button-secondary text-sm">
-                            Log in
-                        </a>
-                        <a href="{{ route('signup') }}" class="brand-button text-sm">
-                            Sign up
-                        </a>
+                    
+                    <div class="mt-4 grid gap-3 border-t border-slate-100 pt-4">
+                        @guest
+                            <div class="grid grid-cols-2 gap-3">
+                                <a href="{{ route('login') }}" class="brand-button-secondary text-sm">
+                                    Log in
+                                </a>
+                                <a href="{{ route('signup') }}" class="brand-button text-sm">
+                                    Sign up
+                                </a>
+                            </div>
+                        @endguest
+                        
+                        @auth
+                            <a href="{{ route($dashboardRoute) }}" class="brand-button text-sm justify-center">
+                                My Dashboard
+                            </a>
+                            <form method="POST" action="{{ route('logout') }}" class="w-full">
+                                @csrf
+                                <button type="submit" class="brand-button-secondary text-sm w-full justify-center">
+                                    Log out
+                                </button>
+                            </form>
+                        @endauth
                     </div>
                 </div>
             </details>
