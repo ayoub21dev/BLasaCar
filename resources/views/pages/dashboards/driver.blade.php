@@ -3,8 +3,7 @@
     $showFooter = false;
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.driver', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
-        ['label' => 'Admin preview', 'route' => 'dashboards.admin', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/></svg>'],
-        ['label' => 'Traveler preview', 'route' => 'dashboards.traveler', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'],
+        ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
         ['label' => 'Back to website', 'route' => 'home', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'],
     ];
 @endphp
@@ -23,7 +22,7 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Driver workspace</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Welcome back, {{ $driver->first_name }}.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">This preview is driven by the first active seeded driver and their current ride + booking data.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">Your driver dashboard is populated from your account, ride inventory, and booking activity.</p>
                             </div>
                             <a href="{{ route('rides.publish') }}" class="brand-button">Publish new ride</a>
                         </div>
@@ -73,7 +72,7 @@
 
                         <div class="dashboard-panel">
                             <h2 class="text-xl font-bold text-slate-950">Weekly seats sold</h2>
-                            <p class="mt-2 text-sm text-slate-500">Aggregated from seeded booking activity.</p>
+                            <p class="mt-2 text-sm text-slate-500">Aggregated from your recent booking activity.</p>
                             <div class="mt-6 flex h-52 items-end gap-3">
                                 @foreach ($weeklySeatSales as $day)
                                     <div class="flex flex-1 flex-col items-center gap-3">

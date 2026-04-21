@@ -29,15 +29,24 @@
             <div>
                 <h3 class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Account</h3>
                 <div class="mt-4 space-y-3 text-sm text-slate-600">
-                    <a href="{{ route('login') }}" class="block transition hover:text-brand-700">Log in</a>
-                    <a href="{{ route('signup') }}" class="block transition hover:text-brand-700">Sign up</a>
+                    @guest
+                        <a href="{{ route('login') }}" class="block transition hover:text-brand-700">Log in</a>
+                        <a href="{{ route('signup') }}" class="block transition hover:text-brand-700">Sign up</a>
+                    @endguest
+                    @auth
+                        <a href="{{ route(auth()->user()->dashboardRoute()) }}" class="block transition hover:text-brand-700">My dashboard</a>
+                        <form method="POST" action="{{ route('logout') }}">
+                            @csrf
+                            <button type="submit" class="block transition hover:text-brand-700">Log out</button>
+                        </form>
+                    @endauth
                     <span class="block text-slate-400">WhatsApp notifications and reviews coming next</span>
                 </div>
             </div>
         </div>
 
         <div class="mt-12 border-t border-slate-200 pt-6 text-sm text-slate-500">
-            © 2026 BlassaCar. Built from your Maquettage mockups inside Laravel.
+            (c) 2026 BlassaCar. Built from your Maquettage mockups inside Laravel.
         </div>
     </div>
 </footer>

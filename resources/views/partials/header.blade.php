@@ -4,11 +4,7 @@
         ['label' => 'Publish a ride', 'route' => 'rides.publish'],
     ];
 
-    $previewLinks = [
-        ['label' => 'Driver', 'route' => 'dashboards.driver'],
-        ['label' => 'Traveler', 'route' => 'dashboards.traveler'],
-        ['label' => 'Admin', 'route' => 'dashboards.admin'],
-    ];
+    $dashboardRoute = auth()->user()?->dashboardRoute();
 @endphp
 
 <header class="sticky top-0 z-50 border-b border-white/70 bg-slate-50/90 backdrop-blur-xl">
@@ -39,15 +35,6 @@
                 @endguest
 
                 @auth
-                    @php
-                        $user = auth()->user();
-                        $dashboardRoute = 'dashboards.traveler';
-                        if ($user->account_status === 'admin' || current(preg_grep('/admin/i', $user->getAttributes() ?? []))) {
-                            $dashboardRoute = 'dashboards.admin';
-                        } elseif ($user->driverProfile) {
-                            $dashboardRoute = 'dashboards.driver';
-                        }
-                    @endphp
                     <a href="{{ route($dashboardRoute) }}" class="nav-link font-bold text-brand-700">
                         My Dashboard
                     </a>
@@ -81,7 +68,7 @@
                             </a>
                         @endforeach
                     </div>
-                    
+
                     <div class="mt-4 grid gap-3 border-t border-slate-100 pt-4">
                         @guest
                             <div class="grid grid-cols-2 gap-3">
@@ -93,7 +80,7 @@
                                 </a>
                             </div>
                         @endguest
-                        
+
                         @auth
                             <a href="{{ route($dashboardRoute) }}" class="brand-button text-sm justify-center">
                                 My Dashboard

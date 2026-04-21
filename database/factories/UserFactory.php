@@ -2,6 +2,7 @@
 
 namespace Database\Factories;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
@@ -21,6 +22,7 @@ class UserFactory extends Factory
             'email_verified' => true,
             'phone_verified' => false,
             'account_status' => 'active',
+            'role' => User::ROLE_TRAVELER,
             'suspended_at' => null,
         ];
     }
@@ -29,6 +31,27 @@ class UserFactory extends Factory
     {
         return $this->state(fn (array $attributes) => [
             'email_verified' => false,
+        ]);
+    }
+
+    public function admin(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => User::ROLE_ADMIN,
+        ]);
+    }
+
+    public function driver(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => User::ROLE_DRIVER,
+        ]);
+    }
+
+    public function traveler(): static
+    {
+        return $this->state(fn (array $attributes) => [
+            'role' => User::ROLE_TRAVELER,
         ]);
     }
 }

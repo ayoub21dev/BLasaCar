@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
@@ -10,6 +11,12 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 class User extends Authenticatable
 {
     use HasFactory;
+
+    public const ROLE_ADMIN = 'admin';
+
+    public const ROLE_DRIVER = 'driver';
+
+    public const ROLE_TRAVELER = 'traveler';
 
     protected $fillable = [
         'first_name',
@@ -21,6 +28,7 @@ class User extends Authenticatable
         'email_verified',
         'phone_verified',
         'account_status',
+        'role',
         'suspended_at',
     ];
 
@@ -36,6 +44,45 @@ class User extends Authenticatable
             'password_hash' => 'hashed',
             'suspended_at' => 'datetime',
         ];
+    }
+
+    public function getAuthPassword(): string
+    {
+        return $this->password_hash;
+    }
+
+    public function getAuthPasswordName(): string
+    {
+        return 'password_hash';
+    }
+
+    public function scopeRole(Builder $query, string $role): Builder
+    {
+        return $query->where('role', $role);
+    }
+
+    public function isAdmin(): bool
+    {
+        return $this->role === self::ROLE_ADMIN;
+    }
+
+    public function isDriver(): bool
+    {
+        return $this->role === self::ROLE_DRIVER;
+    }
+
+    public function isTraveler(): bool
+    {
+        return $this->role === self::ROLE_TRAVELER;
+    }
+
+    public function dashboardRoute(): string
+    {
+        return match ($this->role) {
+            self::ROLE_ADMIN => 'dashboards.admin',
+            self::ROLE_DRIVER => 'dashboards.driver',
+            default => 'dashboards.traveler',
+        };
     }
 
     public function driverProfile(): HasOne

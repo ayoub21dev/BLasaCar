@@ -3,8 +3,7 @@
     $showFooter = false;
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.admin', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
-        ['label' => 'Driver preview', 'route' => 'dashboards.driver', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/></svg>'],
-        ['label' => 'Traveler preview', 'route' => 'dashboards.traveler', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>'],
+        ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
         ['label' => 'Back to website', 'route' => 'home', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'],
     ];
 @endphp
@@ -23,7 +22,7 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Platform overview</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Operational visibility for BlassaCar.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">This page uses the admin service layer you added earlier and renders it as a working dashboard surface.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">This dashboard surfaces moderation, user, ride, and booking data for the signed-in admin account.</p>
                             </div>
                             <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">Inspect public search</a>
                         </div>
@@ -111,7 +110,7 @@
                                     <div class="flex items-start justify-between gap-3">
                                         <div>
                                             <p class="font-semibold text-slate-900">{{ $ride->departureCity?->name }} &rarr; {{ $ride->arrivalCity?->name }}</p>
-                                            <p class="mt-1 text-sm text-slate-500">{{ $ride->departure_time->format('d M Y · H:i') }}</p>
+                                            <p class="mt-1 text-sm text-slate-500">{{ $ride->departure_time->format('d M Y \a\t H:i') }}</p>
                                         </div>
                                         @include('partials.status-chip', ['status' => $ride->status])
                                     </div>

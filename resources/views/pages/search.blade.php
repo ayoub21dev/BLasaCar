@@ -99,10 +99,10 @@
                         <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Next pages</p>
                         <div class="mt-4 space-y-3">
                             <a href="{{ route('rides.publish') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
-                                Publish a ride preview
+                                Publish a ride
                             </a>
                             <a href="{{ route('dashboards.traveler') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
-                                Traveler dashboard preview
+                                Traveler dashboard
                             </a>
                         </div>
                     </div>

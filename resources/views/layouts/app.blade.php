@@ -129,6 +129,14 @@
             @include('partials.header')
         @endif
 
+        @if (session('status'))
+            <div class="shell pt-6">
+                <div class="rounded-[1.5rem] border border-brand-200 bg-brand-50 px-5 py-4 text-sm font-medium text-brand-800">
+                    {{ session('status') }}
+                </div>
+            </div>
+        @endif
+
         @yield('content')
 
         @if (($showFooter ?? true) === true)

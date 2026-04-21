@@ -15,7 +15,7 @@
                     <span class="block text-brand-700">simple and affordable.</span>
                 </h1>
                 <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-                    Your HTML mockups are now wired into Laravel with real cities, rides, and dashboards. Browse routes, publish trips, and preview the full platform surface.
+                    Your HTML mockups are now wired into Laravel with real cities, rides, and dashboards. Browse routes, publish trips, and use role-based workspaces.
                 </p>
                 <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
                     <a href="{{ route('rides.publish') }}" class="brand-button">
@@ -127,7 +127,7 @@
                     </svg>
                 </div>
                 <h3 class="mt-6 text-2xl font-bold text-slate-900">Fast booking surfaces</h3>
-                <p class="mt-3 leading-7 text-slate-600">Search and detail pages are laid out for immediate scanning, clear pricing, and one-action booking previews.</p>
+                <p class="mt-3 leading-7 text-slate-600">Search and detail pages are laid out for immediate scanning, clear pricing, and one-action booking flows.</p>
             </article>
 
             <article class="surface-soft p-8">
@@ -147,7 +147,7 @@
                     </svg>
                 </div>
                 <h3 class="mt-6 text-2xl font-bold text-slate-900">Review-first trust</h3>
-                <p class="mt-3 leading-7 text-slate-600">Rating cues and dashboard previews make the platform feel consistent with the trust goals in your analysis docs.</p>
+                <p class="mt-3 leading-7 text-slate-600">Rating cues and secure dashboards make the platform feel consistent with the trust goals in your analysis docs.</p>
             </article>
         </div>
     </section>
@@ -157,17 +157,22 @@
             <div class="surface overflow-hidden p-8 lg:p-12">
                 <div class="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
                     <div>
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Workspace previews</p>
-                        <h2 class="mt-4 text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
-                            Every mockup page is now reachable inside the project.
+                        <h2 class="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl" style="color: #082f49;">
+                            Driving in your car
+                            <span class="block">soon?</span>
                         </h2>
                         <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-                            Open the admin, driver, and traveler surfaces directly from Laravel routes and inspect them against seeded platform data.
+                            Let's make this your least expensive journey ever.
                         </p>
-                        <div class="mt-8 flex flex-wrap gap-3">
-                            <a href="{{ route('dashboards.admin') }}" class="brand-button-secondary text-sm">Admin dashboard</a>
-                            <a href="{{ route('dashboards.driver') }}" class="brand-button-secondary text-sm">Driver dashboard</a>
-                            <a href="{{ route('dashboards.traveler') }}" class="brand-button-secondary text-sm">Traveler dashboard</a>
+                        <div class="mt-10">
+                            <a href="{{ route('rides.publish') }}"
+                               class="inline-flex items-center gap-3 rounded-full bg-white px-8 py-5 text-lg font-bold text-brand-600 shadow-[0_18px_38px_-24px_rgba(14,165,233,0.55)] ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:text-brand-700">
+                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
+                                    <circle cx="12" cy="12" r="9" />
+                                    <path d="M12 8v8M8 12h8" />
+                                </svg>
+                                <span>Offer a ride</span>
+                            </a>
                         </div>
                     </div>
 
