@@ -14,9 +14,9 @@
         </div>
 
         <div class="surface-soft p-6 text-sm text-slate-500">
-            <p class="font-semibold text-slate-800">Preview mode</p>
+            <p class="font-semibold text-slate-800">Signed-in area</p>
             <p class="mt-2 leading-6">
-                These dashboard pages are wired to seeded sample data until authentication and role-based access are connected.
+                This workspace now loads the authenticated account and its seeded data directly from Laravel.
             </p>
         </div>
     </div>

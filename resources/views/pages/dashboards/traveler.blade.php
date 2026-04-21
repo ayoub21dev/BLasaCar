@@ -4,7 +4,6 @@
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.traveler', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
         ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
-        ['label' => 'Driver preview', 'route' => 'dashboards.driver', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 16H9m10 0h3v-3.15a1 1 0 0 0-.84-.99L16 11l-2.7-3.6a1 1 0 0 0-.8-.4H5.24a2 2 0 0 0-1.8 1.1l-.8 1.63A6 6 0 0 0 2 12.42V16h2"/></svg>'],
         ['label' => 'Back to website', 'route' => 'home', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'],
     ];
 @endphp
@@ -23,7 +22,7 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Traveler workspace</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Hello, {{ $traveler->first_name }}.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">This preview is backed by the traveler-side booking service and seeded booking history.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">Your traveler dashboard is backed by the booking service and your account history.</p>
                             </div>
                             <a href="{{ route('rides.search') }}" class="brand-button">Find a ride</a>
                         </div>
@@ -77,7 +76,7 @@
                                     </div>
                                 </div>
                             @else
-                                <p class="mt-4 text-sm text-slate-500">No upcoming trips found for this preview user.</p>
+                                <p class="mt-4 text-sm text-slate-500">No upcoming trips are scheduled for this account yet.</p>
                             @endif
                         </div>
 
@@ -97,7 +96,7 @@
                             <div class="dashboard-panel">
                                 <h2 class="text-xl font-bold text-slate-950">Service-backed status list</h2>
                                 <p class="mt-3 text-sm leading-6 text-slate-500">
-                                    This table is rendered from the booking status list returned by the public service layer, not hard-coded mock data.
+                                    This table is rendered from the booking status list returned by the public service layer.
                                 </p>
                             </div>
                         </div>
@@ -122,7 +121,7 @@
                                     @foreach ($bookings as $booking)
                                         <tr>
                                             <td class="px-5 py-4 font-medium text-slate-900">{{ $booking->ride?->departureCity?->name }} &rarr; {{ $booking->ride?->arrivalCity?->name }}</td>
-                                            <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->departure_time?->format('d M Y · H:i') }}</td>
+                                            <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->departure_time?->format('d M Y \a\t H:i') }}</td>
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->user?->first_name }} {{ $booking->ride?->user?->last_name }}</td>
                                             <td class="px-5 py-4">@include('partials.status-chip', ['status' => $booking->status])</td>
                                         </tr>

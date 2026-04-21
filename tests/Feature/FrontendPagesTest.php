@@ -10,7 +10,7 @@ class FrontendPagesTest extends TestCase
 {
     use RefreshDatabase;
 
-    public function test_key_frontend_pages_render_with_seeded_data(): void
+    public function test_public_frontend_pages_render_for_guests(): void
     {
         $this->withoutVite();
         $this->seed();
@@ -40,17 +40,20 @@ class FrontendPagesTest extends TestCase
         $this->get(route('signup'))
             ->assertOk()
             ->assertSee('Create an account', false);
+    }
+
+    public function test_dashboard_routes_redirect_guests_to_login(): void
+    {
+        $this->withoutVite();
+        $this->seed();
 
         $this->get(route('dashboards.admin'))
-            ->assertOk()
-            ->assertSee('Platform overview', false);
+            ->assertRedirect(route('login'));
 
         $this->get(route('dashboards.driver'))
-            ->assertOk()
-            ->assertSee('Driver workspace', false);
+            ->assertRedirect(route('login'));
 
         $this->get(route('dashboards.traveler'))
-            ->assertOk()
-            ->assertSee('Traveler workspace', false);
+            ->assertRedirect(route('login'));
     }
 }

@@ -1,9 +1,10 @@
-id,first_name,last_name,email,phone,password_hash,profile_photo,email_verified,phone_verified,created_at,updated_at
-1,Yassine,ElMansouri,yassine.elmansouri@blassacar.test,0611111111,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/yassine.jpg,1,1,2026-02-01 09:00:00,2026-03-01 10:15:00
-2,Sara,Bennani,sara.bennani@blassacar.test,0622222222,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/sara.jpg,1,1,2026-02-02 09:30:00,2026-03-02 11:10:00
-3,Mehdi,Alaoui,mehdi.alaoui@blassacar.test,0633333333,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/mehdi.jpg,1,1,2026-02-03 08:45:00,2026-03-03 09:20:00
-4,Imane,Tazi,imane.tazi@blassacar.test,0644444444,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/imane.jpg,1,0,2026-02-04 12:00:00,2026-03-04 08:50:00
-5,Ayoub,Rami,ayoub.rami@blassacar.test,0655555555,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/ayoub.jpg,1,1,2026-02-05 15:15:00,2026-03-05 12:00:00
-6,Lina,Ouahbi,lina.ouahbi@blassacar.test,0666666666,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/lina.jpg,0,1,2026-02-06 10:10:00,2026-03-05 18:40:00
-7,Omar,Idrissi,omar.idrissi@blassacar.test,0677777777,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/omar.jpg,1,1,2026-02-07 11:25:00,2026-03-06 13:30:00
-8,Salma,Naciri,salma.naciri@blassacar.test,0688888888,$2y$12$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi,profiles/salma.jpg,1,0,2026-02-08 14:20:00,2026-03-07 16:45:00
+id,first_name,last_name,email,phone,password_hash,profile_photo,email_verified,phone_verified,account_status,role,suspended_at,created_at,updated_at
+1,Yassine,ElMansouri,yassine.elmansouri@blassacar.test,0611111111,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/yassine.jpg,1,1,active,driver,,2026-02-01 09:00:00,2026-03-01 10:15:00
+2,Sara,Bennani,sara.bennani@blassacar.test,0622222222,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/sara.jpg,1,1,active,driver,,2026-02-02 09:30:00,2026-03-02 11:10:00
+3,Mehdi,Alaoui,mehdi.alaoui@blassacar.test,0633333333,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/mehdi.jpg,1,1,active,driver,,2026-02-03 08:45:00,2026-03-03 09:20:00
+4,Imane,Tazi,imane.tazi@blassacar.test,0644444444,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/imane.jpg,1,0,suspended,driver,2026-03-04 08:50:00,2026-02-04 12:00:00,2026-03-04 08:50:00
+5,Ayoub,Rami,ayoub.rami@blassacar.test,0655555555,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/ayoub.jpg,1,1,active,traveler,,2026-02-05 15:15:00,2026-03-05 12:00:00
+6,Lina,Ouahbi,lina.ouahbi@blassacar.test,0666666666,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/lina.jpg,0,1,active,traveler,,2026-02-06 10:10:00,2026-03-05 18:40:00
+7,Omar,Idrissi,omar.idrissi@blassacar.test,0677777777,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/omar.jpg,1,1,active,traveler,,2026-02-07 11:25:00,2026-03-06 13:30:00
+8,Salma,Naciri,salma.naciri@blassacar.test,0688888888,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/salma.jpg,1,0,active,traveler,,2026-02-08 14:20:00,2026-03-07 16:45:00
+9,Admin,Team,admin@blassacar.test,0699999999,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,,1,1,active,admin,,2026-02-09 09:00:00,2026-03-07 17:00:00

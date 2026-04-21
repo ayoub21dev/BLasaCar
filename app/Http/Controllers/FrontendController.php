@@ -113,8 +113,8 @@ class FrontendController extends Controller
                 'rides.arrivalCity',
                 'rides.vehicle',
             ])
-            ->where('account_status', 'active')
-            ->whereHas('driverProfile')
+            ->whereKey(auth()->id())
+            ->role(User::ROLE_DRIVER)
             ->firstOrFail();
 
         $rides = $driver->rides
@@ -164,8 +164,8 @@ class FrontendController extends Controller
                 'bookings.ride.departureCity',
                 'bookings.ride.arrivalCity',
             ])
-            ->where('account_status', 'active')
-            ->whereHas('bookings')
+            ->whereKey(auth()->id())
+            ->role(User::ROLE_TRAVELER)
             ->firstOrFail();
 
         $bookings = $publicRideService->listBookingStatuses($traveler);
