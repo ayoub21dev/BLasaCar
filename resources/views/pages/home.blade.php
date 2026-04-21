@@ -55,14 +55,14 @@
                         </select>
                     </label>
 
-                    <label class="input-shell">
+                    <label class="input-shell cursor-pointer">
                         <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <line x1="16" x2="16" y1="2" y2="6" />
                             <line x1="8" x2="8" y1="2" y2="6" />
                             <line x1="3" x2="21" y1="10" y2="10" />
                         </svg>
-                        <input type="date" name="departure_date" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
+                        <input type="date" name="departure_date" onclick="this.showPicker()" class="date-input-clean w-full bg-transparent text-sm font-medium text-slate-700 outline-none cursor-pointer">
                     </label>
 
                     <label class="input-shell">
@@ -176,37 +176,8 @@
                         </div>
                     </div>
 
-                    <div class="rounded-[2rem] border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-                        <svg viewBox="0 0 640 340" class="w-full h-auto" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#7cd4f6" />
-                                    <stop offset="100%" stop-color="#49b6e1" />
-                                </linearGradient>
-                                <linearGradient id="carBodyGrad" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#f9fafb" />
-                                    <stop offset="100%" stop-color="#d8e0e7" />
-                                </linearGradient>
-                                <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#def4ff" />
-                                    <stop offset="100%" stop-color="#a9d8eb" />
-                                </linearGradient>
-                            </defs>
-
-                            <path d="M70 252 C170 178, 245 170, 318 196 C395 224, 468 222, 570 258" fill="none" stroke="#9be6ff" stroke-width="10" stroke-linecap="round" stroke-dasharray="26 20" />
-                            <path d="M76 271 C194 225, 265 223, 334 241 C405 261, 474 260, 560 281" fill="none" stroke="url(#roadGrad)" stroke-width="18" stroke-linecap="round" opacity="0.55" />
-                            <ellipse cx="330" cy="250" rx="122" ry="20" fill="#1c6f91" opacity="0.35" />
-                            <g transform="translate(218 120)">
-                                <path d="M40 126 H236 C247 126 256 117 256 106 V80 C256 68 247 58 236 58 H207 L180 22 H97 L64 58 H40 C29 58 20 68 20 80 V106 C20 117 29 126 40 126 Z" fill="url(#carBodyGrad)" />
-                                <path d="M82 58 L106 28 H174 L194 58 Z" fill="#eef4f8" />
-                                <path d="M92 58 L112 32 H144 V58 Z" fill="url(#glassGrad)" />
-                                <path d="M149 32 H173 L190 58 H149 Z" fill="url(#glassGrad)" />
-                                <circle cx="88" cy="126" r="26" fill="#0f232f" />
-                                <circle cx="198" cy="126" r="26" fill="#0f232f" />
-                                <circle cx="88" cy="126" r="13" fill="#9eacb6" />
-                                <circle cx="198" cy="126" r="13" fill="#9eacb6" />
-                            </g>
-                        </svg>
+                    <div class="overflow-hidden">
+                        <img src="{{ asset('images/carRod.svg') }}" class="w-full h-auto" alt="Car on road animation">
                     </div>
                 </div>
             </div>

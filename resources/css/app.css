@@ -89,6 +89,20 @@
         @apply flex items-center gap-3 rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 transition focus-within:border-brand-400 focus-within:bg-white focus-within:shadow-[0_0_0_6px_rgba(14,165,233,0.10)];
     }
 
+    .date-input-clean {
+        appearance: none;
+    }
+
+    .date-input-clean::-webkit-calendar-picker-indicator {
+        display: none;
+        -webkit-appearance: none;
+    }
+
+    .date-input-clean::-webkit-clear-button,
+    .date-input-clean::-webkit-inner-spin-button {
+        display: none;
+    }
+
     .stat-tile {
         @apply surface-soft p-5;
     }
