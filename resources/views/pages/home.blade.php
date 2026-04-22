@@ -87,15 +87,12 @@
 
     <section class="py-16">
         <div class="shell">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Popular rides</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-950 sm:text-4xl">Trips leaving soon</h2>
-                </div>
-                <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">View all rides</a>
+            <div class="text-center">
+                <h2 class="text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Popular Rides</h2>
+                <p class="mt-3 text-lg text-slate-600">Join these trips leaving soon</p>
             </div>
 
-            <div class="mt-10 grid gap-6 lg:grid-cols-2">
+            <div class="mt-12 grid gap-8 lg:grid-cols-2">
                 @forelse ($featuredRides as $ride)
                     @include('partials.ride-card', ['ride' => $ride])
                 @empty
