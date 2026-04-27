@@ -14,65 +14,124 @@
                             <p class="mt-3 max-w-2xl text-white/80">This page translates your mockup into a real Laravel surface so the ride-posting flow can be connected next.</p>
                         </div>
 
-                        <form class="grid gap-6 p-8 lg:grid-cols-2">
+                        <form method="POST" action="{{ route('rides.publish.store') }}" class="grid gap-6 p-8 lg:grid-cols-2">
+                            @csrf
+
+                            @auth
+                                @if (auth()->user()->isDriver())
+                                    <label class="space-y-2 lg:col-span-2">
+                                        <span class="text-sm font-semibold text-slate-700">Vehicle</span>
+                                        <select name="vehicle_id" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                            <option value="">Select vehicle</option>
+                                            @foreach ($vehicles as $vehicle)
+                                                <option value="{{ $vehicle->id }}" @selected(old('vehicle_id') == $vehicle->id)>
+                                                    {{ $vehicle->brand }} {{ $vehicle->model }}
+                                                </option>
+                                            @endforeach
+                                        </select>
+                                        @error('vehicle_id')
+                                            <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                        @enderror
+                                    </label>
+                                @endif
+                            @endauth
+
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">From</span>
-                                <select class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <select name="departure_city_id" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                    <option value="">Select city</option>
                                     @foreach ($cities as $city)
-                                        <option>{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}" @selected(old('departure_city_id') == $city->id)>{{ $city->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('departure_city_id')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">To</span>
-                                <select class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <select name="arrival_city_id" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                    <option value="">Select city</option>
                                     @foreach ($cities as $city)
-                                        <option>{{ $city->name }}</option>
+                                        <option value="{{ $city->id }}" @selected(old('arrival_city_id') == $city->id)>{{ $city->name }}</option>
                                     @endforeach
                                 </select>
+                                @error('arrival_city_id')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">Date</span>
-                                <input type="date" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <input type="date" name="departure_date" value="{{ old('departure_date') }}" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                @error('departure_date')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">Departure time</span>
-                                <input type="time" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <input type="time" name="departure_time" value="{{ old('departure_time') }}" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                @error('departure_time')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">Seats offered</span>
-                                <select class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <select name="seats_offered" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
                                     @foreach ([1, 2, 3, 4] as $seatCount)
-                                        <option>{{ $seatCount }} {{ \Illuminate\Support\Str::plural('seat', $seatCount) }}</option>
+                                        <option value="{{ $seatCount }}" @selected(old('seats_offered', 1) == $seatCount)>{{ $seatCount }} {{ \Illuminate\Support\Str::plural('seat', $seatCount) }}</option>
                                     @endforeach
                                 </select>
+                                @error('seats_offered')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">Price per seat (DH)</span>
-                                <input type="number" placeholder="70" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <input type="number" name="price_per_seat" value="{{ old('price_per_seat') }}" placeholder="70" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                @error('price_per_seat')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2 lg:col-span-2">
                                 <span class="text-sm font-semibold text-slate-700">Meeting point</span>
-                                <input type="text" placeholder="Casa Voyageurs taxi lane" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                <input type="text" name="meeting_point" value="{{ old('meeting_point') }}" placeholder="Casa Voyageurs taxi lane" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
+                                @error('meeting_point')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <label class="space-y-2 lg:col-span-2">
                                 <span class="text-sm font-semibold text-slate-700">Notes</span>
-                                <textarea rows="5" placeholder="Luggage policy, flexible pickup, or other details" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none"></textarea>
+                                <textarea rows="5" name="notes" placeholder="Luggage policy, flexible pickup, or other details" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">{{ old('notes') }}</textarea>
+                                @error('notes')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
 
                             <div class="lg:col-span-2">
-                                <button type="button" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
-                                    Publish my ride
-                                </button>
+                                @guest
+                                    <a href="{{ route('login') }}" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
+                                        Log in to publish
+                                    </a>
+                                @else
+                                    @if (auth()->user()->isDriver() && $vehicles->isNotEmpty())
+                                        <button type="submit" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
+                                            Publish my ride
+                                        </button>
+                                    @else
+                                        <button type="button" disabled class="inline-flex w-full items-center justify-center rounded-[1.4rem] bg-slate-200 px-5 py-4 text-base font-semibold text-slate-500">
+                                            Driver account with a vehicle required
+                                        </button>
+                                    @endif
+                                @endguest
                                 <p class="mt-4 text-center text-sm leading-6 text-slate-500">
-                                    Frontend surface implemented. Hook this form to the ride-posting service/controller next.
+                                    Real ride publishing is now connected for signed-in driver accounts.
                                 </p>
                             </div>
                         </form>

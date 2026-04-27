@@ -29,6 +29,7 @@ class PublicRideService
             ->where('arrival_city_id', $arrivalCityId)
             ->where('status', 'scheduled')
             ->where('available_seats', '>', 0)
+            ->where('departure_time', '>', now())
             ->whereHas('user', fn ($builder) => $builder->where('account_status', 'active'))
             ->orderBy('departure_time');
 
@@ -142,6 +143,10 @@ class PublicRideService
 
         if ($ride->status !== 'scheduled') {
             throw new RuntimeException('Only scheduled rides can be booked.');
+        }
+
+        if ($ride->departure_time->lessThanOrEqualTo(now())) {
+            throw new RuntimeException('Only future rides can be booked.');
         }
 
         if ($ride->user?->account_status !== 'active') {

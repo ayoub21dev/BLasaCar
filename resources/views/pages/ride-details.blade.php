@@ -88,19 +88,32 @@
                             The public service layer already supports seat-request logic. This page is the frontend surface for that next step.
                         </p>
 
-                        <div class="mt-6 space-y-4">
+                        @php($canRequestRide = $ride->status === 'scheduled' && $ride->available_seats > 0 && $ride->departure_time->isFuture())
+
+                        <form method="POST" action="{{ route('rides.book', $ride) }}" class="mt-6 space-y-4">
+                            @csrf
+
                             <label class="block">
                                 <span class="text-sm font-medium text-slate-600">Passengers</span>
-                                <select class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none">
+                                <select name="seats" class="mt-2 w-full rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none" @disabled(! $canRequestRide)>
                                     @for ($i = 1; $i <= min(4, $ride->available_seats); $i++)
-                                        <option>{{ $i }} {{ \Illuminate\Support\Str::plural('seat', $i) }}</option>
+                                        <option value="{{ $i }}" @selected(old('seats', 1) == $i)>{{ $i }} {{ \Illuminate\Support\Str::plural('seat', $i) }}</option>
                                     @endfor
                                 </select>
+                                @error('seats')
+                                    <p class="mt-2 text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
                             </label>
-                            <button type="button" class="brand-button w-full justify-center rounded-[1.25rem]">
-                                Request this ride
-                            </button>
-                        </div>
+                            @if ($canRequestRide)
+                                <button type="submit" class="brand-button w-full justify-center rounded-[1.25rem]">
+                                    Request this ride
+                                </button>
+                            @else
+                                <button type="button" disabled class="inline-flex w-full items-center justify-center rounded-[1.25rem] bg-slate-200 px-5 py-3 font-semibold text-slate-500">
+                                    Ride is not available
+                                </button>
+                            @endif
+                        </form>
                     </div>
 
                     <div class="surface-soft p-6">

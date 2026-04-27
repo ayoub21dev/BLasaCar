@@ -3,87 +3,137 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="relative overflow-hidden py-16 lg:py-24">
-        <div class="hero-grid absolute inset-0"></div>
-        <div class="shell page-enter relative">
-            <div class="mx-auto max-w-4xl text-center">
-                <span class="inline-flex items-center rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
-                    Moroccan carpooling, redesigned
-                </span>
-                <h1 class="mt-8 text-5xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-                    Travel between cities
-                    <span class="block text-brand-700">simple and affordable.</span>
-                </h1>
-                <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-                    Your HTML mockups are now wired into Laravel with real cities, rides, and dashboards. Browse routes, publish trips, and use role-based workspaces.
-                </p>
-                <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-                    <a href="{{ route('rides.publish') }}" class="brand-button">
-                        Publish a ride
-                    </a>
-                    <a href="{{ route('rides.search') }}" class="brand-button-secondary">
-                        Explore rides
-                    </a>
+    <div class="relative">
+        <!-- HERO SECTION -->
+        <section class="relative min-h-[500px] overflow-hidden pb-20 lg:min-h-[420px] lg:pb-20" style="background: linear-gradient(135deg, #f8fbff 0%, #f3f9ff 52%, #eaf6ff 100%);">
+            <!-- Hero Content -->
+            <div class="relative z-10 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+                <div class="pt-24 pb-20 page-enter lg:max-w-[54%] lg:pt-8 lg:pb-20">
+                    <span class="inline-flex items-center gap-2 rounded-full border border-blue-100 bg-white/70 px-4 py-2 text-[11px] font-black uppercase tracking-[0.16em] text-[#0b7bd3] shadow-sm">
+                        <span class="flex h-4 w-5 items-center justify-center rounded-[4px] bg-red-600">
+                            <span class="h-1.5 w-1.5 rounded-full bg-green-600"></span>
+                        </span>
+                        Moroccan carpooling, redesigned
+                    </span>
+
+                    <h1 class="mt-8 text-[2.8rem] sm:text-[3.4rem] lg:text-[3rem] font-black leading-[1.08] tracking-tight text-[#0f172a]">
+                        Travel between cities
+                        <span class="block text-[#0369a1]">simple and affordable.</span>
+                    </h1>
+                    
+                    <p class="mt-7 max-w-md text-[16px] leading-[1.8] text-slate-500">
+                        Your HTML mockups are now wired into Laravel with real cities, rides, and dashboards. Browse routes, publish trips, and use role-based workspaces.
+                    </p>
                 </div>
             </div>
 
-            <div class="surface mx-auto mt-14 max-w-6xl p-3 sm:p-4">
-                <form method="GET" action="{{ route('rides.search') }}" class="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_150px_160px]">
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <!-- Hero Image -->
+            <div class="hero-image-panel absolute inset-y-0 right-0 hidden lg:block">
+                <img src="{{ asset('images/Heropage.png') }}" class="h-full w-full object-cover object-center" alt="Moroccan cityscape with mosque and mountains">
+            </div>
+        </section>
+
+        <!-- Search Component - Floating outside the overflow-hidden section -->
+        <div class="absolute bottom-0 left-1/2 z-20 w-full max-w-[960px] -translate-x-1/2 translate-y-[36%] px-4 sm:px-6">
+            <!-- Tabs -->
+            <div class="flex gap-1 pl-8">
+                <button class="flex items-center gap-3 rounded-t-2xl bg-[#0369a1] px-10 py-5 text-sm font-bold text-white shadow-lg">
+                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                        <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
+                        <circle cx="7" cy="17" r="2" />
+                        <path d="M9 17h6" />
+                        <circle cx="17" cy="17" r="2" />
+                    </svg>
+                    Find a ride
+                </button>
+            </div>
+            
+            <!-- Search Card -->
+            <div class="bg-white rounded-[2.5rem] shadow-[0_40px_100px_-20px_rgba(0,0,0,0.15)] border border-slate-100/50 p-5 sm:p-6">
+                <form method="GET" action="{{ route('rides.search') }}" class="grid gap-4 lg:grid-cols-[1fr_1fr_1fr_1fr_auto]">
+                    <!-- Leaving from -->
+                    <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 transition focus-within:border-blue-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-50/50">
+                        <svg class="h-5 w-5 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
                         </svg>
-                        <select name="departure_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Leaving from</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Leaving from</div>
+                            <select name="departure_city_id" class="w-full appearance-none bg-transparent text-[13px] font-bold text-slate-700 outline-none">
+                                <option value="">Select city</option>
+                                @foreach ($cities as $city)
+                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <svg class="h-4 w-4 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
 
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <!-- Going to -->
+                    <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 transition focus-within:border-blue-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-50/50">
+                        <svg class="h-5 w-5 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
                         </svg>
-                        <select name="arrival_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Going to</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Going to</div>
+                            <select name="arrival_city_id" class="w-full appearance-none bg-transparent text-[13px] font-bold text-slate-700 outline-none">
+                                <option value="">Select city</option>
+                                @foreach ($cities as $city)
+                                    <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <svg class="h-4 w-4 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
 
-                    <label class="input-shell cursor-pointer">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <!-- Date -->
+                    <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 transition focus-within:border-blue-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-50/50">
+                        <svg class="h-5 w-5 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
                             <line x1="16" x2="16" y1="2" y2="6" />
                             <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
                         </svg>
-                        <input type="date" name="departure_date" onclick="this.showPicker()" class="date-input-clean w-full bg-transparent text-sm font-medium text-slate-700 outline-none cursor-pointer">
-                    </label>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Date</div>
+                            <input type="date" name="departure_date" class="w-full bg-transparent text-sm font-bold text-slate-700 outline-none" value="{{ date('Y-m-d') }}">
+                        </div>
+                    </div>
 
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <!-- Passengers -->
+                    <div class="flex items-center gap-3 rounded-2xl border border-slate-100 bg-slate-50/50 px-4 py-3.5 transition focus-within:border-blue-200 focus-within:bg-white focus-within:ring-4 focus-within:ring-blue-50/50">
+                        <svg class="h-5 w-5 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
                             <circle cx="12" cy="7" r="4" />
                         </svg>
-                        <select name="seats" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            @foreach ([1, 2, 3, 4] as $seatCount)
-                                <option value="{{ $seatCount }}">{{ $seatCount }} {{ \Illuminate\Support\Str::plural('seat', $seatCount) }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                        <div class="flex-1 min-w-0">
+                            <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400 mb-0.5">Passengers</div>
+                            <select name="seats" class="w-full appearance-none bg-transparent text-[13px] font-bold text-slate-700 outline-none">
+                                <option value="1">1 seat</option>
+                                @foreach ([2, 3, 4] as $seatCount)
+                                    <option value="{{ $seatCount }}">{{ $seatCount }} seats</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <svg class="h-4 w-4 text-slate-300 flex-shrink-0" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>
+                    </div>
 
-                    <button type="submit" class="brand-button rounded-[1.4rem]">
+                    <!-- Search Button -->
+                    <button type="submit" class="flex items-center justify-center gap-2 rounded-2xl bg-[#0369a1] px-8 py-3.5 text-sm font-bold text-white transition hover:bg-[#0284c7] shadow-lg shadow-blue-200/40">
                         Search
+                        <svg class="h-4 w-4" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                            <circle cx="11" cy="11" r="8" />
+                            <path d="m21 21-4.3-4.3" />
+                        </svg>
                     </button>
                 </form>
+                
             </div>
         </div>
-    </section>
+    </div>
+
+    <!-- Spacer for the overlapping search component -->
+    <div class="h-48 lg:h-56"></div>
 
     <section class="py-16">
         <div class="shell">
