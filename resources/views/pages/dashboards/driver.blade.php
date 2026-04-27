@@ -92,7 +92,7 @@
                             <h2 class="text-xl font-bold text-slate-950">Recent booking requests</h2>
                             <p class="text-sm text-slate-500">{{ $bookings->count() }} total</p>
                         </div>
-                        <div class="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200">
+                        <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200 text-sm">
                                 <thead class="bg-slate-50 text-left text-slate-500">
                                     <tr>

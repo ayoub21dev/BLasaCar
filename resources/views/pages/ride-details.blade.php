@@ -3,15 +3,15 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="py-12">
+    <section class="py-8 sm:py-12">
         <div class="shell page-enter">
             <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
                 <div class="space-y-8">
-                    <div class="surface p-8">
+                    <div class="surface p-5 sm:p-8">
                         <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Ride details</p>
-                                <h1 class="mt-3 text-4xl font-black tracking-tight text-slate-950">
+                                <h1 class="mt-3 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
                                     {{ $ride->departureCity?->name }} &rarr; {{ $ride->arrivalCity?->name }}
                                 </h1>
                                 <p class="mt-3 text-lg text-slate-600">
@@ -22,7 +22,7 @@
                         </div>
 
                         <div class="mt-8 grid gap-6 md:grid-cols-2">
-                            <div class="surface-soft p-6">
+                            <div class="surface-soft p-5 sm:p-6">
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Route</p>
                                 <div class="mt-5 space-y-5">
                                     <div>
@@ -39,7 +39,7 @@
                                 </div>
                             </div>
 
-                            <div class="surface-soft p-6">
+                            <div class="surface-soft p-5 sm:p-6">
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Ride setup</p>
                                 <div class="mt-5 grid gap-4 sm:grid-cols-2">
                                     <div>
@@ -63,8 +63,8 @@
                         </div>
                     </div>
 
-                    <div class="surface-soft p-8">
-                        <div class="flex items-center gap-4">
+                    <div class="surface-soft p-5 sm:p-8">
+                        <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
                             <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-lg font-bold text-white">
                                 {{ strtoupper(substr($ride->user?->first_name ?? 'B', 0, 1).substr($ride->user?->last_name ?? 'C', 0, 1)) }}
                             </div>

@@ -54,8 +54,8 @@
                             @if ($nextTrip)
                                 <div class="mt-6 rounded-[1.75rem] border border-brand-200 bg-brand-50 p-6">
                                     <div class="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-                                        <div>
-                                            <p class="text-2xl font-bold text-slate-950">{{ $nextTrip->ride?->departureCity?->name }} &rarr; {{ $nextTrip->ride?->arrivalCity?->name }}</p>
+                                        <div class="min-w-0">
+                                            <p class="break-words text-2xl font-bold text-slate-950">{{ $nextTrip->ride?->departureCity?->name }} &rarr; {{ $nextTrip->ride?->arrivalCity?->name }}</p>
                                             <p class="mt-2 text-sm text-slate-600">{{ $nextTrip->ride?->departure_time?->format('d M Y \a\t H:i') }} &middot; {{ $nextTrip->ride?->meeting_point }}</p>
                                         </div>
                                         @include('partials.status-chip', ['status' => $nextTrip->status])
@@ -107,7 +107,7 @@
                             <h2 class="text-xl font-bold text-slate-950">Booking history</h2>
                             <p class="text-sm text-slate-500">{{ $bookings->count() }} booking{{ $bookings->count() === 1 ? '' : 's' }}</p>
                         </div>
-                        <div class="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200">
+                        <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200 text-sm">
                                 <thead class="bg-slate-50 text-left text-slate-500">
                                     <tr>

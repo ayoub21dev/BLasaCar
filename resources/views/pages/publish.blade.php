@@ -3,18 +3,18 @@
 @extends('layouts.app')
 
 @section('content')
-    <section class="py-12">
+    <section class="py-8 sm:py-12">
         <div class="shell page-enter">
             <div class="mx-auto max-w-6xl">
                 <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
                     <div class="surface overflow-hidden">
-                        <div class="bg-gradient-to-r from-brand-600 to-brand-700 px-8 py-8 text-white">
+                        <div class="bg-gradient-to-r from-brand-600 to-brand-700 px-5 py-7 text-white sm:px-8 sm:py-8">
                             <p class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Driver flow</p>
-                            <h1 class="mt-3 text-4xl font-black tracking-tight">Publish a ride</h1>
+                            <h1 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Publish a ride</h1>
                             <p class="mt-3 max-w-2xl text-white/80">This page translates your mockup into a real Laravel surface so the ride-posting flow can be connected next.</p>
                         </div>
 
-                        <form method="POST" action="{{ route('rides.publish.store') }}" class="grid gap-6 p-8 lg:grid-cols-2">
+                        <form method="POST" action="{{ route('rides.publish.store') }}" class="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
                             @csrf
 
                             @auth

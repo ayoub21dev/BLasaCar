@@ -34,10 +34,10 @@
         </section>
 
         <!-- Search Component - Floating outside the overflow-hidden section -->
-        <div class="absolute bottom-0 left-1/2 z-20 w-full max-w-[960px] -translate-x-1/2 translate-y-[36%] px-4 sm:px-6">
+        <div class="relative z-20 mx-auto -mt-10 w-full max-w-[960px] px-4 sm:px-6 lg:absolute lg:bottom-0 lg:left-1/2 lg:mx-0 lg:-translate-x-1/2 lg:translate-y-[36%]">
             <!-- Tabs -->
-            <div class="flex gap-1 pl-8">
-                <button class="flex items-center gap-3 rounded-t-2xl bg-[#0369a1] px-10 py-5 text-sm font-bold text-white shadow-lg">
+            <div class="flex gap-1 pl-8 max-sm:justify-center max-sm:pl-0">
+                <button class="flex items-center gap-3 rounded-t-2xl bg-[#0369a1] px-10 py-5 text-sm font-bold text-white shadow-lg max-sm:px-8 max-sm:py-4">
                     <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M19 17h2c.6 0 1-.4 1-1v-3c0-.9-.7-1.7-1.5-1.9C18.7 10.6 16 10 16 10s-1.3-1.4-2.2-2.3c-.5-.4-1.1-.7-1.8-.7H5c-.6 0-1.1.4-1.4.9l-1.4 2.9A3.7 3.7 0 0 0 2 12v4c0 .6.4 1 1 1h2" />
                         <circle cx="7" cy="17" r="2" />
@@ -133,7 +133,7 @@
     </div>
 
     <!-- Spacer for the overlapping search component -->
-    <div class="h-48 lg:h-56"></div>
+    <div class="h-12 lg:h-56"></div>
 
     <section class="py-16">
         <div class="shell">

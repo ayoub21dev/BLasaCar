@@ -34,7 +34,7 @@
             </div>
 
             <!-- Auth Section -->
-            <div class="flex items-center gap-8 flex-shrink-0">
+            <div class="hidden flex-shrink-0 items-center gap-8 lg:flex">
                 @guest
                     <a href="{{ route('login') }}"
                        class="text-[15px] font-bold text-slate-500 transition hover:text-[#0369a1]">
@@ -59,7 +59,7 @@
             </div>
             
             <!-- Mobile Toggle -->
-            <details class="group lg:hidden ml-4">
+            <details class="group ml-4 lg:hidden">
                 <summary class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 list-none [&::-webkit-details-marker]:hidden">
                     <svg class="h-6 w-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <line x1="3" x2="21" y1="6" y2="6" />
@@ -71,7 +71,7 @@
                         <path d="m6 6 12 12" />
                     </svg>
                 </summary>
-                <div class="absolute inset-x-4 top-[calc(100%+0.75rem)] rounded-2xl border border-slate-100 bg-white p-6 shadow-2xl">
+                <div class="fixed inset-x-4 top-24 rounded-2xl border border-slate-100 bg-white p-6 shadow-2xl">
                     <div class="space-y-2">
                         @foreach ($primaryLinks as $link)
                             <a href="{{ route($link['route']) }}"
@@ -92,6 +92,20 @@
                                 </a>
                             </div>
                         @endguest
+
+                        @auth
+                            <div class="grid gap-3">
+                                <a href="{{ route($dashboardRoute) }}" class="flex h-12 items-center justify-center rounded-xl bg-brand-50 text-[15px] font-bold text-brand-700">
+                                    My Dashboard
+                                </a>
+                                <form method="POST" action="{{ route('logout') }}">
+                                    @csrf
+                                    <button type="submit" class="flex h-12 w-full items-center justify-center rounded-xl border border-slate-200 text-[15px] font-bold text-slate-700">
+                                        Log out
+                                    </button>
+                                </form>
+                            </div>
+                        @endauth
                     </div>
                 </div>
             </details>

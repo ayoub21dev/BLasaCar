@@ -62,11 +62,11 @@
             }
 
             .surface {
-                @apply rounded-[2rem] border border-white/70 bg-white/90 shadow-[0_22px_70px_-40px_rgba(14,165,233,0.65)] backdrop-blur;
+                @apply min-w-0 rounded-[2rem] border border-white/70 bg-white/90 shadow-[0_22px_70px_-40px_rgba(14,165,233,0.65)] backdrop-blur;
             }
 
             .surface-soft {
-                @apply rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
+                @apply min-w-0 rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
             }
 
             .page-enter {
@@ -126,7 +126,7 @@
             }
 
             .dashboard-panel {
-                @apply rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
+                @apply min-w-0 rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
             }
         }
 

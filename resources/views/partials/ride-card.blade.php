@@ -37,13 +37,13 @@
         </div>
 
         {{-- Route Timeline --}}
-        <div class="mt-8 flex items-center justify-between gap-4">
+        <div class="mt-8 flex items-center justify-between gap-4 max-sm:flex-col max-sm:items-stretch">
             <div class="flex-shrink-0">
                 <p class="text-xl font-black text-slate-900">{{ $ride->departure_time->format('H:i') }}</p>
                 <p class="text-sm font-medium text-slate-500">{{ $ride->departureCity?->name }}</p>
             </div>
 
-            <div class="flex flex-1 items-center gap-1">
+            <div class="flex flex-1 items-center gap-1 max-sm:my-1">
                 <div class="h-1.5 w-1.5 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(14,165,233,0.5)]"></div>
                 <div class="relative flex flex-1 items-center justify-center">
                     <div class="h-px w-full border-t border-dashed border-slate-300"></div>
@@ -58,15 +58,15 @@
                 <div class="h-1.5 w-1.5 rounded-full bg-brand-500 shadow-[0_0_8px_rgba(14,165,233,0.5)]"></div>
             </div>
 
-            <div class="flex-shrink-0 text-right">
+            <div class="flex-shrink-0 text-right max-sm:text-left">
                 <p class="text-xl font-black text-slate-900">{{ $ride->departure_time->addHours(2)->addMinutes(30)->format('H:i') }}</p>
                 <p class="text-sm font-medium text-slate-500">{{ $ride->arrivalCity?->name }}</p>
             </div>
         </div>
 
         {{-- Footer Details --}}
-        <div class="mt-10 flex items-center justify-between border-t border-slate-50 pt-6">
-            <div class="flex items-center gap-4 text-xs font-semibold text-slate-400 uppercase tracking-wider">
+        <div class="mt-10 flex items-center justify-between gap-5 border-t border-slate-50 pt-6 max-sm:flex-col max-sm:items-start">
+            <div class="flex flex-wrap items-center gap-3 text-xs font-semibold uppercase tracking-wider text-slate-400">
                 <div class="flex items-center gap-1.5">
                     <svg class="h-4 w-4 opacity-70" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                         <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2" />
@@ -78,7 +78,7 @@
                 <span>{{ $dateLabel }}</span>
             </div>
 
-            <div class="flex items-center gap-5">
+            <div class="flex w-full items-center justify-between gap-5 sm:w-auto">
                 <span class="text-2xl font-black text-brand-600">{{ number_format((float) $ride->price_per_seat, 0) }} DH</span>
                 <span class="inline-flex items-center justify-center rounded-xl bg-brand-600 px-6 py-2.5 text-sm font-bold text-white transition hover:bg-brand-700 hover:shadow-lg hover:shadow-brand-200">
                     Book
