@@ -8,7 +8,7 @@
             <div class="mx-auto max-w-md">
                 <div class="surface p-8 sm:p-10">
                     <div class="text-center">
-                        <img src="{{ asset('assets/blasacar-logo.png') }}" alt="BlassaCar logo" class="mx-auto h-14 w-auto object-contain">
+                        <img src="{{ asset('assets/logoBlasaCar.png') }}" alt="BlassaCar logo" class="mx-auto h-14 w-auto object-contain">
                         <h1 class="mt-8 text-3xl font-black text-slate-950">Create an account</h1>
                         <p class="mt-3 text-slate-500">Join the community and start saving on your next trip.</p>
                     </div>

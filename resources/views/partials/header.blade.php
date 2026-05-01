@@ -1,110 +1,80 @@
 @php
     $primaryLinks = [
+        ['label' => 'Home', 'route' => 'home'],
         ['label' => 'Search rides', 'route' => 'rides.search'],
         ['label' => 'Publish a ride', 'route' => 'rides.publish'],
-        ['label' => 'How it works', 'route' => 'home'], // Placeholder for now
+        ['label' => 'How it works', 'route' => 'home'],
     ];
 
     $dashboardRoute = auth()->user()?->dashboardRoute();
 @endphp
 
-<header class="sticky top-0 z-50 border-b border-slate-100 bg-white/90 backdrop-blur-xl">
-    <nav class="shell">
-        <div class="flex min-h-24 items-center justify-between">
+<header class="w-full z-[100] px-4 sm:px-6 lg:px-8 py-6">
+    <nav class="mx-auto w-full max-w-[1800px]">
+        <div class="flex items-center justify-between">
             <!-- Logo Section -->
             <div class="flex-shrink-0">
-                <a href="{{ route('home') }}" class="flex items-center gap-3" aria-label="BlasaCar home">
-                    <div class="flex h-11 w-11 items-center justify-center rounded-xl bg-[#0369a1] text-white shadow-lg shadow-blue-900/10">
-                        <svg class="h-6 w-6" viewBox="0 0 24 24" fill="currentColor">
-                            <path d="M18.92 6.01C18.72 5.42 18.16 5 17.5 5h-11c-.66 0-1.21.42-1.42 1.01L3 12v8c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-1h12v1c0 .55.45 1 1 1h1c.55 0 1-.45 1-1v-8l-2.08-5.99zM6.5 16c-.83 0-1.5-.67-1.5-1.5S5.67 13 6.5 13s1.5.67 1.5 1.5S7.33 16 6.5 16zm11 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zM5 11l1.5-4.5h11L19 11H5z"/>
-                        </svg>
-                    </div>
-                    <span class="text-2xl font-black tracking-tight text-[#0f172a]">BlasaCar</span>
+                <a href="{{ route('home') }}" class="flex items-center gap-3 group" aria-label="BlasaCar home">
+                    <img src="{{ asset('assets/logoBlasaCar.png') }}" alt="BlasaCar" class="h-10 w-auto">
+                    <span class="text-2xl font-black tracking-tight text-slate-950">Blasa<span class="text-brand-500">Car</span></span>
                 </a>
             </div>
 
-            <!-- Navigation Links - Centered -->
-            <div class="hidden flex-1 items-center justify-center gap-10 lg:flex">
+            <!-- Centered Pill Nav -->
+            <div class="hidden lg:flex items-center justify-center bg-slate-100 rounded-full p-1.5 shadow-sm">
                 @foreach ($primaryLinks as $link)
                     <a href="{{ route($link['route']) }}"
-                       class="text-[15px] font-bold text-slate-500 transition hover:text-[#0369a1]">
+                       class="px-6 py-2.5 text-[14px] font-bold tracking-tight {{ Route::is($link['route']) ? 'bg-white text-slate-950 shadow-md' : 'text-slate-500 hover:text-slate-900' }} rounded-full transition-all duration-300">
                         {{ $link['label'] }}
                     </a>
                 @endforeach
             </div>
 
-            <!-- Auth Section -->
-            <div class="hidden flex-shrink-0 items-center gap-8 lg:flex">
+            <!-- Right CTA Section -->
+            <div class="hidden lg:flex items-center gap-6">
                 @guest
-                    <a href="{{ route('login') }}"
-                       class="text-[15px] font-bold text-slate-500 transition hover:text-[#0369a1]">
-                        Log in
-                    </a>
-                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-xl bg-[#0369a1] px-8 text-[15px] font-bold text-white transition hover:bg-[#0284c7] shadow-lg shadow-blue-100">
+                    <a href="{{ route('login') }}" class="text-[14px] font-bold text-slate-500 hover:text-slate-950 transition">Log in</a>
+                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
                         Sign up
                     </a>
                 @endguest
 
                 @auth
-                    <a href="{{ route($dashboardRoute) }}" class="text-[15px] font-bold text-[#0369a1]">
-                        My Dashboard
+                    <a href="{{ route($dashboardRoute) }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
+                        Dashboard
                     </a>
-                    <form method="POST" action="{{ route('logout') }}" class="inline">
-                        @csrf
-                        <button type="submit" class="text-[15px] font-bold text-slate-500 transition hover:text-[#0369a1]">
-                            Log out
-                        </button>
-                    </form>
                 @endauth
             </div>
             
             <!-- Mobile Toggle -->
-            <details class="group ml-4 lg:hidden">
-                <summary class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-600 list-none [&::-webkit-details-marker]:hidden">
-                    <svg class="h-6 w-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <details class="group lg:hidden">
+                <summary class="flex h-11 w-11 cursor-pointer items-center justify-center rounded-full bg-slate-100 text-slate-900 list-none [&::-webkit-details-marker]:hidden border border-slate-200">
+                    <svg class="h-6 w-6 group-open:hidden" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <line x1="3" x2="21" y1="6" y2="6" />
                         <line x1="3" x2="21" y1="12" y2="12" />
                         <line x1="3" x2="21" y1="18" y2="18" />
                     </svg>
-                    <svg class="hidden h-6 w-6 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <svg class="hidden h-6 w-6 group-open:block" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
                         <path d="M18 6 6 18" />
                         <path d="m6 6 12 12" />
                     </svg>
                 </summary>
-                <div class="fixed inset-x-4 top-24 rounded-2xl border border-slate-100 bg-white p-6 shadow-2xl">
+                <div class="fixed inset-x-4 top-24 rounded-[2.5rem] border border-white/10 bg-slate-950 p-8 shadow-2xl backdrop-blur-3xl z-[101]">
                     <div class="space-y-2">
                         @foreach ($primaryLinks as $link)
                             <a href="{{ route($link['route']) }}"
-                               class="block rounded-xl px-4 py-3 text-[15px] font-bold text-slate-700 transition hover:bg-slate-50">
+                               class="block rounded-2xl px-6 py-4 text-[16px] font-bold text-white/80 transition hover:bg-white/5 hover:text-white">
                                 {{ $link['label'] }}
                             </a>
                         @endforeach
                     </div>
-
-                    <div class="mt-6 border-t border-slate-50 pt-6">
+                    <div class="mt-8 pt-8 border-t border-white/10 grid gap-4">
                         @guest
-                            <div class="grid gap-3">
-                                <a href="{{ route('login') }}" class="flex h-12 items-center justify-center rounded-xl border border-slate-200 text-[15px] font-bold text-slate-700">
-                                    Log in
-                                </a>
-                                <a href="{{ route('signup') }}" class="flex h-12 items-center justify-center rounded-xl bg-[#0369a1] text-[15px] font-bold text-white">
-                                    Sign up
-                                </a>
-                            </div>
+                            <a href="{{ route('login') }}" class="flex h-14 items-center justify-center rounded-2xl border border-white/20 text-[16px] font-bold text-white">Log in</a>
+                            <a href="{{ route('signup') }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">Sign up</a>
                         @endguest
-
                         @auth
-                            <div class="grid gap-3">
-                                <a href="{{ route($dashboardRoute) }}" class="flex h-12 items-center justify-center rounded-xl bg-brand-50 text-[15px] font-bold text-brand-700">
-                                    My Dashboard
-                                </a>
-                                <form method="POST" action="{{ route('logout') }}">
-                                    @csrf
-                                    <button type="submit" class="flex h-12 w-full items-center justify-center rounded-xl border border-slate-200 text-[15px] font-bold text-slate-700">
-                                        Log out
-                                    </button>
-                                </form>
-                            </div>
+                            <a href="{{ route($dashboardRoute) }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">Dashboard</a>
                         @endauth
                     </div>
                 </div>

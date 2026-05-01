@@ -7,63 +7,67 @@
         <div class="shell page-enter">
             <div class="grid gap-8 xl:grid-cols-[minmax(0,1fr)_360px]">
                 <div class="space-y-8">
-                    <div class="surface p-5 sm:p-8">
-                        <div class="flex flex-col gap-5 sm:flex-row sm:items-start sm:justify-between">
+                    <div class="bg-white rounded-[3.5rem] p-8 sm:p-12 lg:p-16 shadow-sm border border-slate-100 relative overflow-hidden">
+                        <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between relative z-10">
                             <div>
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Ride details</p>
-                                <h1 class="mt-3 break-words text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">
-                                    {{ $ride->departureCity?->name }} &rarr; {{ $ride->arrivalCity?->name }}
+                                <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
+                                    Ride Details
+                                </div>
+                                <h1 class="break-words text-[3rem] sm:text-[4.5rem] font-black tracking-tight text-slate-900 leading-[0.95]">
+                                    <span class="italic font-serif text-brand-500">{{ $ride->departureCity?->name }}</span> &rarr; {{ $ride->arrivalCity?->name }}
                                 </h1>
-                                <p class="mt-3 text-lg text-slate-600">
-                                    {{ $ride->departure_time->format('l, d M Y') }} at {{ $ride->departure_time->format('H:i') }}
+                                <p class="mt-6 text-xl text-slate-500">
+                                    {{ $ride->departure_time->format('l, d M Y') }} at <span class="font-bold text-slate-900">{{ $ride->departure_time->format('H:i') }}</span>
                                 </p>
                             </div>
-                            @include('partials.status-chip', ['status' => $ride->status])
+                            <div class="scale-110 origin-top-right">
+                                @include('partials.status-chip', ['status' => $ride->status])
+                            </div>
                         </div>
 
-                        <div class="mt-8 grid gap-6 md:grid-cols-2">
-                            <div class="surface-soft p-5 sm:p-6">
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Route</p>
-                                <div class="mt-5 space-y-5">
+                        <div class="mt-12 grid gap-6 md:grid-cols-2 relative z-10">
+                            <div class="bg-slate-50 rounded-[2rem] p-8 border border-slate-100">
+                                <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Route</p>
+                                <div class="mt-6 space-y-6">
                                     <div>
-                                        <p class="text-sm text-slate-500">Departure</p>
-                                        <p class="text-2xl font-bold text-slate-900">{{ $ride->departureCity?->name }}</p>
-                                        <p class="text-sm text-slate-500">{{ $ride->meeting_point }}</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Departure</p>
+                                        <p class="text-2xl font-black text-slate-900">{{ $ride->departureCity?->name }}</p>
+                                        <p class="text-sm text-slate-500 mt-1">{{ $ride->meeting_point }}</p>
                                     </div>
                                     <div class="h-px bg-slate-200"></div>
                                     <div>
-                                        <p class="text-sm text-slate-500">Arrival</p>
-                                        <p class="text-2xl font-bold text-slate-900">{{ $ride->arrivalCity?->name }}</p>
-                                        <p class="text-sm text-slate-500">Direct city-to-city trip</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Arrival</p>
+                                        <p class="text-2xl font-black text-slate-900">{{ $ride->arrivalCity?->name }}</p>
+                                        <p class="text-sm text-slate-500 mt-1">Direct city-to-city trip</p>
                                     </div>
                                 </div>
                             </div>
 
-                            <div class="surface-soft p-5 sm:p-6">
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Ride setup</p>
-                                <div class="mt-5 grid gap-4 sm:grid-cols-2">
+                            <div class="bg-slate-50 rounded-[2rem] p-8 border border-slate-100">
+                                <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Ride setup</p>
+                                <div class="mt-6 grid gap-6 sm:grid-cols-2">
                                     <div>
-                                        <p class="text-sm text-slate-500">Vehicle</p>
-                                        <p class="font-semibold text-slate-900">{{ $ride->vehicle?->brand }} {{ $ride->vehicle?->model }}</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Vehicle</p>
+                                        <p class="font-black text-slate-900 text-lg">{{ $ride->vehicle?->brand }} {{ $ride->vehicle?->model }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-slate-500">Seats left</p>
-                                        <p class="font-semibold text-slate-900">{{ $ride->available_seats }}</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Seats left</p>
+                                        <p class="font-black text-slate-900 text-lg">{{ $ride->available_seats }}</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-slate-500">Price per seat</p>
-                                        <p class="font-semibold text-slate-900">{{ number_format((float) $ride->price_per_seat, 0) }} DH</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Price per seat</p>
+                                        <p class="font-black text-brand-600 text-lg">{{ number_format((float) $ride->price_per_seat, 0) }} DH</p>
                                     </div>
                                     <div>
-                                        <p class="text-sm text-slate-500">Notes</p>
-                                        <p class="font-semibold text-slate-900">{{ $ride->notes ?: 'No additional notes' }}</p>
+                                        <p class="text-sm text-slate-500 font-bold mb-1">Notes</p>
+                                        <p class="font-bold text-slate-700">{{ $ride->notes ?: 'No additional notes' }}</p>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     </div>
 
-                    <div class="surface-soft p-5 sm:p-8">
+                    <div class="bg-white rounded-[3.5rem] p-8 sm:p-12 shadow-sm border border-slate-100">
                         <div class="flex flex-col gap-4 sm:flex-row sm:items-center">
                             <div class="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-lg font-bold text-white">
                                 {{ strtoupper(substr($ride->user?->first_name ?? 'B', 0, 1).substr($ride->user?->last_name ?? 'C', 0, 1)) }}
@@ -80,11 +84,11 @@
                     </div>
                 </div>
 
-                <aside class="space-y-6">
-                    <div class="surface-soft p-6">
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Booking card</p>
-                        <h2 class="mt-3 text-2xl font-bold text-slate-950">Request a seat</h2>
-                        <p class="mt-3 text-sm leading-6 text-slate-500">
+                <aside class="space-y-8">
+                    <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+                        <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Booking card</p>
+                        <h2 class="mt-4 text-3xl font-black text-slate-900 tracking-tight">Request a seat</h2>
+                        <p class="mt-4 text-[15px] leading-relaxed text-slate-500">
                             The public service layer already supports seat-request logic. This page is the frontend surface for that next step.
                         </p>
 
@@ -116,16 +120,18 @@
                         </form>
                     </div>
 
-                    <div class="surface-soft p-6">
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Useful links</p>
-                        <div class="mt-4 space-y-3">
+                    <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
+                        <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Useful links</p>
+                        <div class="mt-6 space-y-4">
                             <a href="{{ route('rides.search', ['departure_city_id' => $ride->departure_city_id, 'arrival_city_id' => $ride->arrival_city_id]) }}"
-                               class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                               class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
                                 More rides on this route
+                                <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
                             </a>
                             <a href="{{ route('dashboards.traveler') }}"
-                               class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                               class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
                                 Traveler dashboard
+                                <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
                             </a>
                         </div>
                     </div>

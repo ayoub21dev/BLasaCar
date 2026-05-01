@@ -7,11 +7,17 @@
         <div class="shell page-enter">
             <div class="mx-auto max-w-6xl">
                 <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
-                    <div class="surface overflow-hidden">
-                        <div class="bg-gradient-to-r from-brand-600 to-brand-700 px-5 py-7 text-white sm:px-8 sm:py-8">
-                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-white/70">Driver flow</p>
-                            <h1 class="mt-3 text-3xl font-black tracking-tight sm:text-4xl">Publish a ride</h1>
-                            <p class="mt-3 max-w-2xl text-white/80">This page translates your mockup into a real Laravel surface so the ride-posting flow can be connected next.</p>
+                    <div class="bg-white rounded-[3.5rem] border border-slate-100 shadow-sm overflow-hidden">
+                        <div class="px-8 py-12 sm:px-16 sm:py-16 relative">
+                            <div class="relative z-10">
+                                <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
+                                    Driver Flow
+                                </div>
+                                <h1 class="text-[3rem] sm:text-[4.5rem] font-black text-slate-900 leading-[0.95] tracking-tight">
+                                    Publish a <span class="italic font-serif text-brand-500">ride</span>.
+                                </h1>
+                                <p class="mt-6 max-w-xl text-lg text-slate-500">Share your journey, save on travel costs, and meet great people along the way.</p>
+                            </div>
                         </div>
 
                         <form method="POST" action="{{ route('rides.publish.store') }}" class="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
@@ -138,21 +144,23 @@
                     </div>
 
                     <aside class="space-y-6">
-                        <div class="surface-soft p-6">
-                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Design carry-over</p>
-                            <p class="mt-4 text-sm leading-6 text-slate-600">
-                                This page keeps the rounded, calm, sky-blue form treatment from your HTML maquettage while moving it into the Laravel asset pipeline.
+                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Design carry-over</p>
+                            <p class="mt-4 text-[15px] leading-relaxed text-slate-500">
+                                This page keeps the rounded, calm form treatment while adapting to the new high-end, high-contrast aesthetic.
                             </p>
                         </div>
 
-                        <div class="surface-soft p-6">
-                            <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Related routes</p>
-                            <div class="mt-4 space-y-3">
-                                <a href="{{ route('dashboards.driver') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
+                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Related routes</p>
+                            <div class="mt-6 space-y-4">
+                                <a href="{{ route('dashboards.driver') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
                                     Driver dashboard
+                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
                                 </a>
-                                <a href="{{ route('rides.search') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                                <a href="{{ route('rides.search') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
                                     Search results
+                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
                                 </a>
                             </div>
                         </div>
