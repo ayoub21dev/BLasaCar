@@ -4,7 +4,6 @@
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.admin', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
         ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
-        ['label' => 'Back to website', 'route' => 'home', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'],
     ];
 @endphp
 
@@ -53,7 +52,7 @@
                                 <h2 class="text-xl font-bold text-slate-950">Recent users</h2>
                                 <p class="text-sm text-slate-500">Suspended: {{ $alerts['suspended_users'] }}</p>
                             </div>
-                            <div class="mt-6 overflow-hidden rounded-[1.5rem] border border-slate-200">
+                            <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                                 <table class="min-w-full divide-y divide-slate-200 text-sm">
                                     <thead class="bg-slate-50 text-left text-slate-500">
                                         <tr>

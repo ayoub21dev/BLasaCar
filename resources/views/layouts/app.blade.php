@@ -6,6 +6,13 @@
     <title>{{ isset($title) ? $title.' | BlassaCar' : 'BlassaCar' }}</title>
     <meta name="description" content="BlassaCar is a Moroccan carpooling platform for safer, simpler, and more affordable intercity travel.">
     
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@100..900&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet">
+    
+    <!-- GSAP for animations -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.5/gsap.min.js"></script>
+    
     <!-- Fallback for when Vite is not running -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -27,7 +34,8 @@
                         }
                     },
                     fontFamily: {
-                        sans: ['Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        sans: ['Outfit', 'Inter', 'ui-sans-serif', 'system-ui', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+                        serif: ['Instrument Serif', 'serif'],
                     }
                 }
             }
@@ -41,10 +49,12 @@
 
             html {
                 scroll-behavior: smooth;
+                overflow-x: hidden;
             }
 
             body {
                 @apply bg-slate-50 font-sans text-slate-900 antialiased;
+                overflow-x: hidden;
                 background-image:
                     radial-gradient(circle at top left, rgba(14, 165, 233, 0.1), transparent 24%),
                     radial-gradient(circle at bottom right, rgba(2, 132, 199, 0.08), transparent 18%);
@@ -58,15 +68,19 @@
 
         @layer components {
             .shell {
-                @apply mx-auto max-w-7xl px-4 sm:px-6 lg:px-8;
+                @apply mx-auto w-full max-w-[1800px] px-4 sm:px-6 lg:px-8;
             }
 
             .surface {
-                @apply rounded-[2rem] border border-white/70 bg-white/90 shadow-[0_22px_70px_-40px_rgba(14,165,233,0.65)] backdrop-blur;
+                @apply min-w-0 rounded-[2.5rem] border border-white/70 bg-white/95 shadow-[0_32px_80px_-30px_rgba(14,165,233,0.3)] backdrop-blur-xl;
             }
 
             .surface-soft {
-                @apply rounded-[1.5rem] border border-slate-200 bg-white shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
+                @apply min-w-0 rounded-[2rem] border border-slate-100 bg-white shadow-[0_20px_50px_-25px_rgba(15,23,42,0.12)];
+            }
+
+            .surface-glass {
+                @apply min-w-0 rounded-[2rem] border border-white/20 bg-white/10 shadow-[0_25px_60px_-20px_rgba(0,0,0,0.3)] backdrop-blur-2xl;
             }
 
             .page-enter {
@@ -79,6 +93,12 @@
                     linear-gradient(to bottom, rgba(14, 165, 233, 0.09) 1px, transparent 1px);
                 background-size: 2.8rem 2.8rem;
                 mask-image: radial-gradient(circle at center, black 42%, transparent 88%);
+            }
+
+            .hero-image-panel {
+                width: 49.5%;
+                overflow: hidden;
+                clip-path: ellipse(92% 112% at 100% 48%);
             }
 
             .brand-button {
@@ -101,12 +121,26 @@
                 @apply flex items-center gap-3 rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 transition focus-within:border-brand-400 focus-within:bg-white focus-within:shadow-[0_0_0_6px_rgba(14,165,233,0.10)];
             }
 
+            .date-input-clean {
+                appearance: none;
+            }
+
+            .date-input-clean::-webkit-calendar-picker-indicator {
+                display: none;
+                -webkit-appearance: none;
+            }
+
+            .date-input-clean::-webkit-clear-button,
+            .date-input-clean::-webkit-inner-spin-button {
+                display: none;
+            }
+
             .stat-tile {
-                @apply surface-soft p-5;
+                @apply rounded-[1.5rem] border border-slate-200 bg-white p-5 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
             }
 
             .dashboard-panel {
-                @apply surface-soft p-6;
+                @apply min-w-0 rounded-[1.5rem] border border-slate-200 bg-white p-6 shadow-[0_18px_55px_-42px_rgba(15,23,42,0.45)];
             }
         }
 
@@ -121,10 +155,21 @@
                 transform: translateY(0);
             }
         }
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+        .animate-float {
+            animation: float 6s ease-in-out infinite;
+        }
+    </style>
+    <style>
+        /* Responsive overflow fix */
+        html, body { overflow-x: hidden; max-width: 100vw; }
     </style>
 </head>
-<body class="{{ $bodyClass ?? '' }}">
-    <div class="min-h-screen">
+<body class="{{ $bodyClass ?? '' }}" style="overflow-x:hidden;">
+    <div class="min-h-screen" style="overflow-x:hidden;">
         @if (($showHeader ?? true) === true)
             @include('partials.header')
         @endif

@@ -19,7 +19,7 @@ class AdminServiceTest extends TestCase
 
     public function test_it_builds_dashboard_metrics(): void
     {
-        $service = new AdminService();
+        $service = new AdminService;
 
         $driver = User::factory()->create();
         DriverProfile::query()->create([
@@ -100,7 +100,7 @@ class AdminServiceTest extends TestCase
 
     public function test_it_can_suspend_and_reactivate_a_user(): void
     {
-        $service = new AdminService();
+        $service = new AdminService;
         $user = User::factory()->create();
 
         $service->suspendUser($user);
@@ -116,7 +116,7 @@ class AdminServiceTest extends TestCase
 
     public function test_it_can_filter_users_by_status(): void
     {
-        $service = new AdminService();
+        $service = new AdminService;
 
         User::factory()->count(2)->create(['account_status' => 'active']);
         User::factory()->create([
@@ -132,7 +132,7 @@ class AdminServiceTest extends TestCase
 
     public function test_it_can_moderate_a_ride_and_store_admin_note(): void
     {
-        $service = new AdminService();
+        $service = new AdminService;
         $ride = $this->createRide();
 
         $updatedRide = $service->moderateRide($ride, 'cancelled', 'Fraudulent listing reported by users.');
@@ -143,7 +143,7 @@ class AdminServiceTest extends TestCase
 
     public function test_it_rejects_unknown_moderation_statuses(): void
     {
-        $service = new AdminService();
+        $service = new AdminService;
         $ride = $this->createRide();
 
         $this->expectException(InvalidArgumentException::class);

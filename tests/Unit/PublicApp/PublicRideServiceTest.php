@@ -20,7 +20,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_searches_only_bookable_rides_for_a_route_and_date(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
 
         $bookableRide = $this->createRide(
@@ -49,6 +49,12 @@ class PublicRideServiceTest extends TestCase
             departureTimeModifier: '+2 days 09:00',
         );
 
+        $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '-1 day 09:00',
+        );
+
         $results = $service->searchRides(
             $casablanca->id,
             $rabat->id,
@@ -59,9 +65,25 @@ class PublicRideServiceTest extends TestCase
         $this->assertTrue($results->first()->is($bookableRide));
     }
 
+    public function test_it_rejects_past_rides_for_booking(): void
+    {
+        $service = new PublicRideService;
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '-1 day 08:00',
+        );
+        $traveler = User::factory()->traveler()->create();
+
+        $this->expectException(RuntimeException::class);
+
+        $service->requestSeat($traveler, $ride, 1);
+    }
+
     public function test_it_creates_a_pending_booking_and_decrements_available_seats(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -80,7 +102,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_invalid_booking_requests(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -97,7 +119,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_zero_seat_requests(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -113,7 +135,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_lists_booking_statuses_for_a_traveler(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $traveler = User::factory()->create();
 
@@ -154,7 +176,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_cancels_a_booking_and_restores_available_seats(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -180,7 +202,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_cancellation_for_terminal_booking_statuses(): void
     {
-        $service = new PublicRideService();
+        $service = new PublicRideService;
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,

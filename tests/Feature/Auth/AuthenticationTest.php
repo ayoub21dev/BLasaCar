@@ -67,6 +67,28 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_guest_can_create_a_traveler_account(): void
+    {
+        $response = $this->post(route('signup.store'), [
+            'full_name' => 'Nora Amrani',
+            'phone' => '0699999999',
+            'email' => 'nora.amrani@example.test',
+            'password' => 'password',
+        ]);
+
+        $response->assertRedirect(route('dashboards.traveler'));
+        $this->assertAuthenticated();
+
+        $this->assertDatabaseHas('users', [
+            'first_name' => 'Nora',
+            'last_name' => 'Amrani',
+            'email' => 'nora.amrani@example.test',
+            'phone' => '0699999999',
+            'role' => User::ROLE_TRAVELER,
+            'account_status' => 'active',
+        ]);
+    }
+
     public function test_role_middleware_redirects_users_to_their_own_dashboard(): void
     {
         $this->withoutVite();

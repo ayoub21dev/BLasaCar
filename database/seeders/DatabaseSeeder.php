@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
      */
     private function readCsv(string $fileName): array
     {
-        $path = database_path('seeders/csv/' . $fileName);
+        $path = database_path('seeders/csv/'.$fileName);
 
         if (! is_file($path)) {
             throw new RuntimeException("Seed file not found: {$path}");

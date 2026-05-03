@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\City;
 use App\Models\Ride;
 use App\Models\User;
+use App\Models\Vehicle;
 use App\Services\Admin\AdminService;
 use App\Services\PublicApp\PublicRideService;
 use Illuminate\Http\Request;
@@ -73,8 +74,20 @@ class FrontendController extends Controller
 
     public function publishRide(): View
     {
+        $vehicles = collect();
+        $user = auth()->user();
+
+        if ($user?->isDriver()) {
+            $vehicles = Vehicle::query()
+                ->whereHas('driverProfile', fn ($query) => $query->where('user_id', $user->id))
+                ->orderBy('brand')
+                ->orderBy('model')
+                ->get();
+        }
+
         return view('pages.publish', [
             'cities' => City::query()->orderBy('name')->get(),
+            'vehicles' => $vehicles,
         ]);
     }
 
@@ -202,6 +215,7 @@ class FrontendController extends Controller
             ])
             ->where('status', 'scheduled')
             ->where('available_seats', '>', 0)
+            ->where('departure_time', '>', now())
             ->whereHas('user', fn ($query) => $query->where('account_status', 'active'))
             ->orderBy('departure_time');
     }

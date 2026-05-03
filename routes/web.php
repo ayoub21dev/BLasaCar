@@ -1,7 +1,10 @@
 <?php
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
+use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DriverOnboardingController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\RideWorkflowController;
 use Illuminate\Support\Facades\Route;
 
 Route::controller(FrontendController::class)->group(function () {
@@ -20,8 +23,25 @@ Route::middleware(['guest', 'throttle:6,1'])->controller(AuthenticatedSessionCon
     Route::post('/login', 'store')->name('login.store');
 });
 
+Route::middleware(['guest', 'throttle:6,1'])->controller(RegisteredUserController::class)->group(function () {
+    Route::post('/signup', 'store')->name('signup.store');
+});
+
 Route::middleware('auth')->controller(AuthenticatedSessionController::class)->group(function () {
     Route::post('/logout', 'destroy')->name('logout');
+});
+
+Route::middleware(['auth', 'role:driver'])->controller(RideWorkflowController::class)->group(function () {
+    Route::post('/rides/publish', 'store')->name('rides.publish.store');
+});
+
+Route::middleware(['auth', 'role:traveler'])->controller(RideWorkflowController::class)->group(function () {
+    Route::post('/rides/{ride}/book', 'book')->name('rides.book');
+});
+
+Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingController::class)->group(function () {
+    Route::get('/drivers/onboarding', 'create')->name('drivers.onboarding.create');
+    Route::post('/drivers/onboarding', 'store')->name('drivers.onboarding.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->controller(FrontendController::class)->group(function () {

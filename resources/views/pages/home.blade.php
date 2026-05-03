@@ -1,215 +1,266 @@
-@php($title = 'Travel Between Cities')
+@php($title = 'Travel between cities')
 
 @extends('layouts.app')
 
 @section('content')
-    <section class="relative overflow-hidden py-16 lg:py-24">
-        <div class="hero-grid absolute inset-0"></div>
-        <div class="shell page-enter relative">
-            <div class="mx-auto max-w-4xl text-center">
-                <span class="inline-flex items-center rounded-full border border-brand-200 bg-brand-50 px-4 py-2 text-xs font-semibold uppercase tracking-[0.18em] text-brand-700">
-                    Moroccan carpooling, redesigned
-                </span>
-                <h1 class="mt-8 text-5xl font-black tracking-tight text-slate-950 sm:text-6xl lg:text-7xl">
-                    Travel between cities
-                    <span class="block text-brand-700">simple and affordable.</span>
-                </h1>
-                <p class="mx-auto mt-6 max-w-2xl text-lg leading-8 text-slate-600 sm:text-xl">
-                    Your HTML mockups are now wired into Laravel with real cities, rides, and dashboards. Browse routes, publish trips, and use role-based workspaces.
-                </p>
-                <div class="mt-10 flex flex-col justify-center gap-4 sm:flex-row">
-                    <a href="{{ route('rides.publish') }}" class="brand-button">
-                        Publish a ride
-                    </a>
-                    <a href="{{ route('rides.search') }}" class="brand-button-secondary">
-                        Explore rides
-                    </a>
+    <main class="space-y-8 pb-32 bg-slate-50/50">
+        <!-- HERO SECTION - ROUNDED STICKER STYLE -->
+        <section class="shell">
+            <div class="relative min-h-[700px] lg:min-h-[85vh] flex items-center overflow-hidden rounded-[5rem] bg-slate-950 shadow-2xl">
+                <!-- Background Layer -->
+                <div class="absolute inset-0 z-0">
+                    <img src="{{ asset('images/Heropage.png') }}" 
+                         class="h-full w-full object-cover object-bottom opacity-100 scale-105 hero-bg-img" 
+                         alt="Moroccan cityscape">
+                    <div class="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/40 to-transparent"></div>
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent"></div>
                 </div>
-            </div>
 
-            <div class="surface mx-auto mt-14 max-w-6xl p-3 sm:p-4">
-                <form method="GET" action="{{ route('rides.search') }}" class="grid gap-3 lg:grid-cols-[1fr_1fr_1fr_150px_160px]">
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <select name="departure_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Leaving from</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                <!-- Hero Content -->
+                <div class="relative z-10 w-full px-12 lg:px-24 py-24 lg:py-12">
+                    <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-20 items-center">
+                        <div class="hero-text-content">
+                            <h1 class="text-white text-[4rem] sm:text-[6rem] lg:text-[7.5rem] font-serif leading-[0.9] tracking-tighter italic font-black">
+                                Reliable Travel <br>
+                                <span class="not-italic">Solutions</span>
+                            </h1>
+                            
+                            <p class="mt-10 max-w-xl text-[20px] sm:text-2xl leading-relaxed text-slate-300 font-medium opacity-90">
+                                Join thousands of Moroccans traveling together. Safe, reliable, and cost-effective carpooling for all your intercity trips.
+                            </p>
 
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
-                            <circle cx="12" cy="10" r="3" />
-                        </svg>
-                        <select name="arrival_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Going to</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                            <div class="mt-14 flex flex-wrap gap-8 items-center">
+                                <a href="#search" class="inline-flex h-16 items-center gap-4 rounded-full bg-white px-10 text-lg font-black text-slate-950 transition hover:bg-brand-500 hover:text-white hover:scale-105 active:scale-95 shadow-2xl group">
+                                    <span>Contact Us</span>
+                                    <div class="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center text-white group-hover:bg-white group-hover:text-brand-500 group-hover:rotate-45 transition-all">
+                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                            <path d="M7 17L17 7M17 7H7M17 7V17" />
+                                        </svg>
+                                    </div>
+                                </a>
+                                <div class="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-full px-6 py-3 border border-white/10">
+                                    <div class="flex -space-x-3">
+                                        @foreach([1, 2, 3] as $i)
+                                            <div class="h-12 w-12 rounded-full border-2 border-slate-900 bg-slate-800 flex items-center justify-center overflow-hidden">
+                                                <img src="https://i.pravatar.cc/100?u={{ $i }}" alt="User">
+                                            </div>
+                                        @endforeach
+                                    </div>
+                                    <div class="text-white">
+                                        <div class="flex items-center gap-1 text-brand-400">
+                                            @foreach(range(1,5) as $i)
+                                                <svg class="h-4 w-4 fill-current" viewBox="0 0 20 20"><path d="M9.049 2.927c.3-.921 1.603-.921 1.902 0l1.07 3.292a1 1 0 00.95.69h3.462c.969 0 1.371 1.24.588 1.81l-2.8 2.034a1 1 0 00-.364 1.118l1.07 3.292c.3.921-.755 1.688-1.54 1.118l-2.8-2.034a1 1 0 00-1.175 0l-2.8 2.034c-.784.57-1.838-.197-1.539-1.118l1.07-3.292a1 1 0 00-.364-1.118L2.98 8.72c-.783-.57-.38-1.81.588-1.81h3.461a1 1 0 00.951-.69l1.07-3.292z"/></svg>
+                                            @endforeach
+                                            <span class="ml-2 font-black text-white text-lg">5.0</span>
+                                        </div>
+                                        <p class="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em] mt-0.5">10k+ Reviews</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
 
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <rect x="3" y="4" width="18" height="18" rx="2" ry="2" />
-                            <line x1="16" x2="16" y1="2" y2="6" />
-                            <line x1="8" x2="8" y1="2" y2="6" />
-                            <line x1="3" x2="21" y1="10" y2="10" />
-                        </svg>
-                        <input type="date" name="departure_date" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                    </label>
-
-                    <label class="input-shell">
-                        <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                        <select name="seats" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            @foreach ([1, 2, 3, 4] as $seatCount)
-                                <option value="{{ $seatCount }}">{{ $seatCount }} {{ \Illuminate\Support\Str::plural('seat', $seatCount) }}</option>
-                            @endforeach
-                        </select>
-                    </label>
-
-                    <button type="submit" class="brand-button rounded-[1.4rem]">
-                        Search
-                    </button>
-                </form>
-            </div>
-        </div>
-    </section>
-
-    <section class="py-16">
-        <div class="shell">
-            <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                <div>
-                    <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Popular rides</p>
-                    <h2 class="mt-3 text-3xl font-bold text-slate-950 sm:text-4xl">Trips leaving soon</h2>
-                </div>
-                <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">View all rides</a>
-            </div>
-
-            <div class="mt-10 grid gap-6 lg:grid-cols-2">
-                @forelse ($featuredRides as $ride)
-                    @include('partials.ride-card', ['ride' => $ride])
-                @empty
-                    <div class="surface-soft p-8 text-center text-slate-500 lg:col-span-2">
-                        Seed rides are not loaded yet. Run <code class="rounded bg-slate-100 px-2 py-1 text-sm text-slate-700">php artisan db:seed</code> to fill the UI with ride data.
+                        <!-- SEARCH CARD ON THE RIGHT -->
+                        <div id="search" class="hidden lg:block">
+                            <div class="bg-white rounded-[3rem] p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border border-slate-100">
+                                <h2 class="text-3xl font-black text-slate-900 text-center mb-10 leading-tight">Get Your Free <br> Ride Quote Today!</h2>
+                                <form method="GET" action="{{ route('rides.search') }}" class="space-y-6">
+                                    <div class="space-y-2">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Leaving from</label>
+                                        <select name="departure_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
+                                            <option value="">Select city</option>
+                                            @foreach ($cities as $city)
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="space-y-2">
+                                        <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Going to</label>
+                                        <select name="arrival_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
+                                            <option value="">Select city</option>
+                                            @foreach ($cities as $city)
+                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="grid grid-cols-2 gap-6">
+                                        <div class="space-y-2">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Date</label>
+                                            <input type="date" name="departure_date" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white transition" value="{{ date('Y-m-d') }}">
+                                        </div>
+                                        <div class="space-y-2">
+                                            <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Seats</label>
+                                            <select name="seats" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white transition">
+                                                @foreach ([1, 2, 3, 4] as $seatCount)
+                                                    <option value="{{ $seatCount }}">{{ $seatCount }} seat{{ $seatCount > 1 ? 's' : '' }}</option>
+                                                @endforeach
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <button type="submit" class="w-full h-20 bg-[#f97316] rounded-2xl text-white font-black text-xl shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] hover:bg-[#ea580c] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 mt-6">
+                                        Get Our Free Quote
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                @endforelse
+                </div>
             </div>
-        </div>
-    </section>
+        </section>
 
-    <section class="py-12">
-        <div class="shell grid gap-6 xl:grid-cols-4">
-            <article class="surface-soft p-8">
-                <div class="text-brand-600">
-                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M12 3 5 6v6c0 5 3.5 8.5 7 9 3.5-.5 7-4 7-9V6l-7-3z" />
-                        <path d="m9.2 12.2 2.2 2.1 3.4-3.9" />
-                    </svg>
-                </div>
-                <h3 class="mt-6 text-2xl font-bold text-slate-900">Verified profiles</h3>
-                <p class="mt-3 leading-7 text-slate-600">Drivers are surfaced with ratings, trip history, and verification status right inside the ride flow.</p>
-            </article>
+        <!-- STATISTICS SECTION -->
+        <section class="shell">
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
+                @foreach ([
+                    ['value' => '50K+', 'label' => 'Registered Members'],
+                    ['value' => '100K', 'label' => 'Successful Rides'],
+                    ['value' => '30+', 'label' => 'Cities Connected'],
+                    ['value' => '4.8', 'label' => 'Average Rating']
+                ] as $stat)
+                    <div class="bg-white rounded-[3rem] p-10 lg:p-14 text-center transition shadow-sm hover:shadow-2xl hover:-translate-y-2 group border border-slate-100">
+                        <p class="text-5xl lg:text-7xl font-black text-slate-900 group-hover:text-brand-500 transition tracking-tighter">{{ $stat['value'] }}</p>
+                        <p class="mt-6 text-xs lg:text-sm font-black text-slate-400 uppercase tracking-[0.2em]">{{ $stat['label'] }}</p>
+                    </div>
+                @endforeach
+            </div>
+        </section>
 
-            <article class="surface-soft p-8">
-                <div class="text-brand-600">
-                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="m13 2-8.5 10h6l-1 10L18 11h-6z" />
-                    </svg>
-                </div>
-                <h3 class="mt-6 text-2xl font-bold text-slate-900">Fast booking surfaces</h3>
-                <p class="mt-3 leading-7 text-slate-600">Search and detail pages are laid out for immediate scanning, clear pricing, and one-action booking flows.</p>
-            </article>
-
-            <article class="surface-soft p-8">
-                <div class="text-brand-600">
-                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="M20 11.5c0 4.7-4 8.5-9 8.5-1.1 0-2.2-.2-3.2-.6L4 20.8l1.3-3.1A8 8 0 0 1 2 11.5C2 6.8 6 3 11 3s9 3.8 9 8.5z" />
-                    </svg>
-                </div>
-                <h3 class="mt-6 text-2xl font-bold text-slate-900">Notification-ready</h3>
-                <p class="mt-3 leading-7 text-slate-600">The frontend is already shaped around confirmation, reminders, and operational messaging for the next integration step.</p>
-            </article>
-
-            <article class="surface-soft p-8">
-                <div class="text-brand-600">
-                    <svg class="h-10 w-10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
-                        <path d="m12 3 2.8 5.7 6.2.9-4.5 4.4 1.1 6.2L12 17.3 6.4 20.2l1.1-6.2L3 9.6l6.2-.9z" />
-                    </svg>
-                </div>
-                <h3 class="mt-6 text-2xl font-bold text-slate-900">Review-first trust</h3>
-                <p class="mt-3 leading-7 text-slate-600">Rating cues and secure dashboards make the platform feel consistent with the trust goals in your analysis docs.</p>
-            </article>
-        </div>
-    </section>
-
-    <section class="pb-8 pt-12">
-        <div class="shell">
-            <div class="surface overflow-hidden p-8 lg:p-12">
-                <div class="grid gap-10 lg:grid-cols-[1fr_1.1fr] lg:items-center">
-                    <div>
-                        <h2 class="text-3xl font-black tracking-tight sm:text-4xl lg:text-5xl" style="color: #082f49;">
-                            Driving in your car
-                            <span class="block">soon?</span>
-                        </h2>
-                        <p class="mt-6 max-w-xl text-lg leading-8 text-slate-600">
-                            Let's make this your least expensive journey ever.
+        <!-- TRUST SECTION -->
+        <section class="shell py-12">
+            <div class="grid lg:grid-cols-2 gap-20 items-center">
+                <div>
+                    <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-slate-500 mb-6">
+                        About Us
+                    </div>
+                    <h2 class="text-[3rem] sm:text-[4.5rem] font-black text-slate-900 leading-[0.95] tracking-tight">
+                        Your <span class="text-brand-500 italic font-serif">Trusted</span> Carpooling <br>
+                        Platform in Morocco
+                    </h2>
+                    <div class="mt-10 flex flex-wrap gap-8 items-center">
+                        <div class="relative h-20 w-32 rounded-full overflow-hidden shadow-lg group">
+                            <img src="{{ asset('images/Heropage.png') }}" class="h-full w-full object-cover scale-150 transition group-hover:scale-125">
+                            <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
+                                <div class="h-8 w-8 rounded-full bg-brand-500 flex items-center justify-center text-white">
+                                    <svg class="h-4 w-4 fill-current ml-0.5" viewBox="0 0 20 20"><path d="M6 4l10 6-10 6V4z"/></svg>
+                                </div>
+                            </div>
+                        </div>
+                        <p class="flex-1 min-w-[300px] text-lg text-slate-500 leading-relaxed">
+                            BlasaCar has built a strong reputation in Morocco for providing safe carpooling services, handling everything from intercity commutes to weekend trips with care and expertise.
                         </p>
-                        <div class="mt-10">
-                            <a href="{{ route('rides.publish') }}"
-                               class="inline-flex items-center gap-3 rounded-full bg-white px-8 py-5 text-lg font-bold text-brand-600 shadow-[0_18px_38px_-24px_rgba(14,165,233,0.55)] ring-1 ring-slate-100 transition hover:-translate-y-0.5 hover:text-brand-700">
-                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4">
-                                    <circle cx="12" cy="12" r="9" />
-                                    <path d="M12 8v8M8 12h8" />
+                    </div>
+                    <div class="mt-12 flex flex-wrap gap-6 items-center">
+                        <a href="#" class="inline-flex h-16 items-center gap-4 rounded-full bg-slate-900 px-8 text-lg font-bold text-white transition hover:scale-105 active:scale-95 group">
+                            <span>More About Us</span>
+                            <div class="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center text-white group-hover:rotate-45 transition-transform">
+                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
                                 </svg>
-                                <span>Offer a ride</span>
+                            </div>
+                        </a>
+                        <button class="flex items-center gap-3 text-lg font-bold text-slate-900 group">
+                            Request A Callback
+                            <svg class="h-6 w-6 text-slate-300 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M5 12h14M12 5l7 7-7 7" />
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                    @foreach([
+                        ['title' => 'ID Verified', 'icon' => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>'],
+                        ['title' => 'Secure Rides', 'icon' => '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'],
+                        ['title' => 'Fast Booking', 'icon' => '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
+                        ['title' => '24/7 Support', 'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>']
+                    ] as $feature)
+                        <div class="bg-white border border-slate-100 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition group">
+                            <div class="h-16 w-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-brand-500 transition-all duration-300">
+                                <svg class="h-8 w-8 text-brand-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    {!! $feature['icon'] !!}
+                                </svg>
+                            </div>
+                            <p class="font-black text-slate-900 text-[15px] sm:text-lg uppercase tracking-tight">{{ $feature['title'] }}</p>
+                        </div>
+                    @endforeach
+                </div>
+            </div>
+        </section>
+
+        <!-- POPULAR RIDES - ROUNDED STICKER -->
+        <section class="shell">
+            <div class="bg-slate-50 rounded-[3.5rem] p-12 lg:p-20 relative overflow-hidden">
+                <div class="absolute top-0 right-0 h-96 w-96 bg-brand-500/10 blur-[100px] rounded-full -mr-48 -mt-48"></div>
+                
+                <div class="relative z-10">
+                    <div class="flex flex-wrap items-end justify-between gap-10 mb-16">
+                        <div class="max-w-xl">
+                            <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
+                                Popular Rides
+                            </div>
+                            <h2 class="text-[3rem] sm:text-[4rem] font-black text-slate-900 leading-[0.95] tracking-tight">
+                                Join these <span class="italic font-serif text-brand-500">trips</span> <br>
+                                leaving soon.
+                            </h2>
+                        </div>
+                        <a href="{{ route('rides.search') }}" class="text-lg font-bold text-slate-900 border-b-2 border-brand-500 pb-1 hover:text-brand-500 transition">View all rides</a>
+                    </div>
+
+                    <div class="grid gap-8 sm:grid-cols-2 xl:grid-cols-2">
+                        @forelse ($featuredRides as $ride)
+                            @include('partials.ride-card', ['ride' => $ride])
+                        @empty
+                            <div class="bg-white rounded-[2rem] p-12 text-center text-slate-500 lg:col-span-2 shadow-sm">
+                                Seed rides are not loaded yet.
+                            </div>
+                        @endforelse
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA SECTION - WHITE STICKER -->
+        <section class="shell">
+            <div class="bg-white rounded-[3.5rem] p-12 lg:p-24 relative overflow-hidden border border-slate-100 shadow-sm">
+                <!-- Background decoration -->
+                <div class="absolute top-0 right-0 h-[500px] w-[500px] bg-brand-500/5 blur-[120px] rounded-full -mr-64 -mt-64"></div>
+                
+                <div class="relative z-10 grid lg:grid-cols-2 gap-16 items-center">
+                    <div>
+                        <h2 class="text-[3.5rem] sm:text-[5rem] lg:text-[6rem] font-serif italic text-slate-900 leading-[0.95] tracking-tight">
+                            Driving <span class="not-italic text-brand-500">Soon?</span>
+                        </h2>
+                        <p class="mt-8 text-xl text-slate-500 leading-relaxed max-w-xl">
+                            Turn your empty seats into travel savings. Join thousands of drivers sharing their journeys across Morocco every day.
+                        </p>
+                        <div class="mt-12 flex flex-wrap gap-6">
+                            <a href="{{ route('rides.publish') }}" class="inline-flex h-20 items-center gap-4 rounded-full bg-slate-950 px-12 text-xl font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-2xl group">
+                                <span>Offer a ride now</span>
+                                <div class="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:rotate-45 transition-transform">
+                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                        <path d="M7 17L17 7M17 7H7M17 7V17" />
+                                    </svg>
+                                </div>
                             </a>
                         </div>
                     </div>
 
-                    <div class="rounded-[2rem] border border-brand-100 bg-gradient-to-br from-brand-50 to-white p-6 shadow-[inset_0_1px_0_rgba(255,255,255,0.8)]">
-                        <svg viewBox="0 0 640 340" class="w-full h-auto" aria-hidden="true">
-                            <defs>
-                                <linearGradient id="roadGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#7cd4f6" />
-                                    <stop offset="100%" stop-color="#49b6e1" />
-                                </linearGradient>
-                                <linearGradient id="carBodyGrad" x1="0" y1="0" x2="1" y2="1">
-                                    <stop offset="0%" stop-color="#f9fafb" />
-                                    <stop offset="100%" stop-color="#d8e0e7" />
-                                </linearGradient>
-                                <linearGradient id="glassGrad" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="0%" stop-color="#def4ff" />
-                                    <stop offset="100%" stop-color="#a9d8eb" />
-                                </linearGradient>
-                            </defs>
-
-                            <path d="M70 252 C170 178, 245 170, 318 196 C395 224, 468 222, 570 258" fill="none" stroke="#9be6ff" stroke-width="10" stroke-linecap="round" stroke-dasharray="26 20" />
-                            <path d="M76 271 C194 225, 265 223, 334 241 C405 261, 474 260, 560 281" fill="none" stroke="url(#roadGrad)" stroke-width="18" stroke-linecap="round" opacity="0.55" />
-                            <ellipse cx="330" cy="250" rx="122" ry="20" fill="#1c6f91" opacity="0.35" />
-                            <g transform="translate(218 120)">
-                                <path d="M40 126 H236 C247 126 256 117 256 106 V80 C256 68 247 58 236 58 H207 L180 22 H97 L64 58 H40 C29 58 20 68 20 80 V106 C20 117 29 126 40 126 Z" fill="url(#carBodyGrad)" />
-                                <path d="M82 58 L106 28 H174 L194 58 Z" fill="#eef4f8" />
-                                <path d="M92 58 L112 32 H144 V58 Z" fill="url(#glassGrad)" />
-                                <path d="M149 32 H173 L190 58 H149 Z" fill="url(#glassGrad)" />
-                                <circle cx="88" cy="126" r="26" fill="#0f232f" />
-                                <circle cx="198" cy="126" r="26" fill="#0f232f" />
-                                <circle cx="88" cy="126" r="13" fill="#9eacb6" />
-                                <circle cx="198" cy="126" r="13" fill="#9eacb6" />
-                            </g>
-                        </svg>
+                    <div class="hidden lg:block relative">
+                        <img src="{{ asset('images/carRod.svg') }}" 
+                             alt="Driving Illustration" 
+                             class="w-full h-auto drop-shadow-[0_20px_50px_rgba(0,0,0,0.1)]">
                     </div>
                 </div>
             </div>
-        </div>
-    </section>
+        </section>
+    </main>
+
+    <!-- GSAP Entrance Animation Scripts -->
+    <script>
+        document.addEventListener('DOMContentLoaded', () => {
+            const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
+
+            tl.from('.hero-bg-img', { scale: 1.2, duration: 2.5, opacity: 0 })
+              .from('.hero-text-content > *', { x: -60, opacity: 0, stagger: 0.15 }, '-=2')
+              .from('#search', { x: 60, opacity: 0, duration: 1 }, '-=1.2');
+        });
+    </script>
 @endsection
