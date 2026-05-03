@@ -40,8 +40,11 @@
                 @endguest
 
                 @auth
-                    <a href="{{ route($dashboardRoute) }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
-                        Dashboard
+                    <a href="{{ route($dashboardRoute) }}" aria-label="Open account area" class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
+                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                            <path d="M20 21a8 8 0 0 0-16 0" />
+                            <circle cx="12" cy="7" r="4" />
+                        </svg>
                     </a>
                 @endauth
             </div>
@@ -74,7 +77,12 @@
                             <a href="{{ route('signup') }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">Sign up</a>
                         @endguest
                         @auth
-                            <a href="{{ route($dashboardRoute) }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">Dashboard</a>
+                            <a href="{{ route($dashboardRoute) }}" aria-label="Open account area" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-white">
+                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                    <path d="M20 21a8 8 0 0 0-16 0" />
+                                    <circle cx="12" cy="7" r="4" />
+                                </svg>
+                            </a>
                         @endauth
                     </div>
                 </div>
