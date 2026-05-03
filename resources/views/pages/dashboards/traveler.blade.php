@@ -4,6 +4,7 @@
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.traveler', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
         ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
+        ['label' => 'Become a driver', 'route' => 'drivers.onboarding.create', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'],
         ['label' => 'Back to website', 'route' => 'home', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/></svg>'],
     ];
 @endphp
@@ -24,7 +25,10 @@
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Hello, {{ $traveler->first_name }}.</h1>
                                 <p class="mt-3 max-w-2xl text-slate-500">Your traveler dashboard is backed by the booking service and your account history.</p>
                             </div>
-                            <a href="{{ route('rides.search') }}" class="brand-button">Find a ride</a>
+                            <div class="flex flex-wrap gap-3">
+                                <a href="{{ route('rides.search') }}" class="brand-button">Find a ride</a>
+                                <a href="{{ route('drivers.onboarding.create') }}" class="brand-button-secondary">Become a driver</a>
+                            </div>
                         </div>
                     </div>
 
@@ -89,6 +93,9 @@
                                     </a>
                                     <a href="{{ route('home') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
                                         Return to landing page
+                                    </a>
+                                    <a href="{{ route('drivers.onboarding.create') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                                        Become a driver
                                     </a>
                                 </div>
                             </div>

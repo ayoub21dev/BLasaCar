@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
+use App\Http\Controllers\DriverOnboardingController;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\RideWorkflowController;
 use Illuminate\Support\Facades\Route;
@@ -36,6 +37,11 @@ Route::middleware(['auth', 'role:driver'])->controller(RideWorkflowController::c
 
 Route::middleware(['auth', 'role:traveler'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/{ride}/book', 'book')->name('rides.book');
+});
+
+Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingController::class)->group(function () {
+    Route::get('/drivers/onboarding', 'create')->name('drivers.onboarding.create');
+    Route::post('/drivers/onboarding', 'store')->name('drivers.onboarding.store');
 });
 
 Route::middleware(['auth', 'role:admin'])->controller(FrontendController::class)->group(function () {

@@ -11,7 +11,7 @@
                         <div class="flex flex-col gap-6 sm:flex-row sm:items-start sm:justify-between relative z-10">
                             <div>
                                 <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
-                                    Ride Details
+                                    Ride details
                                 </div>
                                 <h1 class="break-words text-[3rem] sm:text-[4.5rem] font-black tracking-tight text-slate-900 leading-[0.95]">
                                     <span class="italic font-serif text-brand-500">{{ $ride->departureCity?->name }}</span> &rarr; {{ $ride->arrivalCity?->name }}

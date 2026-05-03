@@ -130,6 +130,10 @@
                                         <button type="submit" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
                                             Publish my ride
                                         </button>
+                                    @elseif (auth()->user()->isTraveler())
+                                        <a href="{{ route('drivers.onboarding.create') }}" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
+                                            Become a driver first
+                                        </a>
                                     @else
                                         <button type="button" disabled class="inline-flex w-full items-center justify-center rounded-[1.4rem] bg-slate-200 px-5 py-4 text-base font-semibold text-slate-500">
                                             Driver account with a vehicle required
@@ -154,10 +158,19 @@
                         <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
                             <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Related routes</p>
                             <div class="mt-6 space-y-4">
-                                <a href="{{ route('dashboards.driver') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                    Driver dashboard
-                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
+                                @auth
+                                    @if (auth()->user()->isDriver())
+                                        <a href="{{ route('dashboards.driver') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
+                                            Driver dashboard
+                                            <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                                        </a>
+                                    @elseif (auth()->user()->isTraveler())
+                                        <a href="{{ route('drivers.onboarding.create') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
+                                            Become a driver
+                                            <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
+                                        </a>
+                                    @endif
+                                @endauth
                                 <a href="{{ route('rides.search') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
                                     Search results
                                     <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>

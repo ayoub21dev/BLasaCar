@@ -1,4 +1,4 @@
-@php($title = 'Search Rides')
+@php($title = 'Find a route that fits your next trip.')
 
 @extends('layouts.app')
 

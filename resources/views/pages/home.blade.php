@@ -1,4 +1,4 @@
-@php($title = 'Travel Between Cities')
+@php($title = 'Travel between cities')
 
 @extends('layouts.app')
 
