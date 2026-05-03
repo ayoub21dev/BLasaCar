@@ -208,10 +208,10 @@
                             Turn your empty seats into travel savings. Join thousands of drivers sharing their journeys across Morocco every day.
                         </p>
                         <div class="mt-12 flex flex-wrap gap-6">
-                            <a href="{{ route('rides.publish') }}" class="inline-flex h-20 items-center gap-4 rounded-full bg-slate-950 px-12 text-xl font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-2xl group">
+                            <a href="{{ route('rides.publish') }}" class="inline-flex h-16 items-center gap-3 rounded-full bg-slate-950 px-8 text-lg font-black text-white transition shadow-2xl group hover:shadow-lg">
                                 <span>Offer a ride now</span>
-                                <div class="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:rotate-45 transition-transform">
-                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:bg-brand-500 transition-all duration-300">
+                                    <svg class="h-5 w-5 group-hover:rotate-45 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M7 17L17 7M17 7H7M17 7V17" />
                                     </svg>
                                 </div>

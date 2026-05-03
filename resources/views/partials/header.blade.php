@@ -34,7 +34,7 @@
             <div class="hidden lg:flex items-center gap-6">
                 @guest
                     <a href="{{ route('login') }}" class="text-[14px] font-bold text-slate-500 hover:text-slate-950 transition">Log in</a>
-                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
+                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:text-brand-500 shadow-xl">
                         Sign up
                     </a>
                 @endguest

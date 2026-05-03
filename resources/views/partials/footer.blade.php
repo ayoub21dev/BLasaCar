@@ -2,7 +2,10 @@
     <div class="shell py-14">
         <div class="grid gap-10 lg:grid-cols-[1.5fr_repeat(2,1fr)]">
             <div>
-                <img src="{{ asset('assets/logoBlasaCar.png') }}" alt="BlassaCar logo" class="h-10 w-auto object-contain">
+                <a href="{{ route('home') }}" class="flex items-center gap-2 inline-block">
+                    <img src="{{ asset('assets/logoBlasaCar.png') }}" alt="BlassaCar logo" class="h-10 w-auto object-contain">
+                    <span class="text-2xl font-black tracking-tight text-slate-950">Blasa<span class="text-brand-500">Car</span></span>
+                </a>
                 <p class="mt-6 max-w-md text-lg leading-8 text-slate-600">
                     A modern Moroccan carpooling interface focused on trust, clarity, and affordable intercity travel.
                 </p>
