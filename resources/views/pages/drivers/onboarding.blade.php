@@ -6,7 +6,7 @@
     <section class="py-8 sm:py-12">
         <div class="shell page-enter">
             <div class="mx-auto max-w-5xl">
-                <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+                <div>
                     <div class="bg-white rounded-[3.5rem] border border-slate-100 shadow-sm overflow-hidden">
                         <div class="px-8 py-12 sm:px-16 sm:py-16">
                             <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
@@ -57,29 +57,6 @@
                             </div>
                         </form>
                     </div>
-
-                    <aside class="space-y-6">
-                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">How this maps to the schema</p>
-                            <p class="mt-4 text-[15px] leading-relaxed text-slate-500">
-                                This creates one driver profile for your user account, adds your first vehicle, then changes your role from traveler to driver.
-                            </p>
-                        </div>
-
-                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Next step</p>
-                            <div class="mt-6 space-y-4">
-                                <a href="{{ route('rides.search') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                    Search rides
-                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                                <a href="{{ route('dashboards.traveler') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                    Traveler dashboard
-                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                            </div>
-                        </div>
-                    </aside>
                 </div>
             </div>
         </div>

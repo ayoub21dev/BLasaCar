@@ -6,13 +6,10 @@
     <section class="py-8 sm:py-12">
         <div class="shell page-enter">
             <div class="mx-auto max-w-6xl">
-                <div class="grid gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
+                <div>
                     <div class="bg-white rounded-[3.5rem] border border-slate-100 shadow-sm overflow-hidden">
                         <div class="px-8 py-12 sm:px-16 sm:py-16 relative">
                             <div class="relative z-10">
-                                <div class="inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600 mb-6">
-                                    Driver Flow
-                                </div>
                                 <h1 class="text-[3rem] sm:text-[4.5rem] font-black text-slate-900 leading-[0.95] tracking-tight">
                                     Publish a <span class="italic font-serif text-brand-500">ride</span>.
                                 </h1>
@@ -140,44 +137,9 @@
                                         </button>
                                     @endif
                                 @endguest
-                                <p class="mt-4 text-center text-sm leading-6 text-slate-500">
-                                    Real ride publishing is now connected for signed-in driver accounts.
-                                </p>
                             </div>
                         </form>
                     </div>
-
-                    <aside class="space-y-6">
-                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Design carry-over</p>
-                            <p class="mt-4 text-[15px] leading-relaxed text-slate-500">
-                                This page keeps the rounded, calm form treatment while adapting to the new high-end, high-contrast aesthetic.
-                            </p>
-                        </div>
-
-                        <div class="bg-white rounded-[2rem] border border-slate-100 p-8 shadow-sm">
-                            <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Related routes</p>
-                            <div class="mt-6 space-y-4">
-                                @auth
-                                    @if (auth()->user()->isDriver())
-                                        <a href="{{ route('dashboards.driver') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                            Driver dashboard
-                                            <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                        </a>
-                                    @elseif (auth()->user()->isTraveler())
-                                        <a href="{{ route('drivers.onboarding.create') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                            Become a driver
-                                            <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                        </a>
-                                    @endif
-                                @endauth
-                                <a href="{{ route('rides.search') }}" class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                    Search results
-                                    <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                                </a>
-                            </div>
-                        </div>
-                    </aside>
                 </div>
             </div>
         </div>

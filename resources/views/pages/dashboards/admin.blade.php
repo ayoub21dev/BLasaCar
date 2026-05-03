@@ -21,9 +21,9 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Platform overview</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Operational visibility for BlassaCar.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">This dashboard surfaces moderation, user, ride, and booking data for the signed-in admin account.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">Monitor users, rides, bookings, and moderation activity.</p>
                             </div>
-                            <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">Inspect public search</a>
+                            <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">View rides</a>
                         </div>
                     </div>
 

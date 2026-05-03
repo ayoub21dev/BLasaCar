@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\AccountSettingsController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DriverOnboardingController;
@@ -31,8 +32,16 @@ Route::middleware('auth')->controller(AuthenticatedSessionController::class)->gr
     Route::post('/logout', 'destroy')->name('logout');
 });
 
+Route::middleware('auth')->controller(AccountSettingsController::class)->group(function () {
+    Route::get('/account/settings', 'edit')->name('account.settings.edit');
+    Route::patch('/account/settings/profile', 'updateProfile')->name('account.settings.profile.update');
+    Route::patch('/account/settings/password', 'updatePassword')->name('account.settings.password.update');
+});
+
 Route::middleware(['auth', 'role:driver'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/publish', 'store')->name('rides.publish.store');
+    Route::patch('/bookings/{booking}/confirm', 'confirmBooking')->name('bookings.confirm');
+    Route::patch('/bookings/{booking}/reject', 'rejectBooking')->name('bookings.reject');
 });
 
 Route::middleware(['auth', 'role:traveler'])->controller(RideWorkflowController::class)->group(function () {

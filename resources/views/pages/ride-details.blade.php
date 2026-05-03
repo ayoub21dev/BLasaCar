@@ -88,10 +88,6 @@
                     <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
                         <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Booking card</p>
                         <h2 class="mt-4 text-3xl font-black text-slate-900 tracking-tight">Request a seat</h2>
-                        <p class="mt-4 text-[15px] leading-relaxed text-slate-500">
-                            The public service layer already supports seat-request logic. This page is the frontend surface for that next step.
-                        </p>
-
                         @php($canRequestRide = $ride->status === 'scheduled' && $ride->available_seats > 0 && $ride->departure_time->isFuture())
 
                         <form method="POST" action="{{ route('rides.book', $ride) }}" class="mt-6 space-y-4">
@@ -118,22 +114,6 @@
                                 </button>
                             @endif
                         </form>
-                    </div>
-
-                    <div class="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
-                        <p class="text-[12px] font-black uppercase tracking-widest text-brand-600">Useful links</p>
-                        <div class="mt-6 space-y-4">
-                            <a href="{{ route('rides.search', ['departure_city_id' => $ride->departure_city_id, 'arrival_city_id' => $ride->arrival_city_id]) }}"
-                               class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                More rides on this route
-                                <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                            <a href="{{ route('dashboards.traveler') }}"
-                               class="flex items-center justify-between rounded-2xl bg-slate-50 px-6 py-4 text-[15px] font-bold text-slate-700 transition hover:bg-slate-100 group">
-                                Traveler dashboard
-                                <svg class="h-5 w-5 text-slate-400 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m9 18 6-6-6-6"/></svg>
-                            </a>
-                        </div>
                     </div>
                 </aside>
             </div>

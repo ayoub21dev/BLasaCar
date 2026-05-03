@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookRideRequest;
 use App\Http\Requests\PublishRideRequest;
+use App\Models\Booking;
 use App\Models\Ride;
 use App\Services\PublicApp\PublicRideService;
 use Illuminate\Http\RedirectResponse;
@@ -47,5 +48,27 @@ class RideWorkflowController extends Controller
 
         return redirect()->route('dashboards.traveler')
             ->with('status', 'Your seat request has been sent.');
+    }
+
+    public function confirmBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    {
+        try {
+            $publicRideService->confirmBooking(auth()->user(), $booking);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['booking' => $exception->getMessage()]);
+        }
+
+        return back()->with('status', 'Booking request accepted.');
+    }
+
+    public function rejectBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    {
+        try {
+            $publicRideService->rejectBooking(auth()->user(), $booking);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['booking' => $exception->getMessage()]);
+        }
+
+        return back()->with('status', 'Booking request rejected.');
     }
 }

@@ -162,6 +162,20 @@
         .animate-float {
             animation: float 6s ease-in-out infinite;
         }
+
+        .flash-message {
+            transition: opacity 240ms ease, transform 240ms ease, max-height 240ms ease, margin 240ms ease, padding 240ms ease;
+        }
+
+        .flash-message.is-hiding {
+            max-height: 0;
+            margin-top: 0;
+            padding-top: 0;
+            padding-bottom: 0;
+            opacity: 0;
+            transform: translateY(-8px);
+            overflow: hidden;
+        }
     </style>
     <style>
         /* Responsive overflow fix */
@@ -175,7 +189,7 @@
         @endif
 
         @if (session('status'))
-            <div class="shell pt-6">
+            <div class="shell pt-6 flash-message" data-flash-message>
                 <div class="rounded-[1.5rem] border border-brand-200 bg-brand-50 px-5 py-4 text-sm font-medium text-brand-800">
                     {{ session('status') }}
                 </div>
@@ -188,5 +202,14 @@
             @include('partials.footer')
         @endif
     </div>
+
+    <script>
+        document.querySelectorAll('[data-flash-message]').forEach((message) => {
+            window.setTimeout(() => {
+                message.classList.add('is-hiding');
+                window.setTimeout(() => message.remove(), 260);
+            }, 3500);
+        });
+    </script>
 </body>
 </html>

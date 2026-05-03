@@ -21,7 +21,7 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Driver workspace</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Welcome back, {{ $driver->first_name }}.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">Your driver dashboard is populated from your account, ride inventory, and booking activity.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">Track your rides, seats, and booking requests.</p>
                             </div>
                             <a href="{{ route('rides.publish') }}" class="brand-button">Publish new ride</a>
                         </div>
@@ -91,6 +91,9 @@
                             <h2 class="text-xl font-bold text-slate-950">Recent booking requests</h2>
                             <p class="text-sm text-slate-500">{{ $bookings->count() }} total</p>
                         </div>
+                        @error('booking')
+                            <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                        @enderror
                         <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200 text-sm">
                                 <thead class="bg-slate-50 text-left text-slate-500">
@@ -99,6 +102,7 @@
                                         <th class="px-5 py-4 font-semibold">Route</th>
                                         <th class="px-5 py-4 font-semibold">Seats</th>
                                         <th class="px-5 py-4 font-semibold">Status</th>
+                                        <th class="px-5 py-4 font-semibold">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 bg-white">
@@ -108,6 +112,28 @@
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->departureCity?->name }} &rarr; {{ $booking->ride?->arrivalCity?->name }}</td>
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->seats_reserved }}</td>
                                             <td class="px-5 py-4">@include('partials.status-chip', ['status' => $booking->status])</td>
+                                            <td class="px-5 py-4">
+                                                @if ($booking->status === 'pending')
+                                                    <div class="flex flex-wrap gap-2">
+                                                        <form method="POST" action="{{ route('bookings.confirm', $booking) }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">
+                                                                Accept
+                                                            </button>
+                                                        </form>
+                                                        <form method="POST" action="{{ route('bookings.reject', $booking) }}">
+                                                            @csrf
+                                                            @method('PATCH')
+                                                            <button type="submit" class="rounded-full bg-rose-50 px-4 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-100">
+                                                                Reject
+                                                            </button>
+                                                        </form>
+                                                    </div>
+                                                @else
+                                                    <span class="text-xs font-medium text-slate-400">No action</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

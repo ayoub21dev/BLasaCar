@@ -1,6 +1,6 @@
 id,user_id,vehicle_id,departure_city_id,arrival_city_id,departure_time,price_per_seat,total_seats,available_seats,meeting_point,notes,status,created_at,updated_at
-1,1,1,1,2,2026-05-02 08:00:00,70.00,4,2,Gare Casa Voyageurs,Departure near the main taxi lane,scheduled,2026-04-27 09:00:00,2026-04-27 09:15:00
-2,1,5,1,3,2026-05-03 07:30:00,120.00,3,1,Technopark Casablanca,Small luggage only,scheduled,2026-04-27 09:30:00,2026-04-27 09:40:00
+1,1,1,1,2,2026-05-10 08:00:00,70.00,4,2,Gare Casa Voyageurs,Departure near the main taxi lane,scheduled,2026-04-27 09:00:00,2026-04-27 09:15:00
+2,1,5,1,3,2026-05-11 07:30:00,120.00,3,1,Technopark Casablanca,Small luggage only,scheduled,2026-04-27 09:30:00,2026-04-27 09:40:00
 3,2,2,2,5,2026-03-08 17:00:00,95.00,3,1,Agdal Station,On time departure,completed,2026-03-05 10:00:00,2026-03-08 21:30:00
 4,3,3,3,6,2026-03-09 09:00:00,80.00,4,3,Gare Marrakech,One medium bag per traveler,completed,2026-03-06 11:00:00,2026-03-09 13:45:00
 5,4,4,4,1,2026-05-05 06:45:00,150.00,3,1,Tangier City Mall,Driver may stop once on the highway,scheduled,2026-04-27 08:00:00,2026-04-27 08:10:00

@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
 use App\Models\Ride;
@@ -114,6 +115,75 @@ class RideWorkflowTest extends TestCase
         $this->assertSame(2, $ride->fresh()->available_seats);
     }
 
+    public function test_driver_can_accept_a_pending_booking_request(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+
+        $this->actingAs($driver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('bookings.confirm', $booking))
+            ->assertRedirect(route('dashboards.driver'));
+
+        $this->assertSame('confirmed', $booking->fresh()->status);
+        $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
+    public function test_driver_can_reject_a_pending_booking_request_and_restore_seats(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+        $this->assertSame(1, $ride->fresh()->available_seats);
+
+        $this->actingAs($driver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('bookings.reject', $booking))
+            ->assertRedirect(route('dashboards.driver'));
+
+        $this->assertSame('rejected', $booking->fresh()->status);
+        $this->assertSame(2, $ride->fresh()->available_seats);
+    }
+
+    public function test_driver_cannot_handle_booking_for_another_drivers_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$otherDriver] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+
+        $this->actingAs($otherDriver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('bookings.confirm', $booking))
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHasErrors('booking');
+
+        $this->assertSame('pending', $booking->fresh()->status);
+        $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
     /**
      * @return array{0: User, 1: Vehicle}
      */
@@ -149,5 +219,23 @@ class RideWorkflowTest extends TestCase
             City::query()->create(['name' => 'Casablanca']),
             City::query()->create(['name' => 'Rabat']),
         ];
+    }
+
+    private function createScheduledRide(User $driver, Vehicle $vehicle, City $departureCity, City $arrivalCity, int $availableSeats): Ride
+    {
+        return Ride::query()->create([
+            'user_id' => $driver->id,
+            'vehicle_id' => $vehicle->id,
+            'departure_city_id' => $departureCity->id,
+            'arrival_city_id' => $arrivalCity->id,
+            'departure_time' => now()->addDay(),
+            'price_per_seat' => 70,
+            'total_seats' => 4,
+            'available_seats' => $availableSeats,
+            'meeting_point' => 'Casa Voyageurs',
+            'notes' => null,
+            'admin_note' => null,
+            'status' => 'scheduled',
+        ]);
     }
 }

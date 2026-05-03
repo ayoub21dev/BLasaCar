@@ -30,14 +30,6 @@
                             </p>
 
                             <div class="mt-14 flex flex-wrap gap-8 items-center">
-                                <a href="#search" class="inline-flex h-16 items-center gap-4 rounded-full bg-white px-10 text-lg font-black text-slate-950 transition hover:bg-brand-500 hover:text-white hover:scale-105 active:scale-95 shadow-2xl group">
-                                    <span>Contact Us</span>
-                                    <div class="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center text-white group-hover:bg-white group-hover:text-brand-500 group-hover:rotate-45 transition-all">
-                                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                            <path d="M7 17L17 7M17 7H7M17 7V17" />
-                                        </svg>
-                                    </div>
-                                </a>
                                 <div class="flex items-center gap-4 bg-white/5 backdrop-blur-md rounded-full px-6 py-3 border border-white/10">
                                     <div class="flex -space-x-3">
                                         @foreach([1, 2, 3] as $i)
@@ -62,7 +54,7 @@
                         <!-- SEARCH CARD ON THE RIGHT -->
                         <div id="search" class="hidden lg:block">
                             <div class="bg-white rounded-[3rem] p-12 shadow-[0_50px_100px_-20px_rgba(0,0,0,0.3)] border border-slate-100">
-                                <h2 class="text-3xl font-black text-slate-900 text-center mb-10 leading-tight">Get Your Free <br> Ride Quote Today!</h2>
+                                <h2 class="text-3xl font-black text-slate-900 text-center mb-10 leading-tight">Find your <br> ride today!</h2>
                                 <form method="GET" action="{{ route('rides.search') }}" class="space-y-6">
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Leaving from</label>
@@ -97,7 +89,7 @@
                                         </div>
                                     </div>
                                     <button type="submit" class="w-full h-20 bg-[#f97316] rounded-2xl text-white font-black text-xl shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] hover:bg-[#ea580c] hover:scale-[1.02] active:scale-[0.98] transition-all duration-300 mt-6">
-                                        Get Our Free Quote
+                                        Find your ride
                                     </button>
                                 </form>
                             </div>
@@ -147,22 +139,6 @@
                         <p class="flex-1 min-w-[300px] text-lg text-slate-500 leading-relaxed">
                             BlasaCar has built a strong reputation in Morocco for providing safe carpooling services, handling everything from intercity commutes to weekend trips with care and expertise.
                         </p>
-                    </div>
-                    <div class="mt-12 flex flex-wrap gap-6 items-center">
-                        <a href="#" class="inline-flex h-16 items-center gap-4 rounded-full bg-slate-900 px-8 text-lg font-bold text-white transition hover:scale-105 active:scale-95 group">
-                            <span>More About Us</span>
-                            <div class="h-10 w-10 rounded-full bg-brand-500 flex items-center justify-center text-white group-hover:rotate-45 transition-transform">
-                                <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
-                                    <path d="M7 17L17 7M17 7H7M17 7V17" />
-                                </svg>
-                            </div>
-                        </a>
-                        <button class="flex items-center gap-3 text-lg font-bold text-slate-900 group">
-                            Request A Callback
-                            <svg class="h-6 w-6 text-slate-300 group-hover:text-brand-500 transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                                <path d="M5 12h14M12 5l7 7-7 7" />
-                            </svg>
-                        </button>
                     </div>
                 </div>
                 <div class="grid grid-cols-2 gap-4">
@@ -232,10 +208,10 @@
                             Turn your empty seats into travel savings. Join thousands of drivers sharing their journeys across Morocco every day.
                         </p>
                         <div class="mt-12 flex flex-wrap gap-6">
-                            <a href="{{ route('rides.publish') }}" class="inline-flex h-20 items-center gap-4 rounded-full bg-slate-950 px-12 text-xl font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-2xl group">
+                            <a href="{{ route('rides.publish') }}" class="inline-flex h-16 items-center gap-3 rounded-full bg-slate-950 px-8 text-lg font-black text-white transition shadow-2xl group hover:shadow-lg">
                                 <span>Offer a ride now</span>
-                                <div class="h-12 w-12 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:rotate-45 transition-transform">
-                                    <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
+                                <div class="h-10 w-10 rounded-full bg-white/20 flex items-center justify-center text-white group-hover:bg-brand-500 transition-all duration-300">
+                                    <svg class="h-5 w-5 group-hover:rotate-45 transition-transform duration-300" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3">
                                         <path d="M7 17L17 7M17 7H7M17 7V17" />
                                     </svg>
                                 </div>

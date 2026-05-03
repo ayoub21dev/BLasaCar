@@ -22,7 +22,7 @@
                             <div>
                                 <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Traveler workspace</p>
                                 <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Hello, {{ $traveler->first_name }}.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">Your traveler dashboard is backed by the booking service and your account history.</p>
+                                <p class="mt-3 max-w-2xl text-slate-500">Manage your trips and booking history from one place.</p>
                             </div>
                             <div class="flex flex-wrap gap-3">
                                 <a href="{{ route('rides.search') }}" class="brand-button">Find a ride</a>
@@ -90,20 +90,10 @@
                                     <a href="{{ route('rides.search') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
                                         Search more rides
                                     </a>
-                                    <a href="{{ route('home') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
-                                        Return to landing page
-                                    </a>
                                     <a href="{{ route('drivers.onboarding.create') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
                                         Become a driver
                                     </a>
                                 </div>
-                            </div>
-
-                            <div class="dashboard-panel">
-                                <h2 class="text-xl font-bold text-slate-950">Service-backed status list</h2>
-                                <p class="mt-3 text-sm leading-6 text-slate-500">
-                                    This table is rendered from the booking status list returned by the public service layer.
-                                </p>
                             </div>
                         </div>
                     </div>

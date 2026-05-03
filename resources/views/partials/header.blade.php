@@ -34,18 +34,44 @@
             <div class="hidden lg:flex items-center gap-6">
                 @guest
                     <a href="{{ route('login') }}" class="text-[14px] font-bold text-slate-500 hover:text-slate-950 transition">Log in</a>
-                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
+                    <a href="{{ route('signup') }}" class="inline-flex h-12 items-center justify-center rounded-full bg-slate-950 px-8 text-[14px] font-black text-white transition hover:text-brand-500 shadow-xl">
                         Sign up
                     </a>
                 @endguest
 
                 @auth
-                    <a href="{{ route($dashboardRoute) }}" aria-label="Open account area" class="inline-flex h-12 w-12 items-center justify-center rounded-full bg-slate-950 text-white transition hover:bg-brand-500 hover:scale-105 active:scale-95 shadow-xl">
-                        <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                            <path d="M20 21a8 8 0 0 0-16 0" />
-                            <circle cx="12" cy="7" r="4" />
-                        </svg>
-                    </a>
+                    <details class="group relative">
+                        <summary aria-label="Open account menu" class="inline-flex h-12 w-12 cursor-pointer list-none items-center justify-center rounded-full bg-slate-950 text-white shadow-xl transition [&::-webkit-details-marker]:hidden">
+                            <svg class="h-5 w-5 transition-colors group-hover:text-brand-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <path d="M20 21a8 8 0 0 0-16 0" />
+                                <circle cx="12" cy="7" r="4" />
+                            </svg>
+                        </summary>
+
+                        <div class="absolute right-0 top-14 z-[120] w-64 overflow-hidden rounded-[1.5rem] border border-slate-200 bg-white p-2 shadow-2xl">
+                            <div class="px-4 py-3">
+                                <p class="text-sm font-black text-slate-950">{{ auth()->user()->first_name }} {{ auth()->user()->last_name }}</p>
+                                <p class="mt-1 truncate text-xs font-medium text-slate-500">{{ auth()->user()->email }}</p>
+                            </div>
+                            <div class="border-t border-slate-100 py-2">
+                                <a href="{{ route($dashboardRoute) }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-brand-700">
+                                    <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>
+                                    My account
+                                </a>
+                                <a href="{{ route('account.settings.edit') }}" class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-brand-700">
+                                    <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.9l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.9-.3 1.7 1.7 0 0 0-1 1.6V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.6 1.7 1.7 0 0 0-1.9.3l-.1.1A2 2 0 1 1 4.2 17l.1-.1A1.7 1.7 0 0 0 4.6 15a1.7 1.7 0 0 0-1.6-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.6-1 1.7 1.7 0 0 0-.3-1.9l-.1-.1A2 2 0 1 1 7 4.2l.1.1A1.7 1.7 0 0 0 9 4.6 1.7 1.7 0 0 0 10 3V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.6 1.7 1.7 0 0 0 1.9-.3l.1-.1A2 2 0 1 1 19.8 7l-.1.1a1.7 1.7 0 0 0-.3 1.9 1.7 1.7 0 0 0 1.6 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+                                    Settings
+                                </a>
+                            </div>
+                            <form method="POST" action="{{ route('logout') }}" class="border-t border-slate-100 pt-2">
+                                @csrf
+                                <button type="submit" class="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-left text-sm font-bold text-rose-600 transition hover:bg-rose-50">
+                                    <svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><path d="m16 17 5-5-5-5"/><path d="M21 12H9"/></svg>
+                                    Log out
+                                </button>
+                            </form>
+                        </div>
+                    </details>
                 @endauth
             </div>
             
@@ -77,12 +103,12 @@
                             <a href="{{ route('signup') }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">Sign up</a>
                         @endguest
                         @auth
-                            <a href="{{ route($dashboardRoute) }}" aria-label="Open account area" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-white">
-                                <svg class="h-6 w-6" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
-                                    <path d="M20 21a8 8 0 0 0-16 0" />
-                                    <circle cx="12" cy="7" r="4" />
-                                </svg>
-                            </a>
+                            <a href="{{ route($dashboardRoute) }}" class="flex h-14 items-center justify-center rounded-2xl bg-brand-500 text-[16px] font-bold text-white">My account</a>
+                            <a href="{{ route('account.settings.edit') }}" class="flex h-14 items-center justify-center rounded-2xl border border-white/20 text-[16px] font-bold text-white">Settings</a>
+                            <form method="POST" action="{{ route('logout') }}">
+                                @csrf
+                                <button type="submit" class="flex h-14 w-full items-center justify-center rounded-2xl border border-rose-300/30 text-[16px] font-bold text-rose-100">Log out</button>
+                            </form>
                         @endauth
                     </div>
                 </div>
