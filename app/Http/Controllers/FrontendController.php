@@ -150,7 +150,7 @@ class FrontendController extends Controller
             ? (int) round(($completedRides / $publishedRides) * 100)
             : 0;
 
-        $handledBookings = $bookings->whereIn('status', ['confirmed', 'completed', 'cancelled'])->count();
+        $handledBookings = $bookings->whereIn('status', ['confirmed', 'rejected', 'completed', 'cancelled'])->count();
         $responseRate = $bookings->count() > 0
             ? (int) round(($handledBookings / $bookings->count()) * 100)
             : 100;

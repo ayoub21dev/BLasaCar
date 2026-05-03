@@ -25,7 +25,7 @@
                         <a href="{{ route('signup') }}" class="block transition hover:text-brand-700">Sign up</a>
                     @endguest
                     @auth
-                        <a href="{{ route(auth()->user()->dashboardRoute()) }}" class="block transition hover:text-brand-700">My dashboard</a>
+                        <a href="{{ route(auth()->user()->dashboardRoute()) }}" class="block transition hover:text-brand-700">My account</a>
                         <form method="POST" action="{{ route('logout') }}">
                             @csrf
                             <button type="submit" class="block transition hover:text-brand-700">Log out</button>

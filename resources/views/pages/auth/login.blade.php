@@ -10,7 +10,7 @@
                     <div class="text-center">
                         <img src="{{ asset('assets/logoBlasaCar.png') }}" alt="BlassaCar logo" class="mx-auto h-14 w-auto object-contain">
                         <h1 class="mt-8 text-3xl font-black text-slate-950">Welcome back</h1>
-                        <p class="mt-3 text-slate-500">Log in to manage rides, bookings, and your role-based dashboard.</p>
+                        <p class="mt-3 text-slate-500">Log in to manage rides, bookings, and account details.</p>
                     </div>
 
                     <form method="POST" action="{{ route('login.store') }}" class="mt-8 space-y-4">
@@ -49,7 +49,6 @@
                                 <input type="checkbox" name="remember" value="1" @checked(old('remember')) class="h-4 w-4 rounded border-slate-300 text-brand-600 focus:ring-brand-600">
                                 Remember me
                             </label>
-                            <span class="font-medium text-slate-400">Password reset not wired yet</span>
                         </div>
 
                         <button type="submit" class="brand-button w-full justify-center rounded-[1.25rem] py-4 text-base">

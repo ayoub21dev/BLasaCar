@@ -75,7 +75,7 @@
                 </form>
             </div>
 
-            <div class="mt-10 grid gap-8 xl:grid-cols-[minmax(0,1fr)_320px]">
+            <div class="mt-10">
                 <div class="space-y-6">
                     @forelse ($rides as $ride)
                         @include('partials.ride-card', ['ride' => $ride])
@@ -83,34 +83,11 @@
                         <div class="surface-soft p-10 text-center">
                             <h2 class="text-2xl font-bold text-slate-900">No rides matched those filters.</h2>
                             <p class="mx-auto mt-3 max-w-md text-slate-500">
-                                Try changing the departure city, destination, date, or seat count. The public service layer is already wired to filter only bookable trips.
+                                Try changing the departure city, destination, date, or seat count.
                             </p>
                         </div>
                     @endforelse
                 </div>
-
-                <aside class="space-y-6">
-                    <div class="surface-soft p-6">
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Why this search works</p>
-                        <ul class="mt-4 space-y-4 text-sm leading-6 text-slate-600">
-                            <li>Only scheduled rides with available seats are shown.</li>
-                            <li>Suspended accounts are excluded from booking results.</li>
-                            <li>Date and minimum-seat filters are applied against real seeded rides.</li>
-                        </ul>
-                    </div>
-
-                    <div class="surface-soft p-6">
-                        <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Next pages</p>
-                        <div class="mt-4 space-y-3">
-                            <a href="{{ route('rides.publish') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
-                                Publish a ride
-                            </a>
-                            <a href="{{ route('dashboards.traveler') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
-                                Traveler dashboard
-                            </a>
-                        </div>
-                    </div>
-                </aside>
             </div>
         </div>
     </section>

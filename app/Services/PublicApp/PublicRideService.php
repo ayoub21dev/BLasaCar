@@ -131,6 +131,54 @@ class PublicRideService
         });
     }
 
+    public function confirmBooking(User $driver, Booking $booking): Booking
+    {
+        return DB::transaction(function () use ($driver, $booking): Booking {
+            /** @var Booking $lockedBooking */
+            $lockedBooking = Booking::query()
+                ->with('ride')
+                ->whereKey($booking->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->assertDriverCanHandleBooking($driver, $lockedBooking);
+
+            $lockedBooking->update([
+                'status' => 'confirmed',
+            ]);
+
+            return $lockedBooking->fresh(['ride', 'traveler']);
+        });
+    }
+
+    public function rejectBooking(User $driver, Booking $booking): Booking
+    {
+        return DB::transaction(function () use ($driver, $booking): Booking {
+            /** @var Booking $lockedBooking */
+            $lockedBooking = Booking::query()
+                ->with('ride')
+                ->whereKey($booking->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->assertDriverCanHandleBooking($driver, $lockedBooking);
+
+            /** @var Ride $ride */
+            $ride = Ride::query()
+                ->whereKey($lockedBooking->ride_id)
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $lockedBooking->update([
+                'status' => 'rejected',
+            ]);
+
+            $ride->increment('available_seats', $lockedBooking->seats_reserved);
+
+            return $lockedBooking->fresh(['ride', 'traveler']);
+        });
+    }
+
     private function assertRideCanBeBooked(User $traveler, Ride $ride, int $seatsRequested): void
     {
         if ($traveler->account_status !== 'active') {
@@ -155,6 +203,25 @@ class PublicRideService
 
         if ($ride->available_seats < $seatsRequested) {
             throw new RuntimeException('Not enough seats available for this booking.');
+        }
+    }
+
+    private function assertDriverCanHandleBooking(User $driver, Booking $booking): void
+    {
+        if ($booking->ride?->user_id !== $driver->id) {
+            throw new RuntimeException('This booking does not belong to one of your rides.');
+        }
+
+        if ($booking->status !== 'pending') {
+            throw new RuntimeException('Only pending booking requests can be handled.');
+        }
+
+        if ($booking->ride?->status !== 'scheduled') {
+            throw new RuntimeException('Only scheduled rides can receive booking decisions.');
+        }
+
+        if ($booking->ride?->departure_time?->lessThanOrEqualTo(now())) {
+            throw new RuntimeException('Past rides cannot receive booking decisions.');
         }
     }
 }
