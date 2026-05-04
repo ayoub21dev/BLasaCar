@@ -58,21 +58,23 @@
                                 <form method="GET" action="{{ route('rides.search') }}" class="space-y-6">
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Leaving from</label>
-                                        <select name="departure_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
-                                            <option value="">Select city</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @include('partials.city-combobox', [
+                                            'cities' => $cities,
+                                            'name' => 'departure_city_id',
+                                            'id' => 'home-departure-city',
+                                            'placeholder' => 'Select city',
+                                            'inputClass' => 'w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition',
+                                        ])
                                     </div>
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Going to</label>
-                                        <select name="arrival_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
-                                            <option value="">Select city</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @include('partials.city-combobox', [
+                                            'cities' => $cities,
+                                            'name' => 'arrival_city_id',
+                                            'id' => 'home-arrival-city',
+                                            'placeholder' => 'Select city',
+                                            'inputClass' => 'w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition',
+                                        ])
                                     </div>
                                     <div class="grid grid-cols-2 gap-6">
                                         <div class="space-y-2">
@@ -100,7 +102,7 @@
         </section>
 
         <!-- HOW IT WORKS SECTION -->
-        <section class="shell py-12">
+        <section id="how-it-works" class="shell py-12">
             <div class="relative min-h-[650px] overflow-hidden rounded-[3.5rem] px-7 py-12 sm:px-12 lg:min-h-[570px] lg:px-20 lg:py-16">
 
 
