@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\City;
 use App\Models\Ride;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Tests\TestCase;
@@ -55,5 +56,30 @@ class FrontendPagesTest extends TestCase
 
         $this->get(route('dashboards.traveler'))
             ->assertRedirect(route('login'));
+    }
+
+    public function test_city_dropdowns_include_expanded_morocco_city_list(): void
+    {
+        $this->withoutVite();
+        $this->seed();
+
+        $this->assertGreaterThanOrEqual(100, City::query()->count());
+
+        foreach (['Laayoune', 'Dakhla', 'Chefchaouen', 'Ouarzazate', 'Nador'] as $city) {
+            $this->get(route('home'))
+                ->assertOk()
+                ->assertSee('Search city', false)
+                ->assertSee($city, false);
+
+            $this->get(route('rides.search'))
+                ->assertOk()
+                ->assertSee('Search city', false)
+                ->assertSee($city, false);
+
+            $this->get(route('rides.publish'))
+                ->assertOk()
+                ->assertSee('Search city', false)
+                ->assertSee($city, false);
+        }
     }
 }

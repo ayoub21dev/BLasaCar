@@ -1,9 +1,9 @@
 @php
     $primaryLinks = [
-        ['label' => 'Home', 'route' => 'home'],
-        ['label' => 'Search rides', 'route' => 'rides.search'],
-        ['label' => 'Publish a ride', 'route' => 'rides.publish'],
-        ['label' => 'How it works', 'route' => 'home'],
+        ['label' => 'Home', 'url' => route('home')],
+        ['label' => 'Search rides', 'url' => route('rides.search')],
+        ['label' => 'Publish a ride', 'url' => route('rides.publish')],
+        ['label' => 'How it works', 'url' => route('home') . '#how-it-works'],
     ];
 
     $dashboardRoute = auth()->user()?->dashboardRoute();
@@ -23,8 +23,9 @@
             <!-- Centered Pill Nav -->
             <div class="hidden lg:flex items-center justify-center bg-slate-100 rounded-full p-1.5 shadow-sm">
                 @foreach ($primaryLinks as $link)
-                    <a href="{{ route($link['route']) }}"
-                       class="px-6 py-2.5 text-[14px] font-bold tracking-tight {{ Route::is($link['route']) ? 'bg-white text-slate-950 shadow-md' : 'text-slate-500 hover:text-slate-900' }} rounded-full transition-all duration-300">
+                    @php($active = request()->url() === $link['url'])
+                    <a href="{{ $link['url'] }}"
+                       class="px-6 py-2.5 text-[14px] font-bold tracking-tight {{ $active ? 'bg-white text-slate-950 shadow-md' : 'text-slate-500 hover:text-slate-900' }} rounded-full transition-all duration-300">
                         {{ $link['label'] }}
                     </a>
                 @endforeach
@@ -91,7 +92,7 @@
                 <div class="fixed inset-x-4 top-24 rounded-[2.5rem] border border-white/10 bg-slate-950 p-8 shadow-2xl backdrop-blur-3xl z-[101]">
                     <div class="space-y-2">
                         @foreach ($primaryLinks as $link)
-                            <a href="{{ route($link['route']) }}"
+                            <a href="{{ $link['url'] }}"
                                class="block rounded-2xl px-6 py-4 text-[16px] font-bold text-white/80 transition hover:bg-white/5 hover:text-white">
                                 {{ $link['label'] }}
                             </a>

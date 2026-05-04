@@ -39,31 +39,33 @@
                                 @endif
                             @endauth
 
-                            <label class="space-y-2">
+                            <div class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">From</span>
-                                <select name="departure_city_id" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
-                                    <option value="">Select city</option>
-                                    @foreach ($cities as $city)
-                                        <option value="{{ $city->id }}" @selected(old('departure_city_id') == $city->id)>{{ $city->name }}</option>
-                                    @endforeach
-                                </select>
+                                @include('partials.city-combobox', [
+                                    'cities' => $cities,
+                                    'name' => 'departure_city_id',
+                                    'id' => 'publish-departure-city',
+                                    'placeholder' => 'Select city',
+                                    'inputClass' => 'w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none',
+                                ])
                                 @error('departure_city_id')
                                     <p class="text-sm font-medium text-red-600">{{ $message }}</p>
                                 @enderror
-                            </label>
+                            </div>
 
-                            <label class="space-y-2">
+                            <div class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">To</span>
-                                <select name="arrival_city_id" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
-                                    <option value="">Select city</option>
-                                    @foreach ($cities as $city)
-                                        <option value="{{ $city->id }}" @selected(old('arrival_city_id') == $city->id)>{{ $city->name }}</option>
-                                    @endforeach
-                                </select>
+                                @include('partials.city-combobox', [
+                                    'cities' => $cities,
+                                    'name' => 'arrival_city_id',
+                                    'id' => 'publish-arrival-city',
+                                    'placeholder' => 'Select city',
+                                    'inputClass' => 'w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none',
+                                ])
                                 @error('arrival_city_id')
                                     <p class="text-sm font-medium text-red-600">{{ $message }}</p>
                                 @enderror
-                            </label>
+                            </div>
 
                             <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">Date</span>

@@ -58,21 +58,23 @@
                                 <form method="GET" action="{{ route('rides.search') }}" class="space-y-6">
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Leaving from</label>
-                                        <select name="departure_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
-                                            <option value="">Select city</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @include('partials.city-combobox', [
+                                            'cities' => $cities,
+                                            'name' => 'departure_city_id',
+                                            'id' => 'home-departure-city',
+                                            'placeholder' => 'Select city',
+                                            'inputClass' => 'w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition',
+                                        ])
                                     </div>
                                     <div class="space-y-2">
                                         <label class="text-[11px] font-black text-slate-400 uppercase tracking-widest ml-3">Going to</label>
-                                        <select name="arrival_city_id" class="w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition">
-                                            <option value="">Select city</option>
-                                            @foreach ($cities as $city)
-                                                <option value="{{ $city->id }}">{{ $city->name }}</option>
-                                            @endforeach
-                                        </select>
+                                        @include('partials.city-combobox', [
+                                            'cities' => $cities,
+                                            'name' => 'arrival_city_id',
+                                            'id' => 'home-arrival-city',
+                                            'placeholder' => 'Select city',
+                                            'inputClass' => 'w-full h-16 bg-slate-50 border border-slate-200 rounded-2xl px-6 font-bold text-slate-700 outline-none focus:border-brand-500 focus:bg-white focus:ring-4 focus:ring-brand-50 transition',
+                                        ])
                                     </div>
                                     <div class="grid grid-cols-2 gap-6">
                                         <div class="space-y-2">
@@ -99,62 +101,91 @@
             </div>
         </section>
 
-        <!-- STATISTICS SECTION -->
-        <section class="shell">
-            <div class="grid grid-cols-2 lg:grid-cols-4 gap-6 sm:gap-8">
-                @foreach ([
-                    ['value' => '50K+', 'label' => 'Registered Members'],
-                    ['value' => '100K', 'label' => 'Successful Rides'],
-                    ['value' => '30+', 'label' => 'Cities Connected'],
-                    ['value' => '4.8', 'label' => 'Average Rating']
-                ] as $stat)
-                    <div class="bg-white rounded-[3rem] p-10 lg:p-14 text-center transition shadow-sm hover:shadow-2xl hover:-translate-y-2 group border border-slate-100">
-                        <p class="text-5xl lg:text-7xl font-black text-slate-900 group-hover:text-brand-500 transition tracking-tighter">{{ $stat['value'] }}</p>
-                        <p class="mt-6 text-xs lg:text-sm font-black text-slate-400 uppercase tracking-[0.2em]">{{ $stat['label'] }}</p>
-                    </div>
-                @endforeach
-            </div>
-        </section>
+        <!-- HOW IT WORKS SECTION -->
+        <section id="how-it-works" class="shell py-12">
+            <div class="relative min-h-[650px] overflow-hidden rounded-[3.5rem] px-7 py-12 sm:px-12 lg:min-h-[570px] lg:px-20 lg:py-16">
 
-        <!-- TRUST SECTION -->
-        <section class="shell py-12">
-            <div class="grid lg:grid-cols-2 gap-20 items-center">
-                <div>
-                    <div class="inline-flex items-center gap-2 rounded-full bg-slate-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-slate-500 mb-6">
-                        About Us
-                    </div>
-                    <h2 class="text-[3rem] sm:text-[4.5rem] font-black text-slate-900 leading-[0.95] tracking-tight">
-                        Your <span class="text-brand-500 italic font-serif">Trusted</span> Carpooling <br>
-                        Platform in Morocco
+
+                <div class="relative z-20 max-w-[410px] lg:pb-10 lg:pr-8">
+                    <p class="text-[11px] font-black uppercase tracking-[0.16em] text-[#fb6b55]">
+                        How it works
+                    </p>
+                    <h2 class="mt-4 max-w-[360px] text-[2.9rem] font-black leading-[0.95] text-slate-950 sm:text-[4rem] lg:text-[4.6rem]">
+                        Simple process
                     </h2>
-                    <div class="mt-10 flex flex-wrap gap-8 items-center">
-                        <div class="relative h-20 w-32 rounded-full overflow-hidden shadow-lg group">
-                            <img src="{{ asset('images/Heropage.png') }}" class="h-full w-full object-cover scale-150 transition group-hover:scale-125">
-                            <div class="absolute inset-0 bg-slate-900/40 flex items-center justify-center">
-                                <div class="h-8 w-8 rounded-full bg-brand-500 flex items-center justify-center text-white">
-                                    <svg class="h-4 w-4 fill-current ml-0.5" viewBox="0 0 20 20"><path d="M6 4l10 6-10 6V4z"/></svg>
-                                </div>
-                            </div>
+                    <p class="mt-5 max-w-[360px] text-sm font-medium leading-7 text-slate-500">
+                        Say goodbye to Facebook groups and endless negotiations. BlasaCar connects you in three simple steps.
+                    </p>
+                    <a href="{{ route('rides.search') }}" class="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-[#fb6b55] px-7 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(251,107,85,0.75)] transition hover:-translate-y-0.5 hover:bg-[#ef5d49]">
+                        Get Started
+                    </a>
+                </div>
+
+                <div class="absolute inset-y-12 left-[430px] right-0 hidden lg:block">
+                    <svg class="absolute inset-0 z-10 h-full w-full" viewBox="0 0 1000 430" fill="none" preserveAspectRatio="none">
+                        <!-- Background Numbers -->
+                        <text x="105" y="292" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#f1f5f9" style="font-size: 200px; font-family: sans-serif; opacity: 1;">1</text>
+                        <text x="445" y="198" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#f1f5f9" style="font-size: 200px; font-family: sans-serif; opacity: 1;">2</text>
+                        <text x="790" y="108" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#f1f5f9" style="font-size: 200px; font-family: sans-serif; opacity: 1;">3</text>
+
+                        <path d="M-80 285 C-4 335 58 330 105 292 C194 168 300 166 445 198 C562 230 654 193 720 128 C748 101 766 108 790 108 C872 108 922 109 1030 99" stroke="#fb6b55" stroke-width="5" stroke-linecap="round"/>
+                        <g>
+                            <circle cx="105" cy="292" r="28" fill="#f3f4f6" opacity="0.95"/>
+                            <circle cx="105" cy="292" r="14" fill="#ffffff"/>
+                            <circle cx="105" cy="292" r="6" fill="#cbd5e1"/>
+                        </g>
+                        <g>
+                            <circle cx="445" cy="198" r="28" fill="#f3f4f6" opacity="0.95"/>
+                            <circle cx="445" cy="198" r="14" fill="#ffffff"/>
+                            <circle cx="445" cy="198" r="6" fill="#cbd5e1"/>
+                        </g>
+                        <g>
+                            <circle cx="790" cy="108" r="28" fill="#f3f4f6" opacity="0.95"/>
+                            <circle cx="790" cy="108" r="14" fill="#ffffff"/>
+                            <circle cx="790" cy="108" r="6" fill="#cbd5e1"/>
+                        </g>
+                    </svg>
+
+                    <div class="absolute left-[10.5%] top-[67.9%] z-20 w-[270px]">
+                        <div class="relative pt-16">
+                            <h3 class="text-sm font-black text-slate-950">Search a trip</h3>
+                            <p class="mt-2 text-sm font-medium leading-6 text-slate-500">
+                                Enter your departure, destination, travel date, and seats.
+                            </p>
                         </div>
-                        <p class="flex-1 min-w-[300px] text-lg text-slate-500 leading-relaxed">
-                            BlasaCar has built a strong reputation in Morocco for providing safe carpooling services, handling everything from intercity commutes to weekend trips with care and expertise.
-                        </p>
+                    </div>
+
+                    <div class="absolute left-[44.5%] top-[46%] z-20 w-[285px]">
+                        <div class="relative pt-16">
+                            <h3 class="text-sm font-black text-slate-950">Choose your ride</h3>
+                            <p class="mt-2 text-sm font-medium leading-6 text-slate-500">
+                                Compare verified drivers, prices, pickup points, and seats.
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="absolute left-[79%] top-[25.1%] z-20 w-[285px]">
+                        <div class="relative pt-16">
+                            <h3 class="text-sm font-black text-slate-950">Book and go</h3>
+                            <p class="mt-2 text-sm font-medium leading-6 text-slate-500">
+                                Confirm instantly and travel with support close when needed.
+                            </p>
+                        </div>
                     </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                    @foreach([
-                        ['title' => 'ID Verified', 'icon' => '<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><path d="m9 12 2 2 4-4"/>'],
-                        ['title' => 'Secure Rides', 'icon' => '<rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/>'],
-                        ['title' => 'Fast Booking', 'icon' => '<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>'],
-                        ['title' => '24/7 Support', 'icon' => '<path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>']
+
+                <div class="relative z-10 mt-12 grid gap-8 lg:hidden">
+                    @foreach ([
+                        ['step' => '1', 'title' => 'Search a trip', 'copy' => 'Enter your departure, destination, travel date, and seats.'],
+                        ['step' => '2', 'title' => 'Choose your ride', 'copy' => 'Compare verified drivers, prices, pickup points, and seats.'],
+                        ['step' => '3', 'title' => 'Book and go', 'copy' => 'Confirm instantly and travel with support close when needed.'],
                     ] as $feature)
-                        <div class="bg-white border border-slate-100 rounded-[2rem] p-8 flex flex-col items-center justify-center text-center shadow-sm hover:shadow-md transition group">
-                            <div class="h-16 w-16 bg-brand-50 rounded-2xl flex items-center justify-center mb-4 group-hover:scale-110 group-hover:bg-brand-500 transition-all duration-300">
-                                <svg class="h-8 w-8 text-brand-500 group-hover:text-white transition-colors" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-                                    {!! $feature['icon'] !!}
-                                </svg>
-                            </div>
-                            <p class="font-black text-slate-900 text-[15px] sm:text-lg uppercase tracking-tight">{{ $feature['title'] }}</p>
+                        <div class="relative border-l-2 border-[#fb6b55] pl-8">
+                            <span class="absolute -left-[11px] top-1 h-5 w-5 rounded-full bg-white shadow-[0_0_0_8px_rgba(15,23,42,0.06)]"></span>
+                            <span class="absolute -left-[5px] top-[10px] h-2 w-2 rounded-full bg-slate-300"></span>
+                            <span class="pointer-events-none absolute right-2 top-[-18px] text-7xl font-black leading-none text-slate-100">{{ $feature['step'] }}</span>
+                            <h3 class="text-base font-black text-slate-950">{{ $feature['title'] }}</h3>
+                            <p class="mt-2 max-w-[320px] text-sm font-medium leading-6 text-slate-500">{{ $feature['copy'] }}</p>
                         </div>
                     @endforeach
                 </div>

@@ -21,31 +21,39 @@
                 </div>
 
                 <form method="GET" action="{{ route('rides.search') }}" class="mt-6 grid gap-3 lg:grid-cols-[1fr_1fr_1fr_150px_160px]">
-                    <label class="input-shell">
+                    <div class="input-shell">
                         <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
                         </svg>
-                        <select name="departure_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Leaving from</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}" @selected(($filters['departure_city_id'] ?? null) == $city->id)>{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                        <div class="min-w-0 flex-1">
+                            @include('partials.city-combobox', [
+                                'cities' => $cities,
+                                'name' => 'departure_city_id',
+                                'selected' => $filters['departure_city_id'] ?? null,
+                                'id' => 'search-departure-city',
+                                'placeholder' => 'Leaving from',
+                                'inputClass' => 'w-full bg-transparent text-sm font-medium text-slate-700 outline-none',
+                            ])
+                        </div>
+                    </div>
 
-                    <label class="input-shell">
+                    <div class="input-shell">
                         <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
                             <circle cx="12" cy="10" r="3" />
                         </svg>
-                        <select name="arrival_city_id" class="w-full bg-transparent text-sm font-medium text-slate-700 outline-none">
-                            <option value="">Going to</option>
-                            @foreach ($cities as $city)
-                                <option value="{{ $city->id }}" @selected(($filters['arrival_city_id'] ?? null) == $city->id)>{{ $city->name }}</option>
-                            @endforeach
-                        </select>
-                    </label>
+                        <div class="min-w-0 flex-1">
+                            @include('partials.city-combobox', [
+                                'cities' => $cities,
+                                'name' => 'arrival_city_id',
+                                'selected' => $filters['arrival_city_id'] ?? null,
+                                'id' => 'search-arrival-city',
+                                'placeholder' => 'Going to',
+                                'inputClass' => 'w-full bg-transparent text-sm font-medium text-slate-700 outline-none',
+                            ])
+                        </div>
+                    </div>
 
                     <label class="input-shell cursor-pointer">
                         <svg class="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
