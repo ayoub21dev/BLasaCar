@@ -95,6 +95,34 @@
                                 <p class="mt-2 text-4xl font-black text-brand-700">{{ $metrics['verified_drivers'] }}</p>
                                 <p class="mt-3 text-sm leading-6 text-slate-500">Pulled directly from the admin service metric based on verified driver profiles.</p>
                             </div>
+
+                            <div class="dashboard-panel">
+                                <div class="flex items-start justify-between gap-4">
+                                    <div>
+                                        <h2 class="text-xl font-bold text-slate-950">Pending CIN</h2>
+                                        <p class="mt-2 text-sm leading-6 text-slate-500">{{ $metrics['pending_driver_verifications'] }} driver profile{{ $metrics['pending_driver_verifications'] === 1 ? '' : 's' }} waiting for verification.</p>
+                                    </div>
+                                    <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">{{ $pendingDriverProfiles->count() }}</span>
+                                </div>
+
+                                <div class="mt-5 space-y-3">
+                                    @forelse ($pendingDriverProfiles as $profile)
+                                        <div class="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
+                                            <p class="font-bold text-slate-950">{{ $profile->user?->first_name }} {{ $profile->user?->last_name }}</p>
+                                            <p class="mt-1 text-xs font-semibold text-slate-500">CIN {{ $profile->cin_number }} &middot; {{ $profile->vehicles->first()?->brand }} {{ $profile->vehicles->first()?->model }}</p>
+                                            <form method="POST" action="{{ route('admin.driver-profiles.verify', $profile) }}" class="mt-3">
+                                                @csrf
+                                                @method('PATCH')
+                                                <button type="submit" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-700">
+                                                    Verify driver
+                                                </button>
+                                            </form>
+                                        </div>
+                                    @empty
+                                        <p class="rounded-[1.25rem] bg-slate-50 px-4 py-4 text-sm font-semibold text-slate-500">No pending driver profiles.</p>
+                                    @endforelse
+                                </div>
+                            </div>
                         </div>
                     </div>
 

@@ -69,19 +69,28 @@
                             </div>
                         </div>
 
-                        <div class="dashboard-panel">
-                            <h2 class="text-xl font-bold text-slate-950">Weekly seats sold</h2>
-                            <p class="mt-2 text-sm text-slate-500">Aggregated from your recent booking activity.</p>
-                            <div class="mt-6 flex h-52 items-end gap-3">
-                                @foreach ($weeklySeatSales as $day)
-                                    <div class="flex flex-1 flex-col items-center gap-3">
-                                        <div class="w-full rounded-t-2xl bg-gradient-to-t from-brand-600 to-brand-300" style="height: {{ $day['height'] }}%;"></div>
-                                        <div class="text-center text-xs text-slate-500">
-                                            <div class="font-semibold text-slate-700">{{ $day['seats'] }}</div>
-                                            <div>{{ $day['label'] }}</div>
+                        <div class="space-y-6">
+                            <div class="dashboard-panel">
+                                <h2 class="text-xl font-bold text-slate-950">Notifications</h2>
+                                <div class="mt-4 space-y-3">
+                                    @include('partials.notification-list', ['notifications' => $notifications])
+                                </div>
+                            </div>
+
+                            <div class="dashboard-panel">
+                                <h2 class="text-xl font-bold text-slate-950">Weekly seats sold</h2>
+                                <p class="mt-2 text-sm text-slate-500">Aggregated from your recent booking activity.</p>
+                                <div class="mt-6 flex h-52 items-end gap-3">
+                                    @foreach ($weeklySeatSales as $day)
+                                        <div class="flex flex-1 flex-col items-center gap-3">
+                                            <div class="w-full rounded-t-2xl bg-gradient-to-t from-brand-600 to-brand-300" style="height: {{ $day['height'] }}%;"></div>
+                                            <div class="text-center text-xs text-slate-500">
+                                                <div class="font-semibold text-slate-700">{{ $day['seats'] }}</div>
+                                                <div>{{ $day['label'] }}</div>
+                                            </div>
                                         </div>
-                                    </div>
-                                @endforeach
+                                    @endforeach
+                                </div>
                             </div>
                         </div>
                     </div>

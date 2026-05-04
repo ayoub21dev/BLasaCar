@@ -48,6 +48,27 @@ class RideWorkflowTest extends TestCase
         ]);
     }
 
+    public function test_unverified_driver_cannot_publish_a_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle(cinVerified: false);
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $departureAt = now()->addDays(2)->setTime(9, 30);
+
+        $this->actingAs($driver)->post(route('rides.publish.store'), [
+            'vehicle_id' => $vehicle->id,
+            'departure_city_id' => $casablanca->id,
+            'arrival_city_id' => $rabat->id,
+            'departure_date' => $departureAt->format('Y-m-d'),
+            'departure_time' => $departureAt->format('H:i'),
+            'seats_offered' => 3,
+            'price_per_seat' => 85,
+            'meeting_point' => 'Casa Voyageurs',
+            'notes' => 'Small luggage only.',
+        ])->assertForbidden();
+
+        $this->assertDatabaseCount('rides', 0);
+    }
+
     public function test_traveler_can_request_a_seat(): void
     {
         [$driver, $vehicle] = $this->createDriverWithVehicle();
@@ -160,6 +181,75 @@ class RideWorkflowTest extends TestCase
         $this->assertSame(2, $ride->fresh()->available_seats);
     }
 
+    public function test_traveler_can_cancel_an_active_booking_and_restore_seats(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+        $this->assertSame(1, $ride->fresh()->available_seats);
+
+        $this->actingAs($traveler)
+            ->from(route('dashboards.traveler'))
+            ->patch(route('bookings.cancel', $booking))
+            ->assertRedirect(route('dashboards.traveler'));
+
+        $this->assertSame('cancelled', $booking->fresh()->status);
+        $this->assertSame(2, $ride->fresh()->available_seats);
+    }
+
+    public function test_traveler_cannot_cancel_another_travelers_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $otherTraveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+
+        $this->actingAs($otherTraveler)
+            ->patch(route('bookings.cancel', $booking))
+            ->assertForbidden();
+
+        $this->assertSame('pending', $booking->fresh()->status);
+        $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
+    public function test_traveler_cannot_cancel_terminal_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+        $booking->update(['status' => 'completed']);
+
+        $this->actingAs($traveler)
+            ->from(route('dashboards.traveler'))
+            ->patch(route('bookings.cancel', $booking))
+            ->assertRedirect(route('dashboards.traveler'))
+            ->assertSessionHasErrors('booking');
+
+        $this->assertSame('completed', $booking->fresh()->status);
+        $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
     public function test_driver_cannot_handle_booking_for_another_drivers_ride(): void
     {
         [$driver, $vehicle] = $this->createDriverWithVehicle();
@@ -187,7 +277,7 @@ class RideWorkflowTest extends TestCase
     /**
      * @return array{0: User, 1: Vehicle}
      */
-    private function createDriverWithVehicle(): array
+    private function createDriverWithVehicle(bool $cinVerified = true): array
     {
         $driver = User::factory()->driver()->create();
 
@@ -195,7 +285,7 @@ class RideWorkflowTest extends TestCase
             'user_id' => $driver->id,
             'cin_number' => fake()->unique()->bothify('??######'),
             'cin_photo' => 'cin/driver.jpg',
-            'cin_verified' => true,
+            'cin_verified' => $cinVerified,
             'avg_rating' => 4.5,
             'total_trips' => 8,
         ]);

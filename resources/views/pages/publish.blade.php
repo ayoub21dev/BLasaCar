@@ -17,6 +17,19 @@
                             </div>
                         </div>
 
+                        @if ($verificationPending)
+                            <div class="p-5 sm:p-8">
+                                <div class="rounded-[2rem] border border-amber-200 bg-amber-50 p-8 text-amber-900">
+                                    <h2 class="text-2xl font-black text-slate-950">Verification pending</h2>
+                                    <p class="mt-3 max-w-2xl text-sm font-semibold leading-6 text-amber-800">
+                                        Your driver profile is waiting for CIN verification. You can publish rides after an admin verifies your identity.
+                                    </p>
+                                    <a href="{{ route('dashboards.driver') }}" class="mt-6 inline-flex rounded-full bg-amber-600 px-5 py-3 text-sm font-black text-white transition hover:bg-amber-700">
+                                        Back to dashboard
+                                    </a>
+                                </div>
+                            </div>
+                        @else
                         <form method="POST" action="{{ route('rides.publish.store') }}" class="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
                             @csrf
 
@@ -125,7 +138,7 @@
                                         Log in to publish
                                     </a>
                                 @else
-                                    @if (auth()->user()->isDriver() && $vehicles->isNotEmpty())
+                                    @if ($canPublishRide && $vehicles->isNotEmpty())
                                         <button type="submit" class="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">
                                             Publish my ride
                                         </button>
@@ -141,6 +154,7 @@
                                 @endguest
                             </div>
                         </form>
+                        @endif
                     </div>
                 </div>
             </div>

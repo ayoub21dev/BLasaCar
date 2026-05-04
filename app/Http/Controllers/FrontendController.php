@@ -87,6 +87,8 @@ class FrontendController extends Controller
 
         return view('pages.publish', [
             'cities' => City::query()->orderBy('name')->get(),
+            'canPublishRide' => $user?->isDriver() && $user->driverProfile?->cin_verified === true,
+            'verificationPending' => $user?->isDriver() && $user->driverProfile?->cin_verified !== true,
             'vehicles' => $vehicles,
         ]);
     }
@@ -110,6 +112,7 @@ class FrontendController extends Controller
             'metrics' => $adminService->dashboardMetrics(),
             'users' => $users->take(6),
             'rides' => $rides->take(6),
+            'pendingDriverProfiles' => $adminService->listPendingDriverVerifications()->take(6),
             'alerts' => [
                 'suspended_users' => $users->where('account_status', 'suspended')->count(),
                 'cancelled_rides' => $rides->where('status', 'cancelled')->count(),
@@ -159,6 +162,10 @@ class FrontendController extends Controller
             'driver' => $driver,
             'rides' => $rides,
             'bookings' => $bookings,
+            'notifications' => $driver->notifications()
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get(),
             'stats' => [
                 'published_rides' => $publishedRides,
                 'upcoming_rides' => $rides->where('status', 'scheduled')->count(),
@@ -195,6 +202,10 @@ class FrontendController extends Controller
             'traveler' => $traveler,
             'bookings' => $bookings,
             'upcomingBookings' => $upcomingBookings,
+            'notifications' => $traveler->notifications()
+                ->orderByDesc('created_at')
+                ->limit(5)
+                ->get(),
             'stats' => [
                 'upcoming_trips' => $upcomingBookings->count(),
                 'completed_trips' => $bookings->where('status', 'completed')->count(),

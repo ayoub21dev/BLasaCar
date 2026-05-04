@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\AdminWorkflowController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DriverOnboardingController;
@@ -46,6 +47,7 @@ Route::middleware(['auth', 'role:driver'])->controller(RideWorkflowController::c
 
 Route::middleware(['auth', 'role:traveler'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/{ride}/book', 'book')->name('rides.book');
+    Route::patch('/bookings/{booking}/cancel', 'cancelBooking')->name('bookings.cancel');
 });
 
 Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingController::class)->group(function () {
@@ -55,6 +57,10 @@ Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingControl
 
 Route::middleware(['auth', 'role:admin'])->controller(FrontendController::class)->group(function () {
     Route::get('/dashboards/admin', 'adminDashboard')->name('dashboards.admin');
+});
+
+Route::middleware(['auth', 'role:admin'])->controller(AdminWorkflowController::class)->group(function () {
+    Route::patch('/admin/driver-profiles/{driverProfile}/verify', 'verifyDriverProfile')->name('admin.driver-profiles.verify');
 });
 
 Route::middleware(['auth', 'role:driver'])->controller(FrontendController::class)->group(function () {

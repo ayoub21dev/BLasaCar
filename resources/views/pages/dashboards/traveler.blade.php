@@ -85,6 +85,13 @@
 
                         <div class="space-y-6">
                             <div class="dashboard-panel">
+                                <h2 class="text-xl font-bold text-slate-950">Notifications</h2>
+                                <div class="mt-4 space-y-3">
+                                    @include('partials.notification-list', ['notifications' => $notifications])
+                                </div>
+                            </div>
+
+                            <div class="dashboard-panel">
                                 <h2 class="text-xl font-bold text-slate-950">Quick links</h2>
                                 <div class="mt-4 space-y-3">
                                     <a href="{{ route('rides.search') }}" class="block rounded-2xl border border-slate-200 px-4 py-3 text-sm font-medium text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
@@ -103,6 +110,9 @@
                             <h2 class="text-xl font-bold text-slate-950">Booking history</h2>
                             <p class="text-sm text-slate-500">{{ $bookings->count() }} booking{{ $bookings->count() === 1 ? '' : 's' }}</p>
                         </div>
+                        @error('booking')
+                            <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                        @enderror
                         <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200 text-sm">
                                 <thead class="bg-slate-50 text-left text-slate-500">
@@ -111,15 +121,30 @@
                                         <th class="px-5 py-4 font-semibold">Date</th>
                                         <th class="px-5 py-4 font-semibold">Driver</th>
                                         <th class="px-5 py-4 font-semibold">Status</th>
+                                        <th class="px-5 py-4 font-semibold">Action</th>
                                     </tr>
                                 </thead>
                                 <tbody class="divide-y divide-slate-100 bg-white">
                                     @foreach ($bookings as $booking)
+                                        @php($canCancelBooking = in_array($booking->status, ['pending', 'confirmed'], true) && $booking->ride?->departure_time?->isFuture())
                                         <tr>
                                             <td class="px-5 py-4 font-medium text-slate-900">{{ $booking->ride?->departureCity?->name }} &rarr; {{ $booking->ride?->arrivalCity?->name }}</td>
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->departure_time?->format('d M Y \a\t H:i') }}</td>
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->user?->first_name }} {{ $booking->ride?->user?->last_name }}</td>
                                             <td class="px-5 py-4">@include('partials.status-chip', ['status' => $booking->status])</td>
+                                            <td class="px-5 py-4">
+                                                @if ($canCancelBooking)
+                                                    <form method="POST" action="{{ route('bookings.cancel', $booking) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="rounded-full bg-rose-50 px-4 py-2 text-xs font-bold text-rose-700 transition hover:bg-rose-100">
+                                                            Cancel
+                                                        </button>
+                                                    </form>
+                                                @else
+                                                    <span class="text-xs font-medium text-slate-400">No action</span>
+                                                @endif
+                                            </td>
                                         </tr>
                                     @endforeach
                                 </tbody>

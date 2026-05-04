@@ -71,4 +71,19 @@ class RideWorkflowController extends Controller
 
         return back()->with('status', 'Booking request rejected.');
     }
+
+    public function cancelBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    {
+        if ($booking->traveler_id !== auth()->id()) {
+            abort(403);
+        }
+
+        try {
+            $publicRideService->cancelBooking($booking);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['booking' => $exception->getMessage()]);
+        }
+
+        return back()->with('status', 'Booking cancelled.');
+    }
 }

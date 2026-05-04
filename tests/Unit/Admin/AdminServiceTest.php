@@ -92,6 +92,7 @@ class AdminServiceTest extends TestCase
         $this->assertSame(2, $metrics['active_users']);
         $this->assertSame(1, $metrics['suspended_users']);
         $this->assertSame(1, $metrics['verified_drivers']);
+        $this->assertSame(0, $metrics['pending_driver_verifications']);
         $this->assertSame(1, $metrics['scheduled_rides']);
         $this->assertSame(1, $metrics['completed_rides']);
         $this->assertSame(0, $metrics['cancelled_rides']);
@@ -139,6 +140,25 @@ class AdminServiceTest extends TestCase
 
         $this->assertSame('cancelled', $updatedRide->status);
         $this->assertSame('Fraudulent listing reported by users.', $updatedRide->admin_note);
+    }
+
+    public function test_it_can_verify_a_driver_profile(): void
+    {
+        $service = new AdminService;
+        $driver = User::factory()->driver()->create();
+        $driverProfile = DriverProfile::query()->create([
+            'user_id' => $driver->id,
+            'cin_number' => 'CC123456',
+            'cin_photo' => null,
+            'cin_verified' => false,
+            'avg_rating' => 0,
+            'total_trips' => 0,
+        ]);
+
+        $verifiedProfile = $service->verifyDriverProfile($driverProfile);
+
+        $this->assertTrue($verifiedProfile->cin_verified);
+        $this->assertSame(0, $service->listPendingDriverVerifications()->count());
     }
 
     public function test_it_rejects_unknown_moderation_statuses(): void

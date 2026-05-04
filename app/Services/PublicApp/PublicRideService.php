@@ -5,6 +5,7 @@ namespace App\Services\PublicApp;
 use App\Models\Booking;
 use App\Models\Ride;
 use App\Models\User;
+use App\Services\Notifications\BookingNotificationService;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -13,6 +14,10 @@ use RuntimeException;
 
 class PublicRideService
 {
+    public function __construct(
+        private readonly BookingNotificationService $notifications,
+    ) {}
+
     /**
      * @return Collection<int, Ride>
      */
@@ -67,6 +72,7 @@ class PublicRideService
                 ->firstOrFail();
 
             $this->assertRideCanBeBooked($traveler, $lockedRide, $seatsRequested);
+            $this->assertTravelerHasNoActiveBooking($traveler, $lockedRide);
 
             $booking = Booking::query()->create([
                 'ride_id' => $lockedRide->id,
@@ -78,7 +84,10 @@ class PublicRideService
 
             $lockedRide->decrement('available_seats', $seatsRequested);
 
-            return $booking->fresh(['ride', 'traveler']);
+            $booking = $booking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $this->notifications->bookingRequested($booking);
+
+            return $booking;
         });
     }
 
@@ -127,7 +136,10 @@ class PublicRideService
 
             $ride->increment('available_seats', $lockedBooking->seats_reserved);
 
-            return $lockedBooking->fresh(['ride', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $this->notifications->bookingCancelledByTraveler($lockedBooking);
+
+            return $lockedBooking;
         });
     }
 
@@ -147,7 +159,10 @@ class PublicRideService
                 'status' => 'confirmed',
             ]);
 
-            return $lockedBooking->fresh(['ride', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $this->notifications->bookingConfirmed($lockedBooking);
+
+            return $lockedBooking;
         });
     }
 
@@ -175,7 +190,10 @@ class PublicRideService
 
             $ride->increment('available_seats', $lockedBooking->seats_reserved);
 
-            return $lockedBooking->fresh(['ride', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $this->notifications->bookingRejected($lockedBooking);
+
+            return $lockedBooking;
         });
     }
 
@@ -203,6 +221,19 @@ class PublicRideService
 
         if ($ride->available_seats < $seatsRequested) {
             throw new RuntimeException('Not enough seats available for this booking.');
+        }
+    }
+
+    private function assertTravelerHasNoActiveBooking(User $traveler, Ride $ride): void
+    {
+        $hasActiveBooking = Booking::query()
+            ->where('ride_id', $ride->id)
+            ->where('traveler_id', $traveler->id)
+            ->whereIn('status', ['pending', 'confirmed'])
+            ->exists();
+
+        if ($hasActiveBooking) {
+            throw new RuntimeException('You already have an active booking request for this ride.');
         }
     }
 

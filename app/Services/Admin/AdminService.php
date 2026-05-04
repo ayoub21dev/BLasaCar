@@ -3,6 +3,7 @@
 namespace App\Services\Admin;
 
 use App\Models\Booking;
+use App\Models\DriverProfile;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
@@ -25,6 +26,7 @@ class AdminService
             'active_users' => User::where('account_status', 'active')->count(),
             'suspended_users' => User::where('account_status', 'suspended')->count(),
             'verified_drivers' => User::whereHas('driverProfile', fn ($query) => $query->where('cin_verified', true))->count(),
+            'pending_driver_verifications' => DriverProfile::where('cin_verified', false)->count(),
             'scheduled_rides' => Ride::where('status', 'scheduled')->count(),
             'completed_rides' => Ride::where('status', 'completed')->count(),
             'cancelled_rides' => Ride::where('status', 'cancelled')->count(),
@@ -48,6 +50,18 @@ class AdminService
         }
 
         return $query->get();
+    }
+
+    /**
+     * @return Collection<int, DriverProfile>
+     */
+    public function listPendingDriverVerifications(): Collection
+    {
+        return DriverProfile::query()
+            ->with(['user', 'vehicles'])
+            ->where('cin_verified', false)
+            ->orderBy('created_at')
+            ->get();
     }
 
     public function suspendUser(User $user, ?Carbon $suspendedAt = null): User
@@ -97,6 +111,15 @@ class AdminService
         ])->save();
 
         return $ride->refresh();
+    }
+
+    public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
+    {
+        $driverProfile->forceFill([
+            'cin_verified' => true,
+        ])->save();
+
+        return $driverProfile->refresh();
     }
 
     private function assertValidUserStatus(string $status): void
