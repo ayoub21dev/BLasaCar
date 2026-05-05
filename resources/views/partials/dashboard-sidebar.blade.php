@@ -4,8 +4,12 @@
             <p class="text-xs font-semibold uppercase tracking-[0.18em] text-slate-400">{{ $label }}</p>
             <nav class="mt-5 space-y-2">
                 @foreach ($items as $item)
-                    <a href="{{ route($item['route']) }}"
-                       class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ request()->routeIs($item['route']) ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50 hover:text-brand-700' }}">
+                    @php
+                        $href = $item['url'] ?? route($item['route']);
+                        $isActive = isset($item['route']) && request()->routeIs($item['route']);
+                    @endphp
+                    <a href="{{ $href }}"
+                       class="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition {{ $isActive ? 'bg-brand-50 text-brand-700' : 'text-slate-600 hover:bg-slate-50 hover:text-brand-700' }}">
                         {!! $item['icon'] !!}
                         <span>{{ $item['label'] }}</span>
                     </a>

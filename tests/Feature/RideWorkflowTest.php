@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
 use App\Models\Ride;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -272,6 +273,215 @@ class RideWorkflowTest extends TestCase
 
         $this->assertSame('pending', $booking->fresh()->status);
         $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
+    public function test_driver_can_complete_a_past_ride_and_close_bookings(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $pendingTraveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+        $ride->update(['departure_time' => now()->subHour()]);
+
+        $confirmedBooking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'confirmed',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $pendingBooking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $pendingTraveler->id,
+            'seats_reserved' => 1,
+            'status' => 'pending',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($driver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('rides.complete', $ride))
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHas('status', 'Ride completed.');
+
+        $this->assertSame('completed', $ride->fresh()->status);
+        $this->assertSame(0, $ride->fresh()->available_seats);
+        $this->assertSame('completed', $confirmedBooking->fresh()->status);
+        $this->assertSame('rejected', $pendingBooking->fresh()->status);
+        $this->assertSame(9, $driver->driverProfile->fresh()->total_trips);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $traveler->id,
+            'type' => 'ride_completed',
+            'related_entity_type' => Booking::class,
+            'related_entity_id' => $confirmedBooking->id,
+        ]);
+    }
+
+    public function test_driver_cannot_complete_a_future_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+
+        $this->actingAs($driver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('rides.complete', $ride))
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHasErrors('ride');
+
+        $this->assertSame('scheduled', $ride->fresh()->status);
+        $this->assertSame(8, $driver->driverProfile->fresh()->total_trips);
+    }
+
+    public function test_driver_cannot_complete_another_drivers_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$otherDriver] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+        $ride->update(['departure_time' => now()->subHour()]);
+
+        $this->actingAs($otherDriver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('rides.complete', $ride))
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHasErrors('ride');
+
+        $this->assertSame('scheduled', $ride->fresh()->status);
+        $this->assertSame(8, $driver->driverProfile->fresh()->total_trips);
+    }
+
+    public function test_traveler_can_review_driver_after_completed_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        $driver->driverProfile->update(['avg_rating' => 0]);
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+        $ride->update(['status' => 'completed']);
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'completed',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($traveler)
+            ->from(route('dashboards.traveler'))
+            ->post(route('bookings.reviews.store', $booking), [
+                'rating' => 5,
+                'comment' => 'Clean car and clear meeting point.',
+            ])
+            ->assertRedirect(route('dashboards.traveler'))
+            ->assertSessionHas('status', 'Review submitted.');
+
+        $review = Review::query()->firstOrFail();
+
+        $this->assertDatabaseHas('reviews', [
+            'id' => $review->id,
+            'reviewer_id' => $traveler->id,
+            'reviewed_user_id' => $driver->id,
+            'ride_id' => $ride->id,
+            'rating' => 5,
+        ]);
+        $this->assertSame(5.0, (float) $driver->driverProfile->fresh()->avg_rating);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $driver->id,
+            'type' => 'review_received',
+            'channel' => 'in_app',
+            'related_entity_type' => Review::class,
+            'related_entity_id' => $review->id,
+            'is_read' => false,
+        ]);
+    }
+
+    public function test_traveler_cannot_review_an_incomplete_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'confirmed',
+            'booked_at' => now(),
+        ]);
+
+        $this->actingAs($traveler)
+            ->from(route('dashboards.traveler'))
+            ->post(route('bookings.reviews.store', $booking), [
+                'rating' => 5,
+                'comment' => 'Too early.',
+            ])
+            ->assertRedirect(route('dashboards.traveler'))
+            ->assertSessionHasErrors('review');
+
+        $this->assertDatabaseCount('reviews', 0);
+        $this->assertSame(4.5, (float) $driver->driverProfile->fresh()->avg_rating);
+    }
+
+    public function test_traveler_cannot_review_another_travelers_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $otherTraveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'completed',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($otherTraveler)
+            ->post(route('bookings.reviews.store', $booking), [
+                'rating' => 5,
+            ])
+            ->assertForbidden();
+
+        $this->assertDatabaseCount('reviews', 0);
+    }
+
+    public function test_traveler_cannot_review_the_same_driver_twice_for_one_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 1);
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'completed',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $this->actingAs($traveler)
+            ->post(route('bookings.reviews.store', $booking), [
+                'rating' => 4,
+            ]);
+
+        $this->actingAs($traveler)
+            ->from(route('dashboards.traveler'))
+            ->post(route('bookings.reviews.store', $booking), [
+                'rating' => 5,
+            ])
+            ->assertRedirect(route('dashboards.traveler'))
+            ->assertSessionHasErrors('review');
+
+        $this->assertDatabaseCount('reviews', 1);
+        $this->assertSame(4.0, (float) $driver->driverProfile->fresh()->avg_rating);
     }
 
     /**

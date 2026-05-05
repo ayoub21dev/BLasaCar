@@ -3,8 +3,18 @@
     $showFooter = false;
     $sidebarItems = [
         ['label' => 'Overview', 'route' => 'dashboards.admin', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="9"/><rect x="14" y="3" width="7" height="5"/><rect x="14" y="12" width="7" height="9"/><rect x="3" y="16" width="7" height="5"/></svg>'],
+        ['label' => 'Driver verification', 'route' => 'dashboards.admin.driver-verification', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 12l2 2 4-4"/><path d="M12 3 4 7v5c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V7l-8-4Z"/></svg>'],
+        ['label' => 'All users', 'route' => 'dashboards.admin.users', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M22 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>'],
+        ['label' => 'Ride activity', 'route' => 'dashboards.admin.rides', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2"/><circle cx="7" cy="17" r="2"/><circle cx="17" cy="17" r="2"/><path d="M8 11V7a4 4 0 0 1 8 0v4"/></svg>'],
         ['label' => 'Search rides', 'route' => 'rides.search', 'icon' => '<svg class="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>'],
     ];
+
+    $sectionView = match ($section) {
+        'driver-verification' => 'pages.dashboards.admin.driver-verification',
+        'users' => 'pages.dashboards.admin.users',
+        'rides' => 'pages.dashboards.admin.rides',
+        default => 'pages.dashboards.admin.overview',
+    };
 @endphp
 
 @extends('layouts.app')
@@ -16,138 +26,19 @@
                 @include('partials.dashboard-sidebar', ['label' => 'Admin dashboard', 'items' => $sidebarItems])
 
                 <div class="min-w-0 flex-1 space-y-6">
-                    <div class="surface p-6 sm:p-8">
-                        <div class="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
-                            <div>
-                                <p class="text-sm font-semibold uppercase tracking-[0.18em] text-brand-600">Platform overview</p>
-                                <h1 class="mt-2 text-3xl font-black tracking-tight text-slate-950 sm:text-4xl">Operational visibility for BlassaCar.</h1>
-                                <p class="mt-3 max-w-2xl text-slate-500">Monitor users, rides, bookings, and moderation activity.</p>
-                            </div>
-                            <a href="{{ route('rides.search') }}" class="brand-button-secondary text-sm">View rides</a>
+                    @if (session('status'))
+                        <div class="rounded-[1.25rem] border border-emerald-200 bg-emerald-50 px-5 py-4 text-sm font-bold text-emerald-700">
+                            {{ session('status') }}
                         </div>
-                    </div>
+                    @endif
 
-                    <div class="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-                        <div class="stat-tile">
-                            <p class="text-sm text-slate-500">Total users</p>
-                            <p class="mt-2 text-3xl font-bold text-slate-950">{{ $metrics['total_users'] }}</p>
+                    @error('driver_profile')
+                        <div class="rounded-[1.25rem] border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-bold text-rose-700">
+                            {{ $message }}
                         </div>
-                        <div class="stat-tile">
-                            <p class="text-sm text-slate-500">Active users</p>
-                            <p class="mt-2 text-3xl font-bold text-slate-950">{{ $metrics['active_users'] }}</p>
-                        </div>
-                        <div class="stat-tile">
-                            <p class="text-sm text-slate-500">Scheduled rides</p>
-                            <p class="mt-2 text-3xl font-bold text-slate-950">{{ $metrics['scheduled_rides'] }}</p>
-                        </div>
-                        <div class="stat-tile">
-                            <p class="text-sm text-slate-500">Bookings</p>
-                            <p class="mt-2 text-3xl font-bold text-slate-950">{{ $metrics['total_bookings'] }}</p>
-                        </div>
-                    </div>
+                    @enderror
 
-                    <div class="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_360px]">
-                        <div class="dashboard-panel">
-                            <div class="flex items-center justify-between">
-                                <h2 class="text-xl font-bold text-slate-950">Recent users</h2>
-                                <p class="text-sm text-slate-500">Suspended: {{ $alerts['suspended_users'] }}</p>
-                            </div>
-                            <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
-                                <table class="min-w-full divide-y divide-slate-200 text-sm">
-                                    <thead class="bg-slate-50 text-left text-slate-500">
-                                        <tr>
-                                            <th class="px-5 py-4 font-semibold">User</th>
-                                            <th class="px-5 py-4 font-semibold">Phone</th>
-                                            <th class="px-5 py-4 font-semibold">Status</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="divide-y divide-slate-100 bg-white">
-                                        @foreach ($users as $user)
-                                            <tr>
-                                                <td class="px-5 py-4">
-                                                    <p class="font-semibold text-slate-900">{{ $user->first_name }} {{ $user->last_name }}</p>
-                                                    <p class="text-xs text-slate-500">{{ $user->email }}</p>
-                                                </td>
-                                                <td class="px-5 py-4 text-slate-600">{{ $user->phone }}</td>
-                                                <td class="px-5 py-4">@include('partials.status-chip', ['status' => $user->account_status])</td>
-                                            </tr>
-                                        @endforeach
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-
-                        <div class="space-y-6">
-                            <div class="dashboard-panel">
-                                <h2 class="text-xl font-bold text-slate-950">Moderation alerts</h2>
-                                <div class="mt-4 space-y-4 text-sm text-slate-600">
-                                    <div class="rounded-[1.25rem] bg-rose-50 px-4 py-4 text-rose-700">
-                                        {{ $alerts['suspended_users'] }} suspended account{{ $alerts['suspended_users'] === 1 ? '' : 's' }} need review.
-                                    </div>
-                                    <div class="rounded-[1.25rem] bg-amber-50 px-4 py-4 text-amber-700">
-                                        {{ $alerts['cancelled_rides'] }} cancelled ride{{ $alerts['cancelled_rides'] === 1 ? '' : 's' }} surfaced from moderation data.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <div class="dashboard-panel">
-                                <h2 class="text-xl font-bold text-slate-950">Verified drivers</h2>
-                                <p class="mt-2 text-4xl font-black text-brand-700">{{ $metrics['verified_drivers'] }}</p>
-                                <p class="mt-3 text-sm leading-6 text-slate-500">Pulled directly from the admin service metric based on verified driver profiles.</p>
-                            </div>
-
-                            <div class="dashboard-panel">
-                                <div class="flex items-start justify-between gap-4">
-                                    <div>
-                                        <h2 class="text-xl font-bold text-slate-950">Pending CIN</h2>
-                                        <p class="mt-2 text-sm leading-6 text-slate-500">{{ $metrics['pending_driver_verifications'] }} driver profile{{ $metrics['pending_driver_verifications'] === 1 ? '' : 's' }} waiting for verification.</p>
-                                    </div>
-                                    <span class="rounded-full bg-amber-100 px-3 py-1 text-xs font-black text-amber-700">{{ $pendingDriverProfiles->count() }}</span>
-                                </div>
-
-                                <div class="mt-5 space-y-3">
-                                    @forelse ($pendingDriverProfiles as $profile)
-                                        <div class="rounded-[1.25rem] border border-slate-200 bg-slate-50 p-4">
-                                            <p class="font-bold text-slate-950">{{ $profile->user?->first_name }} {{ $profile->user?->last_name }}</p>
-                                            <p class="mt-1 text-xs font-semibold text-slate-500">CIN {{ $profile->cin_number }} &middot; {{ $profile->vehicles->first()?->brand }} {{ $profile->vehicles->first()?->model }}</p>
-                                            <form method="POST" action="{{ route('admin.driver-profiles.verify', $profile) }}" class="mt-3">
-                                                @csrf
-                                                @method('PATCH')
-                                                <button type="submit" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-black text-white transition hover:bg-emerald-700">
-                                                    Verify driver
-                                                </button>
-                                            </form>
-                                        </div>
-                                    @empty
-                                        <p class="rounded-[1.25rem] bg-slate-50 px-4 py-4 text-sm font-semibold text-slate-500">No pending driver profiles.</p>
-                                    @endforelse
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="dashboard-panel">
-                        <div class="flex items-center justify-between">
-                            <h2 class="text-xl font-bold text-slate-950">Recent rides</h2>
-                            <p class="text-sm text-slate-500">{{ $metrics['completed_rides'] }} completed &middot; {{ $metrics['cancelled_rides'] }} cancelled</p>
-                        </div>
-                        <div class="mt-6 grid gap-4 lg:grid-cols-2">
-                            @foreach ($rides as $ride)
-                                <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
-                                    <div class="flex items-start justify-between gap-3">
-                                        <div>
-                                            <p class="font-semibold text-slate-900">{{ $ride->departureCity?->name }} &rarr; {{ $ride->arrivalCity?->name }}</p>
-                                            <p class="mt-1 text-sm text-slate-500">{{ $ride->departure_time->format('d M Y \a\t H:i') }}</p>
-                                        </div>
-                                        @include('partials.status-chip', ['status' => $ride->status])
-                                    </div>
-                                    <div class="mt-4 text-sm text-slate-600">
-                                        Driver: {{ $ride->user?->first_name }} {{ $ride->user?->last_name }}
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
-                    </div>
+                    @include($sectionView)
                 </div>
             </div>
         </div>

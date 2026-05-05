@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Booking;
 use App\Models\City;
 use App\Models\Ride;
+use App\Models\Review;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Services\Admin\AdminService;
@@ -105,14 +106,35 @@ class FrontendController extends Controller
 
     public function adminDashboard(AdminService $adminService): View
     {
+        return $this->adminDashboardView($adminService, 'overview');
+    }
+
+    public function adminDriverVerification(AdminService $adminService): View
+    {
+        return $this->adminDashboardView($adminService, 'driver-verification');
+    }
+
+    public function adminUsers(AdminService $adminService): View
+    {
+        return $this->adminDashboardView($adminService, 'users');
+    }
+
+    public function adminRideActivity(AdminService $adminService): View
+    {
+        return $this->adminDashboardView($adminService, 'rides');
+    }
+
+    private function adminDashboardView(AdminService $adminService, string $section): View
+    {
         $users = $adminService->listUsers();
         $rides = $adminService->listRides();
 
         return view('pages.dashboards.admin', [
+            'section' => $section,
             'metrics' => $adminService->dashboardMetrics(),
-            'users' => $users->take(6),
+            'users' => $users,
             'rides' => $rides->take(6),
-            'pendingDriverProfiles' => $adminService->listPendingDriverVerifications()->take(6),
+            'pendingDriverProfiles' => $adminService->listPendingDriverVerifications(),
             'alerts' => [
                 'suspended_users' => $users->where('account_status', 'suspended')->count(),
                 'cancelled_rides' => $rides->where('status', 'cancelled')->count(),
@@ -198,10 +220,16 @@ class FrontendController extends Controller
             ->filter(fn (Booking $booking) => $booking->ride?->user?->driverProfile !== null)
             ->avg(fn (Booking $booking) => (float) $booking->ride->user->driverProfile->avg_rating);
 
+        $reviewedRideIds = Review::query()
+            ->where('reviewer_id', $traveler->id)
+            ->whereIn('ride_id', $bookings->pluck('ride_id'))
+            ->pluck('ride_id');
+
         return view('pages.dashboards.traveler', [
             'traveler' => $traveler,
             'bookings' => $bookings,
             'upcomingBookings' => $upcomingBookings,
+            'reviewedRideIds' => $reviewedRideIds,
             'notifications' => $traveler->notifications()
                 ->orderByDesc('created_at')
                 ->limit(5)

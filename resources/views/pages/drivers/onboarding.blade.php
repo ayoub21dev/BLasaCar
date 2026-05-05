@@ -20,13 +20,21 @@
                             </p>
                         </div>
 
-                        <form method="POST" action="{{ route('drivers.onboarding.store') }}" class="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
+                        <form method="POST" action="{{ route('drivers.onboarding.store') }}" enctype="multipart/form-data" class="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
                             @csrf
 
-                            <label class="space-y-2 lg:col-span-2">
+                            <label class="space-y-2">
                                 <span class="text-sm font-semibold text-slate-700">CIN number</span>
                                 <input type="text" name="cin_number" value="{{ old('cin_number') }}" placeholder="BE123456" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3.5 text-sm font-medium text-slate-700 outline-none">
                                 @error('cin_number')
+                                    <p class="text-sm font-medium text-red-600">{{ $message }}</p>
+                                @enderror
+                            </label>
+
+                            <label class="space-y-2">
+                                <span class="text-sm font-semibold text-slate-700">CIN photo</span>
+                                <input type="file" name="cin_photo" accept="image/png,image/jpeg,image/webp" class="w-full rounded-[1.25rem] border border-slate-200 bg-slate-50 px-4 py-3 text-sm font-medium text-slate-700 outline-none file:mr-4 file:rounded-full file:border-0 file:bg-white file:px-4 file:py-2 file:text-sm file:font-bold file:text-brand-700">
+                                @error('cin_photo')
                                     <p class="text-sm font-medium text-red-600">{{ $message }}</p>
                                 @enderror
                             </label>
@@ -52,7 +60,7 @@
                                     Create driver profile
                                 </button>
                                 <p class="mt-4 text-center text-sm leading-6 text-slate-500">
-                                    CIN verification starts as pending. Publishing is available after the driver profile and vehicle are created.
+                                    CIN verification starts as pending. Publishing is available after an admin verifies your CIN number and photo.
                                 </p>
                             </div>
                         </form>

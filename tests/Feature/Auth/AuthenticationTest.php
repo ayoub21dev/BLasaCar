@@ -103,6 +103,36 @@ class AuthenticationTest extends TestCase
             ->assertRedirect(route('dashboards.traveler'));
     }
 
+    public function test_admin_can_open_each_admin_dashboard_section(): void
+    {
+        $this->withoutVite();
+        $this->seed();
+
+        $admin = User::query()
+            ->where('email', 'admin@blassacar.test')
+            ->firstOrFail();
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin'))
+            ->assertOk()
+            ->assertSee('Admin workspace', false);
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.driver-verification'))
+            ->assertOk()
+            ->assertSee('Review submitted IDs', false);
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.users'))
+            ->assertOk()
+            ->assertSee('All users', false);
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.rides'))
+            ->assertOk()
+            ->assertSee('Ride activity', false);
+    }
+
     public function test_authenticated_user_can_log_out(): void
     {
         $this->withoutVite();

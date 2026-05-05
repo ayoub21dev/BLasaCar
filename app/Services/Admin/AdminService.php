@@ -8,6 +8,7 @@ use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 
 class AdminService
@@ -40,7 +41,7 @@ class AdminService
     public function listUsers(?string $status = null): Collection
     {
         $query = User::query()
-            ->with('driverProfile')
+            ->with('driverProfile.vehicles')
             ->orderBy('first_name')
             ->orderBy('last_name');
 
@@ -115,6 +116,10 @@ class AdminService
 
     public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
     {
+        if (blank($driverProfile->cin_photo) || ! Storage::disk('public')->exists($driverProfile->cin_photo)) {
+            throw new InvalidArgumentException('Driver profile cannot be verified without a CIN photo.');
+        }
+
         $driverProfile->forceFill([
             'cin_verified' => true,
         ])->save();

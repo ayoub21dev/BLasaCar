@@ -4,9 +4,11 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BookRideRequest;
 use App\Http\Requests\PublishRideRequest;
+use App\Http\Requests\StoreReviewRequest;
 use App\Models\Booking;
 use App\Models\Ride;
 use App\Services\PublicApp\PublicRideService;
+use App\Services\PublicApp\ReviewService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Carbon;
 use InvalidArgumentException;
@@ -72,6 +74,17 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Booking request rejected.');
     }
 
+    public function completeRide(Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    {
+        try {
+            $publicRideService->completeRide(auth()->user(), $ride);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['ride' => $exception->getMessage()]);
+        }
+
+        return back()->with('status', 'Ride completed.');
+    }
+
     public function cancelBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
     {
         if ($booking->traveler_id !== auth()->id()) {
@@ -85,5 +98,27 @@ class RideWorkflowController extends Controller
         }
 
         return back()->with('status', 'Booking cancelled.');
+    }
+
+    public function reviewBooking(StoreReviewRequest $request, Booking $booking, ReviewService $reviewService): RedirectResponse
+    {
+        if ($booking->traveler_id !== $request->user()->id) {
+            abort(403);
+        }
+
+        try {
+            $reviewService->submitDriverReview(
+                traveler: $request->user(),
+                booking: $booking,
+                rating: (int) $request->validated('rating'),
+                comment: $request->validated('comment') ?? null,
+            );
+        } catch (RuntimeException $exception) {
+            return back()
+                ->withErrors(['review' => $exception->getMessage()])
+                ->withInput();
+        }
+
+        return back()->with('status', 'Review submitted.');
     }
 }

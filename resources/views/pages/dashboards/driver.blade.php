@@ -49,18 +49,33 @@
                     <div class="grid gap-6 xl:grid-cols-[minmax(0,1.3fr)_360px]">
                         <div class="dashboard-panel">
                             <div class="flex items-center justify-between">
-                                <h2 class="text-xl font-bold text-slate-950">Upcoming rides</h2>
+                                <h2 class="text-xl font-bold text-slate-950">My rides</h2>
                                 <a href="{{ route('rides.search') }}" class="text-sm font-medium text-brand-700">View public search</a>
                             </div>
+                            @error('ride')
+                                <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                            @enderror
                             <div class="mt-6 space-y-4">
                                 @forelse ($rides->take(5) as $ride)
+                                    @php($canCompleteRide = $ride->status === 'scheduled' && $ride->departure_time->lessThanOrEqualTo(now()))
                                     <div class="rounded-[1.5rem] border border-slate-200 bg-slate-50 p-5">
                                         <div class="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
                                             <div>
                                                 <p class="font-semibold text-slate-900">{{ $ride->departureCity?->name }} &rarr; {{ $ride->arrivalCity?->name }}</p>
                                                 <p class="mt-1 text-sm text-slate-500">{{ $ride->departure_time->format('d M Y \a\t H:i') }} &middot; {{ $ride->available_seats }} seats left</p>
                                             </div>
-                                            @include('partials.status-chip', ['status' => $ride->status])
+                                            <div class="flex flex-wrap items-center gap-2">
+                                                @include('partials.status-chip', ['status' => $ride->status])
+                                                @if ($canCompleteRide)
+                                                    <form method="POST" action="{{ route('rides.complete', $ride) }}">
+                                                        @csrf
+                                                        @method('PATCH')
+                                                        <button type="submit" class="rounded-full bg-emerald-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-emerald-700">
+                                                            Complete
+                                                        </button>
+                                                    </form>
+                                                @endif
+                                            </div>
                                         </div>
                                     </div>
                                 @empty

@@ -78,6 +78,22 @@ class BookingNotificationService
         );
     }
 
+    public function rideCompleted(Booking $booking): Notification
+    {
+        $booking = $this->loadBookingContext($booking);
+
+        return $this->createForUser(
+            user: $booking->traveler,
+            type: 'ride_completed',
+            title: 'Ride completed',
+            message: sprintf(
+                'Your %s ride is completed. You can now review the driver.',
+                $this->routeLabel($booking),
+            ),
+            booking: $booking,
+        );
+    }
+
     private function createForUser(User $user, string $type, string $title, string $message, Booking $booking): Notification
     {
         return Notification::query()->create([

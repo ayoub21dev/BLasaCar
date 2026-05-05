@@ -197,6 +197,51 @@ class PublicRideService
         });
     }
 
+    public function completeRide(User $driver, Ride $ride): Ride
+    {
+        return DB::transaction(function () use ($driver, $ride): Ride {
+            /** @var Ride $lockedRide */
+            $lockedRide = Ride::query()
+                ->with([
+                    'bookings.traveler',
+                    'departureCity',
+                    'arrivalCity',
+                    'user.driverProfile',
+                ])
+                ->whereKey($ride->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->assertDriverCanCompleteRide($driver, $lockedRide);
+
+            $lockedRide->update([
+                'status' => 'completed',
+                'available_seats' => 0,
+            ]);
+
+            $lockedRide->bookings()
+                ->where('status', 'pending')
+                ->update(['status' => 'rejected']);
+
+            $lockedRide->bookings()
+                ->where('status', 'confirmed')
+                ->update(['status' => 'completed']);
+
+            $lockedRide->user?->driverProfile?->increment('total_trips');
+
+            $completedBookings = $lockedRide->bookings()
+                ->with(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler'])
+                ->where('status', 'completed')
+                ->get();
+
+            foreach ($completedBookings as $booking) {
+                $this->notifications->rideCompleted($booking);
+            }
+
+            return $lockedRide->fresh(['bookings.traveler', 'departureCity', 'arrivalCity', 'user.driverProfile']);
+        });
+    }
+
     private function assertRideCanBeBooked(User $traveler, Ride $ride, int $seatsRequested): void
     {
         if ($traveler->account_status !== 'active') {
@@ -253,6 +298,21 @@ class PublicRideService
 
         if ($booking->ride?->departure_time?->lessThanOrEqualTo(now())) {
             throw new RuntimeException('Past rides cannot receive booking decisions.');
+        }
+    }
+
+    private function assertDriverCanCompleteRide(User $driver, Ride $ride): void
+    {
+        if ($ride->user_id !== $driver->id) {
+            throw new RuntimeException('This ride does not belong to you.');
+        }
+
+        if ($ride->status !== 'scheduled') {
+            throw new RuntimeException('Only scheduled rides can be completed.');
+        }
+
+        if ($ride->departure_time->isFuture()) {
+            throw new RuntimeException('Future rides cannot be completed yet.');
         }
     }
 }

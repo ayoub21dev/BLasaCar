@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Services\Admin\AdminService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Tests\TestCase;
 
@@ -144,12 +145,15 @@ class AdminServiceTest extends TestCase
 
     public function test_it_can_verify_a_driver_profile(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('cin/cc123456.jpg', 'id-photo');
+
         $service = new AdminService;
         $driver = User::factory()->driver()->create();
         $driverProfile = DriverProfile::query()->create([
             'user_id' => $driver->id,
             'cin_number' => 'CC123456',
-            'cin_photo' => null,
+            'cin_photo' => 'cin/cc123456.jpg',
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
@@ -159,6 +163,24 @@ class AdminServiceTest extends TestCase
 
         $this->assertTrue($verifiedProfile->cin_verified);
         $this->assertSame(0, $service->listPendingDriverVerifications()->count());
+    }
+
+    public function test_it_requires_a_cin_photo_before_verifying_a_driver_profile(): void
+    {
+        $service = new AdminService;
+        $driver = User::factory()->driver()->create();
+        $driverProfile = DriverProfile::query()->create([
+            'user_id' => $driver->id,
+            'cin_number' => 'DD123456',
+            'cin_photo' => null,
+            'cin_verified' => false,
+            'avg_rating' => 0,
+            'total_trips' => 0,
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $service->verifyDriverProfile($driverProfile);
     }
 
     public function test_it_rejects_unknown_moderation_statuses(): void

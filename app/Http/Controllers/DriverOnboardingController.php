@@ -24,8 +24,9 @@ class DriverOnboardingController extends Controller
     public function store(BecomeDriverRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $cinPhotoPath = $request->file('cin_photo')->store('cin', 'public');
 
-        DB::transaction(function () use ($request, $validated): void {
+        DB::transaction(function () use ($request, $validated, $cinPhotoPath): void {
             /** @var User $user */
             $user = User::query()
                 ->whereKey($request->user()->id)
@@ -34,7 +35,7 @@ class DriverOnboardingController extends Controller
 
             $driverProfile = $user->driverProfile()->create([
                 'cin_number' => $validated['cin_number'],
-                'cin_photo' => null,
+                'cin_photo' => $cinPhotoPath,
                 'cin_verified' => false,
             ]);
 

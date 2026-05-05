@@ -113,6 +113,15 @@
                         @error('booking')
                             <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
                         @enderror
+                        @error('review')
+                            <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                        @enderror
+                        @error('rating')
+                            <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                        @enderror
+                        @error('comment')
+                            <p class="mt-4 rounded-2xl bg-rose-50 px-4 py-3 text-sm font-medium text-rose-700">{{ $message }}</p>
+                        @enderror
                         <div class="mt-6 overflow-x-auto rounded-[1.5rem] border border-slate-200">
                             <table class="min-w-full divide-y divide-slate-200 text-sm">
                                 <thead class="bg-slate-50 text-left text-slate-500">
@@ -127,6 +136,8 @@
                                 <tbody class="divide-y divide-slate-100 bg-white">
                                     @foreach ($bookings as $booking)
                                         @php($canCancelBooking = in_array($booking->status, ['pending', 'confirmed'], true) && $booking->ride?->departure_time?->isFuture())
+                                        @php($hasReviewedRide = $reviewedRideIds->contains($booking->ride_id))
+                                        @php($canReviewBooking = $booking->status === 'completed' && ! $hasReviewedRide)
                                         <tr>
                                             <td class="px-5 py-4 font-medium text-slate-900">{{ $booking->ride?->departureCity?->name }} &rarr; {{ $booking->ride?->arrivalCity?->name }}</td>
                                             <td class="px-5 py-4 text-slate-600">{{ $booking->ride?->departure_time?->format('d M Y \a\t H:i') }}</td>
@@ -141,6 +152,22 @@
                                                             Cancel
                                                         </button>
                                                     </form>
+                                                @elseif ($canReviewBooking)
+                                                    <form method="POST" action="{{ route('bookings.reviews.store', $booking) }}" class="min-w-56 space-y-2">
+                                                        @csrf
+                                                        <select name="rating" required class="w-full rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-100">
+                                                            <option value="">Rate driver</option>
+                                                            @for ($rating = 5; $rating >= 1; $rating--)
+                                                                <option value="{{ $rating }}">{{ $rating }}/5</option>
+                                                            @endfor
+                                                        </select>
+                                                        <textarea name="comment" rows="2" maxlength="1000" placeholder="Comment" class="w-full resize-none rounded-2xl border border-slate-200 bg-white px-3 py-2 text-xs text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-brand-400 focus:ring-4 focus:ring-brand-100"></textarea>
+                                                        <button type="submit" class="rounded-full bg-brand-600 px-4 py-2 text-xs font-bold text-white transition hover:bg-brand-700">
+                                                            Submit review
+                                                        </button>
+                                                    </form>
+                                                @elseif ($booking->status === 'completed' && $hasReviewedRide)
+                                                    <span class="text-xs font-medium text-emerald-600">Reviewed</span>
                                                 @else
                                                     <span class="text-xs font-medium text-slate-400">No action</span>
                                                 @endif

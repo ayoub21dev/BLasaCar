@@ -51,6 +51,15 @@ class FrontendPagesTest extends TestCase
         $this->get(route('dashboards.admin'))
             ->assertRedirect(route('login'));
 
+        $this->get(route('dashboards.admin.driver-verification'))
+            ->assertRedirect(route('login'));
+
+        $this->get(route('dashboards.admin.users'))
+            ->assertRedirect(route('login'));
+
+        $this->get(route('dashboards.admin.rides'))
+            ->assertRedirect(route('login'));
+
         $this->get(route('dashboards.driver'))
             ->assertRedirect(route('login'));
 

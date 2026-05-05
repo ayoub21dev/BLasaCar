@@ -23,6 +23,7 @@ class BecomeDriverRequest extends FormRequest
     {
         return [
             'cin_number' => ['required', 'string', 'max:50', 'unique:driver_profiles,cin_number'],
+            'cin_photo' => ['required', 'image', 'mimes:jpg,jpeg,png,webp', 'max:4096'],
             'vehicle_brand' => ['required', 'string', 'max:80'],
             'vehicle_model' => ['required', 'string', 'max:80'],
         ];
