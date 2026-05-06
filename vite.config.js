@@ -1,13 +1,20 @@
 import { defineConfig } from 'vite';
+import inertia from '@inertiajs/vite';
 import laravel from 'laravel-vite-plugin';
+import react from '@vitejs/plugin-react';
 import tailwindcss from '@tailwindcss/vite';
 
 export default defineConfig({
     plugins: [
         laravel({
-            input: ['resources/css/app.css', 'resources/js/app.js'],
+            input: ['resources/css/app.css', 'resources/js/app.tsx'],
+            ssr: 'resources/js/ssr.tsx',
             refresh: true,
         }),
+        inertia({
+            ssr: 'resources/js/ssr.tsx',
+        }),
+        react(),
         tailwindcss(),
     ],
     server: {

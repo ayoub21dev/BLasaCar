@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Hash;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AccountSettingsTest extends TestCase
@@ -26,9 +27,9 @@ class AccountSettingsTest extends TestCase
         $this->actingAs($user)
             ->get(route('account.settings.edit'))
             ->assertOk()
-            ->assertSee('Account preferences', false)
-            ->assertSee('Profile details', false)
-            ->assertSee('Password', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Account/Settings', false)
+                ->where('user.id', $user->id));
     }
 
     public function test_authenticated_user_can_update_profile_details(): void

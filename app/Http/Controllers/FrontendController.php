@@ -4,19 +4,21 @@ namespace App\Http\Controllers;
 
 use App\Models\Booking;
 use App\Models\City;
-use App\Models\Ride;
 use App\Models\Review;
+use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Services\Admin\AdminService;
 use App\Services\PublicApp\PublicRideService;
+use App\Support\InertiaProps;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class FrontendController extends Controller
 {
-    public function home(): View
+    public function home(): Response
     {
         $cities = City::query()->orderBy('name')->get();
 
@@ -24,13 +26,14 @@ class FrontendController extends Controller
             ->limit(4)
             ->get();
 
-        return view('pages.home', [
-            'cities' => $cities,
-            'featuredRides' => $featuredRides,
+        return Inertia::render('Home', [
+            'cities' => $cities->map(fn (City $city) => InertiaProps::city($city))->values(),
+            'featuredRides' => $featuredRides->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
+            'today' => today()->format('Y-m-d'),
         ]);
     }
 
-    public function search(Request $request, PublicRideService $publicRideService): View
+    public function search(Request $request, PublicRideService $publicRideService): Response
     {
         $filters = $request->validate([
             'departure_city_id' => ['nullable', 'integer', 'exists:cities,id'],
@@ -59,21 +62,21 @@ class FrontendController extends Controller
                 ->values();
         }
 
-        return view('pages.search', [
-            'cities' => City::query()->orderBy('name')->get(),
-            'rides' => $rides,
+        return Inertia::render('Search', [
+            'cities' => City::query()->orderBy('name')->get()->map(fn (City $city) => InertiaProps::city($city))->values(),
+            'rides' => $rides->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
             'filters' => $filters,
         ]);
     }
 
-    public function showRide(Ride $ride, PublicRideService $publicRideService): View
+    public function showRide(Ride $ride, PublicRideService $publicRideService): Response
     {
-        return view('pages.ride-details', [
-            'ride' => $publicRideService->getRideDetails($ride),
+        return Inertia::render('RideDetails', [
+            'ride' => InertiaProps::ride($publicRideService->getRideDetails($ride)),
         ]);
     }
 
-    public function publishRide(): View
+    public function publishRide(): Response
     {
         $vehicles = collect();
         $user = auth()->user();
@@ -86,55 +89,60 @@ class FrontendController extends Controller
                 ->get();
         }
 
-        return view('pages.publish', [
-            'cities' => City::query()->orderBy('name')->get(),
+        return Inertia::render('Publish', [
+            'cities' => City::query()->orderBy('name')->get()->map(fn (City $city) => InertiaProps::city($city))->values(),
             'canPublishRide' => $user?->isDriver() && $user->driverProfile?->cin_verified === true,
             'verificationPending' => $user?->isDriver() && $user->driverProfile?->cin_verified !== true,
-            'vehicles' => $vehicles,
+            'vehicles' => $vehicles->map(fn (Vehicle $vehicle) => InertiaProps::vehicle($vehicle))->values(),
         ]);
     }
 
-    public function login(): View
+    public function login(): Response
     {
-        return view('pages.auth.login');
+        return Inertia::render('Auth/Login');
     }
 
-    public function signup(): View
+    public function signup(): Response
     {
-        return view('pages.auth.signup');
+        return Inertia::render('Auth/Signup');
     }
 
-    public function adminDashboard(AdminService $adminService): View
+    public function adminDashboard(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'overview');
     }
 
-    public function adminDriverVerification(AdminService $adminService): View
+    public function adminDriverVerification(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'driver-verification');
     }
 
-    public function adminUsers(AdminService $adminService): View
+    public function adminUsers(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'users');
     }
 
-    public function adminRideActivity(AdminService $adminService): View
+    public function adminRideActivity(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'rides');
     }
 
-    private function adminDashboardView(AdminService $adminService, string $section): View
+    private function adminDashboardView(AdminService $adminService, string $section): Response
     {
         $users = $adminService->listUsers();
         $rides = $adminService->listRides();
 
-        return view('pages.dashboards.admin', [
+        return Inertia::render('Dashboards/Admin', [
             'section' => $section,
             'metrics' => $adminService->dashboardMetrics(),
-            'users' => $users,
-            'rides' => $rides->take(6),
-            'pendingDriverProfiles' => $adminService->listPendingDriverVerifications(),
+            'users' => $users->map(fn (User $user) => InertiaProps::user($user, true))->values(),
+            'rides' => $rides->take(6)->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
+            'pendingDriverProfiles' => $adminService->listPendingDriverVerifications()
+                ->map(fn ($profile) => [
+                    ...InertiaProps::driverProfile($profile),
+                    'user' => $profile->user ? InertiaProps::user($profile->user) : null,
+                ])
+                ->values(),
             'alerts' => [
                 'suspended_users' => $users->where('account_status', 'suspended')->count(),
                 'cancelled_rides' => $rides->where('status', 'cancelled')->count(),
@@ -142,7 +150,7 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function driverDashboard(): View
+    public function driverDashboard(): Response
     {
         $driver = User::query()
             ->with([
@@ -150,6 +158,7 @@ class FrontendController extends Controller
                 'rides.departureCity',
                 'rides.arrivalCity',
                 'rides.vehicle',
+                'rides.user.driverProfile',
             ])
             ->whereKey(auth()->id())
             ->role(User::ROLE_DRIVER)
@@ -162,6 +171,8 @@ class FrontendController extends Controller
         $bookings = Booking::query()
             ->with([
                 'traveler',
+                'ride.user.driverProfile',
+                'ride.vehicle',
                 'ride.departureCity',
                 'ride.arrivalCity',
             ])
@@ -180,14 +191,16 @@ class FrontendController extends Controller
             ? (int) round(($handledBookings / $bookings->count()) * 100)
             : 100;
 
-        return view('pages.dashboards.driver', [
-            'driver' => $driver,
-            'rides' => $rides,
-            'bookings' => $bookings,
+        return Inertia::render('Dashboards/Driver', [
+            'driver' => InertiaProps::user($driver),
+            'rides' => $rides->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
+            'bookings' => $bookings->map(fn (Booking $booking) => InertiaProps::booking($booking))->values(),
             'notifications' => $driver->notifications()
                 ->orderByDesc('created_at')
                 ->limit(5)
-                ->get(),
+                ->get()
+                ->map(fn ($notification) => InertiaProps::notification($notification))
+                ->values(),
             'stats' => [
                 'published_rides' => $publishedRides,
                 'upcoming_rides' => $rides->where('status', 'scheduled')->count(),
@@ -198,11 +211,12 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function travelerDashboard(PublicRideService $publicRideService): View
+    public function travelerDashboard(PublicRideService $publicRideService): Response
     {
         $traveler = User::query()
             ->with([
                 'bookings.ride.user.driverProfile',
+                'bookings.ride.vehicle',
                 'bookings.ride.departureCity',
                 'bookings.ride.arrivalCity',
             ])
@@ -225,15 +239,22 @@ class FrontendController extends Controller
             ->whereIn('ride_id', $bookings->pluck('ride_id'))
             ->pluck('ride_id');
 
-        return view('pages.dashboards.traveler', [
-            'traveler' => $traveler,
-            'bookings' => $bookings,
-            'upcomingBookings' => $upcomingBookings,
-            'reviewedRideIds' => $reviewedRideIds,
+        return Inertia::render('Dashboards/Traveler', [
+            'traveler' => InertiaProps::user($traveler),
+            'bookings' => $bookings->map(function (Booking $booking) use ($reviewedRideIds) {
+                return [
+                    ...InertiaProps::booking($booking),
+                    'reviewed' => $reviewedRideIds->contains($booking->ride_id),
+                    'can_review' => $booking->status === 'completed' && ! $reviewedRideIds->contains($booking->ride_id),
+                ];
+            })->values(),
+            'upcomingBookings' => $upcomingBookings->map(fn (Booking $booking) => InertiaProps::booking($booking))->values(),
             'notifications' => $traveler->notifications()
                 ->orderByDesc('created_at')
                 ->limit(5)
-                ->get(),
+                ->get()
+                ->map(fn ($notification) => InertiaProps::notification($notification))
+                ->values(),
             'stats' => [
                 'upcoming_trips' => $upcomingBookings->count(),
                 'completed_trips' => $bookings->where('status', 'completed')->count(),

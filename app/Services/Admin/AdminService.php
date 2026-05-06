@@ -116,8 +116,15 @@ class AdminService
 
     public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
     {
-        if (blank($driverProfile->cin_photo) || ! Storage::disk('public')->exists($driverProfile->cin_photo)) {
-            throw new InvalidArgumentException('Driver profile cannot be verified without a CIN photo.');
+        $cinFrontPhoto = $driverProfile->cin_front_photo ?: $driverProfile->cin_photo;
+
+        if (
+            blank($cinFrontPhoto)
+            || blank($driverProfile->cin_back_photo)
+            || ! Storage::disk('public')->exists($cinFrontPhoto)
+            || ! Storage::disk('public')->exists($driverProfile->cin_back_photo)
+        ) {
+            throw new InvalidArgumentException('Driver profile cannot be verified without both front and back CIN photos.');
         }
 
         $driverProfile->forceFill([

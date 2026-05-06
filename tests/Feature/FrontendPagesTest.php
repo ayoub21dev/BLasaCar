@@ -5,6 +5,7 @@ namespace Tests\Feature;
 use App\Models\City;
 use App\Models\Ride;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class FrontendPagesTest extends TestCase
@@ -20,27 +21,27 @@ class FrontendPagesTest extends TestCase
 
         $this->get(route('home'))
             ->assertOk()
-            ->assertSee('Travel between cities', false);
+            ->assertInertia(fn (Assert $page) => $page->component('Home', false));
 
         $this->get(route('rides.search'))
             ->assertOk()
-            ->assertSee('Find a route that fits your next trip.', false);
+            ->assertInertia(fn (Assert $page) => $page->component('Search', false));
 
         $this->get(route('rides.show', $ride))
             ->assertOk()
-            ->assertSee('Ride details', false);
+            ->assertInertia(fn (Assert $page) => $page->component('RideDetails', false));
 
         $this->get(route('rides.publish'))
             ->assertOk()
-            ->assertSee('Publish a ride', false);
+            ->assertInertia(fn (Assert $page) => $page->component('Publish', false));
 
         $this->get(route('login'))
             ->assertOk()
-            ->assertSee('Welcome back', false);
+            ->assertInertia(fn (Assert $page) => $page->component('Auth/Login', false));
 
         $this->get(route('signup'))
             ->assertOk()
-            ->assertSee('Create an account', false);
+            ->assertInertia(fn (Assert $page) => $page->component('Auth/Signup', false));
     }
 
     public function test_dashboard_routes_redirect_guests_to_login(): void
@@ -77,18 +78,21 @@ class FrontendPagesTest extends TestCase
         foreach (['Laayoune', 'Dakhla', 'Chefchaouen', 'Ouarzazate', 'Nador'] as $city) {
             $this->get(route('home'))
                 ->assertOk()
-                ->assertSee('Search city', false)
-                ->assertSee($city, false);
+                ->assertInertia(fn (Assert $page) => $page
+                    ->component('Home', false)
+                    ->where('cities', fn ($cities) => collect($cities)->pluck('name')->contains($city)));
 
             $this->get(route('rides.search'))
                 ->assertOk()
-                ->assertSee('Search city', false)
-                ->assertSee($city, false);
+                ->assertInertia(fn (Assert $page) => $page
+                    ->component('Search', false)
+                    ->where('cities', fn ($cities) => collect($cities)->pluck('name')->contains($city)));
 
             $this->get(route('rides.publish'))
                 ->assertOk()
-                ->assertSee('Search city', false)
-                ->assertSee($city, false);
+                ->assertInertia(fn (Assert $page) => $page
+                    ->component('Publish', false)
+                    ->where('cities', fn ($cities) => collect($cities)->pluck('name')->contains($city)));
         }
     }
 }

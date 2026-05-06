@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -115,22 +116,30 @@ class AuthenticationTest extends TestCase
         $this->actingAs($admin)
             ->get(route('dashboards.admin'))
             ->assertOk()
-            ->assertSee('Admin workspace', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'overview'));
 
         $this->actingAs($admin)
             ->get(route('dashboards.admin.driver-verification'))
             ->assertOk()
-            ->assertSee('Review submitted IDs', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'driver-verification'));
 
         $this->actingAs($admin)
             ->get(route('dashboards.admin.users'))
             ->assertOk()
-            ->assertSee('All users', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'users'));
 
         $this->actingAs($admin)
             ->get(route('dashboards.admin.rides'))
             ->assertOk()
-            ->assertSee('Ride activity', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'rides'));
     }
 
     public function test_authenticated_user_can_log_out(): void

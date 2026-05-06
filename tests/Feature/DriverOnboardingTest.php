@@ -8,6 +8,7 @@ use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class DriverOnboardingTest extends TestCase
@@ -23,8 +24,8 @@ class DriverOnboardingTest extends TestCase
         $this->actingAs($traveler)
             ->get(route('drivers.onboarding.create'))
             ->assertOk()
-            ->assertSee('Become a', false)
-            ->assertSee('driver', false);
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Drivers/Onboarding', false));
     }
 
     public function test_traveler_can_become_a_driver_with_first_vehicle(): void
@@ -35,7 +36,8 @@ class DriverOnboardingTest extends TestCase
 
         $response = $this->actingAs($traveler)->post(route('drivers.onboarding.store'), [
             'cin_number' => 'BK987654',
-            'cin_photo' => UploadedFile::fake()->image('cin-front.jpg'),
+            'cin_front_photo' => UploadedFile::fake()->image('cin-front.jpg'),
+            'cin_back_photo' => UploadedFile::fake()->image('cin-back.jpg'),
             'vehicle_brand' => 'Dacia',
             'vehicle_model' => 'Logan',
         ]);
@@ -52,8 +54,11 @@ class DriverOnboardingTest extends TestCase
             ->firstOrFail();
 
         $this->assertFalse($driverProfile->cin_verified);
-        $this->assertNotNull($driverProfile->cin_photo);
-        Storage::disk('public')->assertExists($driverProfile->cin_photo);
+        $this->assertNotNull($driverProfile->cin_front_photo);
+        $this->assertNotNull($driverProfile->cin_back_photo);
+        $this->assertSame($driverProfile->cin_front_photo, $driverProfile->cin_photo);
+        Storage::disk('public')->assertExists($driverProfile->cin_front_photo);
+        Storage::disk('public')->assertExists($driverProfile->cin_back_photo);
 
         $this->assertDatabaseHas('vehicles', [
             'driver_profile_id' => $driverProfile->id,
@@ -62,15 +67,16 @@ class DriverOnboardingTest extends TestCase
         ]);
     }
 
-    public function test_cin_photo_is_required_to_become_a_driver(): void
+    public function test_both_cin_photos_are_required_to_become_a_driver(): void
     {
         $traveler = User::factory()->traveler()->create();
 
         $this->actingAs($traveler)->post(route('drivers.onboarding.store'), [
             'cin_number' => 'BK987655',
+            'cin_front_photo' => UploadedFile::fake()->image('cin-front.jpg'),
             'vehicle_brand' => 'Dacia',
             'vehicle_model' => 'Logan',
-        ])->assertSessionHasErrors('cin_photo');
+        ])->assertSessionHasErrors('cin_back_photo');
 
         $this->assertDatabaseMissing('driver_profiles', [
             'user_id' => $traveler->id,
@@ -84,6 +90,8 @@ class DriverOnboardingTest extends TestCase
             'user_id' => $driver->id,
             'cin_number' => 'DR123456',
             'cin_photo' => null,
+            'cin_front_photo' => null,
+            'cin_back_photo' => null,
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,

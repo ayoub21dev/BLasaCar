@@ -6,11 +6,12 @@ use App\Http\Requests\BecomeDriverRequest;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class DriverOnboardingController extends Controller
 {
-    public function create(): View|RedirectResponse
+    public function create(): Response|RedirectResponse
     {
         $user = auth()->user();
 
@@ -18,15 +19,16 @@ class DriverOnboardingController extends Controller
             return redirect()->route('dashboards.driver');
         }
 
-        return view('pages.drivers.onboarding');
+        return Inertia::render('Drivers/Onboarding');
     }
 
     public function store(BecomeDriverRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $cinPhotoPath = $request->file('cin_photo')->store('cin', 'public');
+        $cinFrontPhotoPath = $request->file('cin_front_photo')->store('cin/front', 'public');
+        $cinBackPhotoPath = $request->file('cin_back_photo')->store('cin/back', 'public');
 
-        DB::transaction(function () use ($request, $validated, $cinPhotoPath): void {
+        DB::transaction(function () use ($request, $validated, $cinFrontPhotoPath, $cinBackPhotoPath): void {
             /** @var User $user */
             $user = User::query()
                 ->whereKey($request->user()->id)
@@ -35,7 +37,9 @@ class DriverOnboardingController extends Controller
 
             $driverProfile = $user->driverProfile()->create([
                 'cin_number' => $validated['cin_number'],
-                'cin_photo' => $cinPhotoPath,
+                'cin_photo' => $cinFrontPhotoPath,
+                'cin_front_photo' => $cinFrontPhotoPath,
+                'cin_back_photo' => $cinBackPhotoPath,
                 'cin_verified' => false,
             ]);
 

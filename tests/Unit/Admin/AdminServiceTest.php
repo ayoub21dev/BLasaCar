@@ -27,6 +27,8 @@ class AdminServiceTest extends TestCase
             'user_id' => $driver->id,
             'cin_number' => 'AA123456',
             'cin_photo' => 'cin/driver.jpg',
+            'cin_front_photo' => 'cin/driver-front.jpg',
+            'cin_back_photo' => 'cin/driver-back.jpg',
             'cin_verified' => true,
             'avg_rating' => 4.8,
             'total_trips' => 10,
@@ -146,14 +148,17 @@ class AdminServiceTest extends TestCase
     public function test_it_can_verify_a_driver_profile(): void
     {
         Storage::fake('public');
-        Storage::disk('public')->put('cin/cc123456.jpg', 'id-photo');
+        Storage::disk('public')->put('cin/front/cc123456.jpg', 'id-photo-front');
+        Storage::disk('public')->put('cin/back/cc123456.jpg', 'id-photo-back');
 
         $service = new AdminService;
         $driver = User::factory()->driver()->create();
         $driverProfile = DriverProfile::query()->create([
             'user_id' => $driver->id,
             'cin_number' => 'CC123456',
-            'cin_photo' => 'cin/cc123456.jpg',
+            'cin_photo' => 'cin/front/cc123456.jpg',
+            'cin_front_photo' => 'cin/front/cc123456.jpg',
+            'cin_back_photo' => 'cin/back/cc123456.jpg',
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
@@ -165,14 +170,19 @@ class AdminServiceTest extends TestCase
         $this->assertSame(0, $service->listPendingDriverVerifications()->count());
     }
 
-    public function test_it_requires_a_cin_photo_before_verifying_a_driver_profile(): void
+    public function test_it_requires_both_cin_photos_before_verifying_a_driver_profile(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('cin/front/dd123456.jpg', 'id-photo-front');
+
         $service = new AdminService;
         $driver = User::factory()->driver()->create();
         $driverProfile = DriverProfile::query()->create([
             'user_id' => $driver->id,
             'cin_number' => 'DD123456',
-            'cin_photo' => null,
+            'cin_photo' => 'cin/front/dd123456.jpg',
+            'cin_front_photo' => 'cin/front/dd123456.jpg',
+            'cin_back_photo' => null,
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
@@ -201,6 +211,8 @@ class AdminServiceTest extends TestCase
             'user_id' => $driver->id,
             'cin_number' => 'BB123456',
             'cin_photo' => 'cin/driver-2.jpg',
+            'cin_front_photo' => 'cin/driver-2-front.jpg',
+            'cin_back_photo' => 'cin/driver-2-back.jpg',
             'cin_verified' => true,
             'avg_rating' => 4.5,
             'total_trips' => 6,

@@ -15,14 +15,17 @@ class AdminWorkflowTest extends TestCase
     public function test_admin_can_verify_a_pending_driver_profile(): void
     {
         Storage::fake('public');
-        Storage::disk('public')->put('cin/aa987654.jpg', 'id-photo');
+        Storage::disk('public')->put('cin/front/aa987654.jpg', 'id-photo-front');
+        Storage::disk('public')->put('cin/back/aa987654.jpg', 'id-photo-back');
 
         $admin = User::factory()->admin()->create();
         $driver = User::factory()->driver()->create();
         $driverProfile = DriverProfile::query()->create([
             'user_id' => $driver->id,
             'cin_number' => 'AA987654',
-            'cin_photo' => 'cin/aa987654.jpg',
+            'cin_photo' => 'cin/front/aa987654.jpg',
+            'cin_front_photo' => 'cin/front/aa987654.jpg',
+            'cin_back_photo' => 'cin/back/aa987654.jpg',
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
@@ -36,14 +39,19 @@ class AdminWorkflowTest extends TestCase
         $this->assertTrue($driverProfile->fresh()->cin_verified);
     }
 
-    public function test_admin_cannot_verify_a_driver_profile_without_cin_photo(): void
+    public function test_admin_cannot_verify_a_driver_profile_without_both_cin_photos(): void
     {
+        Storage::fake('public');
+        Storage::disk('public')->put('cin/front/aa987655.jpg', 'id-photo-front');
+
         $admin = User::factory()->admin()->create();
         $driver = User::factory()->driver()->create();
         $driverProfile = DriverProfile::query()->create([
             'user_id' => $driver->id,
             'cin_number' => 'AA987655',
-            'cin_photo' => null,
+            'cin_photo' => 'cin/front/aa987655.jpg',
+            'cin_front_photo' => 'cin/front/aa987655.jpg',
+            'cin_back_photo' => null,
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
@@ -66,6 +74,8 @@ class AdminWorkflowTest extends TestCase
             'user_id' => $driver->id,
             'cin_number' => 'BB987654',
             'cin_photo' => null,
+            'cin_front_photo' => null,
+            'cin_back_photo' => null,
             'cin_verified' => false,
             'avg_rating' => 0,
             'total_trips' => 0,
