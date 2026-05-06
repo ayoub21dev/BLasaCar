@@ -3,10 +3,12 @@
 namespace App\Services\Admin;
 
 use App\Models\Booking;
+use App\Models\DriverProfile;
 use App\Models\Ride;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 
 class AdminService
@@ -25,6 +27,7 @@ class AdminService
             'active_users' => User::where('account_status', 'active')->count(),
             'suspended_users' => User::where('account_status', 'suspended')->count(),
             'verified_drivers' => User::whereHas('driverProfile', fn ($query) => $query->where('cin_verified', true))->count(),
+            'pending_driver_verifications' => DriverProfile::where('cin_verified', false)->count(),
             'scheduled_rides' => Ride::where('status', 'scheduled')->count(),
             'completed_rides' => Ride::where('status', 'completed')->count(),
             'cancelled_rides' => Ride::where('status', 'cancelled')->count(),
@@ -38,7 +41,7 @@ class AdminService
     public function listUsers(?string $status = null): Collection
     {
         $query = User::query()
-            ->with('driverProfile')
+            ->with('driverProfile.vehicles')
             ->orderBy('first_name')
             ->orderBy('last_name');
 
@@ -48,6 +51,18 @@ class AdminService
         }
 
         return $query->get();
+    }
+
+    /**
+     * @return Collection<int, DriverProfile>
+     */
+    public function listPendingDriverVerifications(): Collection
+    {
+        return DriverProfile::query()
+            ->with(['user', 'vehicles'])
+            ->where('cin_verified', false)
+            ->orderBy('created_at')
+            ->get();
     }
 
     public function suspendUser(User $user, ?Carbon $suspendedAt = null): User
@@ -97,6 +112,26 @@ class AdminService
         ])->save();
 
         return $ride->refresh();
+    }
+
+    public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
+    {
+        $cinFrontPhoto = $driverProfile->cin_front_photo ?: $driverProfile->cin_photo;
+
+        if (
+            blank($cinFrontPhoto)
+            || blank($driverProfile->cin_back_photo)
+            || ! Storage::disk('public')->exists($cinFrontPhoto)
+            || ! Storage::disk('public')->exists($driverProfile->cin_back_photo)
+        ) {
+            throw new InvalidArgumentException('Driver profile cannot be verified without both front and back CIN photos.');
+        }
+
+        $driverProfile->forceFill([
+            'cin_verified' => true,
+        ])->save();
+
+        return $driverProfile->refresh();
     }
 
     private function assertValidUserStatus(string $status): void

@@ -15,6 +15,8 @@ class DriverProfile extends Model
         'user_id',
         'cin_number',
         'cin_photo',
+        'cin_front_photo',
+        'cin_back_photo',
         'cin_verified',
         'avg_rating',
         'total_trips',

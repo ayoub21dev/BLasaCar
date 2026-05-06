@@ -20,7 +20,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_searches_only_bookable_rides_for_a_route_and_date(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
 
         $bookableRide = $this->createRide(
@@ -67,7 +67,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_past_rides_for_booking(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -83,7 +83,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_creates_a_pending_booking_and_decrements_available_seats(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -98,11 +98,62 @@ class PublicRideServiceTest extends TestCase
         $this->assertSame('pending', $booking->status);
         $this->assertSame(2, $booking->seats_reserved);
         $this->assertSame(1, $ride->fresh()->available_seats);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $ride->user_id,
+            'type' => 'booking_created',
+            'channel' => 'in_app',
+            'related_entity_type' => Booking::class,
+            'related_entity_id' => $booking->id,
+            'is_read' => false,
+        ]);
+    }
+
+    public function test_it_rejects_duplicate_active_booking_requests_for_the_same_ride(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '+1 day 08:00',
+            overrides: ['available_seats' => 3],
+        );
+        $traveler = User::factory()->create();
+
+        $service->requestSeat($traveler, $ride, 1);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('already have an active booking');
+
+        $service->requestSeat($traveler, $ride->fresh(), 1);
+    }
+
+    public function test_it_allows_a_new_booking_after_previous_request_is_not_active(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '+1 day 08:00',
+            overrides: ['available_seats' => 3],
+        );
+        $traveler = User::factory()->create();
+
+        $booking = $service->requestSeat($traveler, $ride, 1);
+        $booking->update(['status' => 'cancelled']);
+        $ride->increment('available_seats');
+
+        $newBooking = $service->requestSeat($traveler, $ride->fresh(), 1);
+
+        $this->assertSame('pending', $newBooking->status);
+        $this->assertDatabaseCount('bookings', 2);
+        $this->assertSame(2, $ride->fresh()->available_seats);
     }
 
     public function test_it_rejects_invalid_booking_requests(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -119,7 +170,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_zero_seat_requests(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -135,7 +186,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_lists_booking_statuses_for_a_traveler(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $traveler = User::factory()->create();
 
@@ -176,7 +227,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_cancels_a_booking_and_restores_available_seats(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -202,7 +253,7 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_rejects_cancellation_for_terminal_booking_statuses(): void
     {
-        $service = new PublicRideService;
+        $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
             departureCity: $casablanca,
@@ -224,6 +275,101 @@ class PublicRideServiceTest extends TestCase
         $service->cancelBooking($booking);
     }
 
+    public function test_it_notifies_the_traveler_when_a_booking_is_confirmed(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '+1 day 08:00',
+        );
+        $traveler = User::factory()->create();
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'pending',
+            'booked_at' => now(),
+        ]);
+
+        $service->confirmBooking($ride->user, $booking);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $traveler->id,
+            'type' => 'booking_confirmed',
+            'channel' => 'in_app',
+            'related_entity_type' => Booking::class,
+            'related_entity_id' => $booking->id,
+            'is_read' => false,
+        ]);
+    }
+
+    public function test_it_notifies_the_traveler_when_a_booking_is_rejected(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '+1 day 08:00',
+            overrides: ['available_seats' => 2],
+        );
+        $traveler = User::factory()->create();
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'pending',
+            'booked_at' => now(),
+        ]);
+
+        $service->rejectBooking($ride->user, $booking);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $traveler->id,
+            'type' => 'booking_rejected',
+            'channel' => 'in_app',
+            'related_entity_type' => Booking::class,
+            'related_entity_id' => $booking->id,
+            'is_read' => false,
+        ]);
+    }
+
+    public function test_it_notifies_the_driver_when_a_traveler_cancels_a_booking(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '+1 day 08:00',
+            overrides: ['available_seats' => 2],
+        );
+        $traveler = User::factory()->create();
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'confirmed',
+            'booked_at' => now(),
+        ]);
+
+        $service->cancelBooking($booking);
+
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $ride->user_id,
+            'type' => 'booking_cancelled',
+            'channel' => 'in_app',
+            'related_entity_type' => Booking::class,
+            'related_entity_id' => $booking->id,
+            'is_read' => false,
+        ]);
+    }
+
     /**
      * @return array{0: City, 1: City}
      */
@@ -233,6 +379,11 @@ class PublicRideServiceTest extends TestCase
             City::query()->create(['name' => 'Casablanca']),
             City::query()->create(['name' => 'Rabat']),
         ];
+    }
+
+    private function service(): PublicRideService
+    {
+        return app(PublicRideService::class);
     }
 
     private function createRide(City $departureCity, City $arrivalCity, string $departureTimeModifier, array $overrides = []): Ride

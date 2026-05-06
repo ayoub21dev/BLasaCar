@@ -4,6 +4,7 @@ namespace Tests\Feature\Auth;
 
 use App\Models\User;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AuthenticationTest extends TestCase
@@ -101,6 +102,44 @@ class AuthenticationTest extends TestCase
         $this->actingAs($traveler)
             ->get(route('dashboards.admin'))
             ->assertRedirect(route('dashboards.traveler'));
+    }
+
+    public function test_admin_can_open_each_admin_dashboard_section(): void
+    {
+        $this->withoutVite();
+        $this->seed();
+
+        $admin = User::query()
+            ->where('email', 'admin@blassacar.test')
+            ->firstOrFail();
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'overview'));
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.driver-verification'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'driver-verification'));
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.users'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'users'));
+
+        $this->actingAs($admin)
+            ->get(route('dashboards.admin.rides'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'rides'));
     }
 
     public function test_authenticated_user_can_log_out(): void

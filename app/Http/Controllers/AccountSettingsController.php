@@ -4,16 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\UpdateAccountPasswordRequest;
 use App\Http\Requests\UpdateAccountProfileRequest;
+use App\Support\InertiaProps;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\View\View;
+use Inertia\Inertia;
+use Inertia\Response;
 
 class AccountSettingsController extends Controller
 {
-    public function edit(): View
+    public function edit(): Response
     {
-        return view('pages.account.settings', [
-            'user' => auth()->user()->load('driverProfile'),
+        return Inertia::render('Account/Settings', [
+            'user' => InertiaProps::user(auth()->user()->load('driverProfile.vehicles'), true),
         ]);
     }
 

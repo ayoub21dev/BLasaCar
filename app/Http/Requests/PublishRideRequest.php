@@ -12,7 +12,11 @@ class PublishRideRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return $this->user()?->role === User::ROLE_DRIVER;
+        $user = $this->user();
+
+        return $user?->role === User::ROLE_DRIVER
+            && $user->account_status === 'active'
+            && $user->driverProfile?->cin_verified === true;
     }
 
     /**

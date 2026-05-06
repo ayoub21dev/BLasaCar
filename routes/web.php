@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\AccountSettingsController;
+use App\Http\Controllers\AdminWorkflowController;
 use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DriverOnboardingController;
@@ -40,12 +41,15 @@ Route::middleware('auth')->controller(AccountSettingsController::class)->group(f
 
 Route::middleware(['auth', 'role:driver'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/publish', 'store')->name('rides.publish.store');
+    Route::patch('/rides/{ride}/complete', 'completeRide')->name('rides.complete');
     Route::patch('/bookings/{booking}/confirm', 'confirmBooking')->name('bookings.confirm');
     Route::patch('/bookings/{booking}/reject', 'rejectBooking')->name('bookings.reject');
 });
 
 Route::middleware(['auth', 'role:traveler'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/{ride}/book', 'book')->name('rides.book');
+    Route::patch('/bookings/{booking}/cancel', 'cancelBooking')->name('bookings.cancel');
+    Route::post('/bookings/{booking}/reviews', 'reviewBooking')->name('bookings.reviews.store');
 });
 
 Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingController::class)->group(function () {
@@ -55,6 +59,13 @@ Route::middleware(['auth', 'role:traveler'])->controller(DriverOnboardingControl
 
 Route::middleware(['auth', 'role:admin'])->controller(FrontendController::class)->group(function () {
     Route::get('/dashboards/admin', 'adminDashboard')->name('dashboards.admin');
+    Route::get('/dashboards/admin/driver-verification', 'adminDriverVerification')->name('dashboards.admin.driver-verification');
+    Route::get('/dashboards/admin/users', 'adminUsers')->name('dashboards.admin.users');
+    Route::get('/dashboards/admin/rides', 'adminRideActivity')->name('dashboards.admin.rides');
+});
+
+Route::middleware(['auth', 'role:admin'])->controller(AdminWorkflowController::class)->group(function () {
+    Route::patch('/admin/driver-profiles/{driverProfile}/verify', 'verifyDriverProfile')->name('admin.driver-profiles.verify');
 });
 
 Route::middleware(['auth', 'role:driver'])->controller(FrontendController::class)->group(function () {
