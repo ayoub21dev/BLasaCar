@@ -5,6 +5,7 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 
@@ -90,9 +91,16 @@ class User extends Authenticatable
         return $this->hasOne(DriverProfile::class);
     }
 
-    public function rides(): HasMany
+    public function rides(): HasManyThrough
     {
-        return $this->hasMany(Ride::class);
+        return $this->hasManyThrough(
+            Ride::class,
+            DriverProfile::class,
+            'user_id',
+            'driver_profile_id',
+            'id',
+            'id',
+        );
     }
 
     public function bookings(): HasMany
@@ -102,12 +110,19 @@ class User extends Authenticatable
 
     public function writtenReviews(): HasMany
     {
-        return $this->hasMany(Review::class, 'reviewer_id');
+        return $this->hasMany(Review::class, 'traveler_id');
     }
 
-    public function receivedReviews(): HasMany
+    public function receivedReviews(): HasManyThrough
     {
-        return $this->hasMany(Review::class, 'reviewed_user_id');
+        return $this->hasManyThrough(
+            Review::class,
+            DriverProfile::class,
+            'user_id',
+            'driver_profile_id',
+            'id',
+            'id',
+        );
     }
 
     public function notifications(): HasMany

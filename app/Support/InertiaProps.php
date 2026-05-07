@@ -107,8 +107,8 @@ class InertiaProps
             ? $ride->departure_time
             : Carbon::parse($ride->departure_time);
         $arrivalTime = $departureTime->copy()->addHours(2)->addMinutes(30);
-        $driver = $ride->user;
-        $profile = $driver?->driverProfile;
+        $profile = $ride->driverProfile;
+        $driver = $profile?->user;
 
         return [
             'id' => $ride->id,

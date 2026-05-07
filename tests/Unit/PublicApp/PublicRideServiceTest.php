@@ -99,11 +99,11 @@ class PublicRideServiceTest extends TestCase
         $this->assertSame(2, $booking->seats_reserved);
         $this->assertSame(1, $ride->fresh()->available_seats);
         $this->assertDatabaseHas('notifications', [
-            'user_id' => $ride->user_id,
-            'type' => 'booking_created',
+            'user_id' => $ride->driverProfile->user_id,
+            'type' => 'new_booking',
             'channel' => 'in_app',
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $booking->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -294,14 +294,14 @@ class PublicRideServiceTest extends TestCase
             'booked_at' => now(),
         ]);
 
-        $service->confirmBooking($ride->user, $booking);
+        $service->confirmBooking($ride->driverProfile->user, $booking);
 
         $this->assertDatabaseHas('notifications', [
             'user_id' => $traveler->id,
-            'type' => 'booking_confirmed',
+            'type' => 'booking_accepted',
             'channel' => 'in_app',
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $booking->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -326,14 +326,14 @@ class PublicRideServiceTest extends TestCase
             'booked_at' => now(),
         ]);
 
-        $service->rejectBooking($ride->user, $booking);
+        $service->rejectBooking($ride->driverProfile->user, $booking);
 
         $this->assertDatabaseHas('notifications', [
             'user_id' => $traveler->id,
             'type' => 'booking_rejected',
             'channel' => 'in_app',
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $booking->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -361,11 +361,11 @@ class PublicRideServiceTest extends TestCase
         $service->cancelBooking($booking);
 
         $this->assertDatabaseHas('notifications', [
-            'user_id' => $ride->user_id,
+            'user_id' => $ride->driverProfile->user_id,
             'type' => 'booking_cancelled',
             'channel' => 'in_app',
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $booking->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -409,7 +409,7 @@ class PublicRideServiceTest extends TestCase
         unset($overrides['driver']);
 
         return Ride::query()->create(array_merge([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $departureCity->id,
             'arrival_city_id' => $arrivalCity->id,

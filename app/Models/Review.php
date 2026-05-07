@@ -11,9 +11,9 @@ class Review extends Model
     use HasFactory;
 
     protected $fillable = [
-        'reviewer_id',
-        'reviewed_user_id',
-        'ride_id',
+        'booking_id',
+        'traveler_id',
+        'driver_profile_id',
         'rating',
         'comment',
     ];
@@ -25,18 +25,18 @@ class Review extends Model
         ];
     }
 
-    public function reviewer(): BelongsTo
+    public function booking(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'reviewer_id');
+        return $this->belongsTo(Booking::class);
     }
 
-    public function reviewedUser(): BelongsTo
+    public function traveler(): BelongsTo
     {
-        return $this->belongsTo(User::class, 'reviewed_user_id');
+        return $this->belongsTo(User::class, 'traveler_id');
     }
 
-    public function ride(): BelongsTo
+    public function driverProfile(): BelongsTo
     {
-        return $this->belongsTo(Ride::class);
+        return $this->belongsTo(DriverProfile::class);
     }
 }

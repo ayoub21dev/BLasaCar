@@ -19,9 +19,10 @@ class RideWorkflowController extends Controller
     public function store(PublishRideRequest $request): RedirectResponse
     {
         $validated = $request->validated();
+        $driverProfile = $request->user()->driverProfile;
 
         $ride = Ride::query()->create([
-            'user_id' => $request->user()->id,
+            'driver_profile_id' => $driverProfile->id,
             'vehicle_id' => $validated['vehicle_id'],
             'departure_city_id' => $validated['departure_city_id'],
             'arrival_city_id' => $validated['arrival_city_id'],

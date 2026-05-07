@@ -91,7 +91,7 @@ class AdminService
     public function listRides(?string $status = null): Collection
     {
         $query = Ride::query()
-            ->with(['user', 'vehicle', 'departureCity', 'arrivalCity'])
+            ->with(['driverProfile.user', 'vehicle', 'departureCity', 'arrivalCity'])
             ->orderByDesc('departure_time');
 
         if ($status !== null) {

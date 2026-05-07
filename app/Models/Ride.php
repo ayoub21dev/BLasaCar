@@ -6,13 +6,14 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 
 class Ride extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'user_id',
+        'driver_profile_id',
         'vehicle_id',
         'departure_city_id',
         'arrival_city_id',
@@ -36,9 +37,9 @@ class Ride extends Model
         ];
     }
 
-    public function user(): BelongsTo
+    public function driverProfile(): BelongsTo
     {
-        return $this->belongsTo(User::class);
+        return $this->belongsTo(DriverProfile::class);
     }
 
     public function vehicle(): BelongsTo
@@ -61,8 +62,15 @@ class Ride extends Model
         return $this->hasMany(Booking::class);
     }
 
-    public function reviews(): HasMany
+    public function reviews(): HasManyThrough
     {
-        return $this->hasMany(Review::class);
+        return $this->hasManyThrough(
+            Review::class,
+            Booking::class,
+            'ride_id',
+            'booking_id',
+            'id',
+            'id',
+        );
     }
 }

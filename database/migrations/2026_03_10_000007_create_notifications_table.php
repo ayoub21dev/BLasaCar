@@ -15,12 +15,12 @@ return new class extends Migration
             $table->string('channel');
             $table->string('title');
             $table->text('message');
-            $table->string('related_entity_type')->nullable();
-            $table->unsignedBigInteger('related_entity_id')->nullable();
+            $table->foreignId('ride_id')->nullable()->constrained()->nullOnDelete();
+            $table->foreignId('booking_id')->nullable()->constrained()->nullOnDelete();
             $table->boolean('is_read')->default(false);
             $table->timestamp('created_at')->useCurrent();
 
-            $table->index(['related_entity_type', 'related_entity_id'], 'notifications_related_entity_idx');
+            $table->index(['ride_id', 'booking_id'], 'notifications_ride_booking_idx');
         });
     }
 

@@ -1,9 +1,9 @@
-id,user_id,type,channel,title,message,related_entity_type,related_entity_id,is_read,created_at
-1,1,booking_created,in_app,New booking,Ayoub reserved 1 seat on your Casablanca to Rabat ride,App\Models\Booking,1,0,2026-03-10 10:01:00
-2,1,booking_created,email,New booking,Lina reserved 1 seat on your Casablanca to Rabat ride,App\Models\Booking,2,1,2026-03-10 10:16:00
-3,7,booking_confirmed,in_app,Booking confirmed,Your 2 seats to Marrakech were confirmed,App\Models\Booking,3,1,2026-03-10 11:10:00
-4,2,ride_completed,in_app,Ride completed,Your Rabat to Fes ride has been marked completed,App\Models\Ride,3,1,2026-03-08 21:45:00
-5,2,review_received,in_app,New review,You received a 5 star review from Salma,App\Models\Review,1,0,2026-03-08 22:01:00
-6,3,review_received,email,New review,You received a 5 star review from Ayoub,App\Models\Review,5,0,2026-03-09 14:21:00
-7,6,ride_reminder,sms,Ride reminder,Your Tangier to Casablanca departure is scheduled for March 18,App\Models\Ride,5,0,2026-03-17 18:00:00
-8,7,booking_cancelled,in_app,Booking cancelled,Your Fes to Rabat booking was cancelled by the driver,App\Models\Booking,8,0,2026-03-13 09:10:00
+id,user_id,type,channel,title,message,ride_id,booking_id,is_read,created_at
+1,1,new_booking,in_app,New booking,Ayoub reserved 1 seat on your Casablanca to Rabat ride,1,1,0,2026-03-10 10:01:00
+2,1,new_booking,in_app,New booking,Lina reserved 1 seat on your Casablanca to Rabat ride,1,2,1,2026-03-10 10:16:00
+3,7,booking_accepted,in_app,Booking accepted,Your 2 seats to Marrakech were accepted,2,3,1,2026-03-10 11:10:00
+4,8,ride_completed,in_app,Ride completed,Your Rabat to Fes ride has been marked completed,3,4,1,2026-03-08 21:45:00
+5,2,review_received,in_app,New review,You received a 5 star review from Salma,3,4,0,2026-03-08 22:01:00
+6,3,review_received,in_app,New review,You received a 5 star review from Ayoub,4,6,0,2026-03-09 14:21:00
+7,6,ride_reminder,whatsapp,Ride reminder,Your Tangier to Casablanca departure is scheduled for March 18,5,7,0,2026-03-17 18:00:00
+8,7,booking_cancelled,in_app,Booking cancelled,Your Fes to Rabat booking was cancelled by the driver,6,8,0,2026-03-13 09:10:00

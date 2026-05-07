@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Database\Eloquent\Relations\MorphTo;
 
 class Notification extends Model
 {
@@ -19,8 +18,8 @@ class Notification extends Model
         'channel',
         'title',
         'message',
-        'related_entity_type',
-        'related_entity_id',
+        'ride_id',
+        'booking_id',
         'is_read',
     ];
 
@@ -37,8 +36,13 @@ class Notification extends Model
         return $this->belongsTo(User::class);
     }
 
-    public function relatedEntity(): MorphTo
+    public function ride(): BelongsTo
     {
-        return $this->morphTo(__FUNCTION__, 'related_entity_type', 'related_entity_id');
+        return $this->belongsTo(Ride::class);
+    }
+
+    public function booking(): BelongsTo
+    {
+        return $this->belongsTo(Booking::class);
     }
 }

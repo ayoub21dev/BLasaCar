@@ -52,7 +52,7 @@ class AdminServiceTest extends TestCase
         ]);
 
         $scheduledRide = Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $departureCity->id,
             'arrival_city_id' => $arrivalCity->id,
@@ -67,7 +67,7 @@ class AdminServiceTest extends TestCase
         ]);
 
         Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $arrivalCity->id,
             'arrival_city_id' => $departureCity->id,
@@ -229,7 +229,7 @@ class AdminServiceTest extends TestCase
         ]);
 
         return Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $departureCity->id,
             'arrival_city_id' => $arrivalCity->id,

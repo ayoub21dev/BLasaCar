@@ -1,11 +1,15 @@
-@startuml BlassaCarFullClassDiagram
-top to bottom direction
+@startuml BlassaCarFinalClassDiagram
+left to right direction
 hide methods
-skinparam classAttributeIconSize 0
-skinparam linetype polyline
-skinparam shadowing false
 
-title BlassaCar - Full Project Class Diagram
+skinparam classAttributeIconSize 0
+skinparam shadowing false
+skinparam linetype ortho
+skinparam nodesep 65
+skinparam ranksep 65
+skinparam ArrowFontSize 11
+
+title BlassaCar - Final Class Diagram
 
 class User {
   id : bigint
@@ -15,6 +19,7 @@ class User {
   phone : string
   passwordHash : string
   profilePhoto : string
+  role : string
   emailVerified : boolean
   phoneVerified : boolean
   createdAt : datetime
@@ -25,7 +30,8 @@ class DriverProfile {
   id : bigint
   user_id : bigint
   cinNumber : string
-  cinPhoto : string
+  cinPhotoFront : string
+  cinPhotoBack : string
   cinVerified : boolean
   avgRating : decimal
   totalTrips : int
@@ -43,14 +49,9 @@ class Vehicle {
   updatedAt : datetime
 }
 
-class City {
-  id : bigint
-  name : string
-}
-
 class Ride {
   id : bigint
-  user_id : bigint
+  driver_profile_id : bigint
   vehicle_id : bigint
   departureCityId : bigint
   arrivalCityId : bigint
@@ -63,6 +64,11 @@ class Ride {
   status : string
   createdAt : datetime
   updatedAt : datetime
+}
+
+class City {
+  id : bigint
+  name : string
 }
 
 class Booking {
@@ -78,9 +84,9 @@ class Booking {
 
 class Review {
   id : bigint
-  reviewer_id : bigint
-  reviewed_user_id : bigint
-  ride_id : bigint
+  booking_id : bigint
+  traveler_id : bigint
+  driver_profile_id : bigint
   rating : int
   comment : text
   createdAt : datetime
@@ -94,27 +100,35 @@ class Notification {
   channel : string
   title : string
   message : text
-  relatedEntityType : string
-  relatedEntityId : bigint
+  ride_id : bigint nullable
+  booking_id : bigint nullable
   isRead : boolean
   createdAt : datetime
 }
 
-' ---- layout control ----
-DriverProfile -[hidden]down- Vehicle
-Vehicle -[hidden]down- Ride
-Ride -[hidden]left- Booking
-Ride -[hidden]right- Review
-User -[hidden]left- DriverProfile
-User -[hidden]right- Notification
-Booking -[hidden]right- City
-City -[hidden]right- Review
+' -------------------------
+' Layout only
+' -------------------------
+DriverProfile -[hidden]right- Vehicle
+Vehicle -[hidden]right- Ride
+Ride -[hidden]right- City
 
-' ---- real relationships ----
+User -[hidden]right- Booking
+Booking -[hidden]right- Review
+Review -[hidden]right- Notification
+
+DriverProfile -[hidden]down- User
+Ride -[hidden]down- Booking
+
+' -------------------------
+' Real relationships
+' -------------------------
+
 User "1" --> "0..1" DriverProfile : has
-DriverProfile "1" --> "0..*" Vehicle : owns
 
-User "1" --> "0..*" Ride : publishes
+DriverProfile "1" --> "0..*" Vehicle : owns
+DriverProfile "1" --> "0..*" Ride : publishes
+
 Vehicle "1" --> "0..*" Ride : used in
 
 Ride "0..*" --> "1" City : departure
@@ -123,9 +137,12 @@ Ride "0..*" --> "1" City : arrival
 User "1" --> "0..*" Booking : makes
 Ride "1" --> "0..*" Booking : has
 
+Booking "1" --> "0..1" Review : generates
 User "1" --> "0..*" Review : writes
-User "1" --> "0..*" Review : receives
-Ride "1" --> "0..*" Review : related to
+DriverProfile "1" --> "0..*" Review : receives
 
 User "1" --> "0..*" Notification : receives
+Ride "1" --> "0..*" Notification : relates to
+Booking "1" --> "0..*" Notification : relates to
+
 @enduml
