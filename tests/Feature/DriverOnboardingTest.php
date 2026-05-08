@@ -5,10 +5,12 @@ namespace Tests\Feature;
 use App\Models\DriverProfile;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Support\DriverIdentityPhotos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Support\Facades\Storage;
 use Inertia\Testing\AssertableInertia as Assert;
+use RuntimeException;
 use Tests\TestCase;
 
 class DriverOnboardingTest extends TestCase
@@ -30,7 +32,7 @@ class DriverOnboardingTest extends TestCase
 
     public function test_traveler_can_become_a_driver_with_first_vehicle(): void
     {
-        Storage::fake('public');
+        Storage::fake(DriverIdentityPhotos::DISK);
 
         $traveler = User::factory()->traveler()->create();
 
@@ -57,13 +59,50 @@ class DriverOnboardingTest extends TestCase
         $this->assertNotNull($driverProfile->cin_front_photo);
         $this->assertNotNull($driverProfile->cin_back_photo);
         $this->assertSame($driverProfile->cin_front_photo, $driverProfile->cin_photo);
-        Storage::disk('public')->assertExists($driverProfile->cin_front_photo);
-        Storage::disk('public')->assertExists($driverProfile->cin_back_photo);
+        Storage::disk(DriverIdentityPhotos::DISK)->assertExists($driverProfile->cin_front_photo);
+        Storage::disk(DriverIdentityPhotos::DISK)->assertExists($driverProfile->cin_back_photo);
 
         $this->assertDatabaseHas('vehicles', [
             'driver_profile_id' => $driverProfile->id,
             'brand' => 'Dacia',
             'model' => 'Logan',
+        ]);
+    }
+
+    public function test_uploaded_cin_photos_are_removed_when_onboarding_fails(): void
+    {
+        Storage::fake(DriverIdentityPhotos::DISK);
+
+        $traveler = User::factory()->traveler()->create();
+        $throwDuringCreate = true;
+
+        DriverProfile::created(function () use (&$throwDuringCreate): void {
+            if ($throwDuringCreate) {
+                throw new RuntimeException('Forced onboarding failure.');
+            }
+        });
+
+        try {
+            $this->withoutExceptionHandling();
+
+            $this->actingAs($traveler)->post(route('drivers.onboarding.store'), [
+                'cin_number' => 'BK987656',
+                'cin_front_photo' => UploadedFile::fake()->image('cin-front.jpg'),
+                'cin_back_photo' => UploadedFile::fake()->image('cin-back.jpg'),
+                'vehicle_brand' => 'Dacia',
+                'vehicle_model' => 'Logan',
+            ]);
+
+            $this->fail('Expected onboarding failure was not thrown.');
+        } catch (RuntimeException $exception) {
+            $this->assertSame('Forced onboarding failure.', $exception->getMessage());
+        } finally {
+            $throwDuringCreate = false;
+        }
+
+        $this->assertSame([], Storage::disk(DriverIdentityPhotos::DISK)->allFiles('cin'));
+        $this->assertDatabaseMissing('driver_profiles', [
+            'user_id' => $traveler->id,
         ]);
     }
 

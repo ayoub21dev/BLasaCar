@@ -21,7 +21,18 @@ class AccountSettingsController extends Controller
 
     public function updateProfile(UpdateAccountProfileRequest $request): RedirectResponse
     {
-        $request->user()->update($request->validated());
+        $user = $request->user();
+        $validated = $request->validated();
+
+        if ($validated['email'] !== $user->email) {
+            $validated['email_verified'] = false;
+        }
+
+        if ($validated['phone'] !== $user->phone) {
+            $validated['phone_verified'] = false;
+        }
+
+        $user->update($validated);
 
         return back()->with('status', 'Your account details have been updated.');
     }

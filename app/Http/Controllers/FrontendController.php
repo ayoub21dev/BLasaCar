@@ -69,8 +69,10 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function showRide(Ride $ride, PublicRideService $publicRideService): Response
+    public function showRide(Request $request, Ride $ride, PublicRideService $publicRideService): Response
     {
+        abort_unless($publicRideService->canViewRideDetails($request->user(), $ride), 404);
+
         return Inertia::render('RideDetails', [
             'ride' => InertiaProps::ride($publicRideService->getRideDetails($ride)),
         ]);

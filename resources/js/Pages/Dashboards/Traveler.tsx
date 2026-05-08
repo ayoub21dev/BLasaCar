@@ -3,7 +3,7 @@ import { FormEvent, ReactNode, useState } from 'react';
 import { Layout } from '../../components/Layout';
 import { StatusChip } from '../../components/ui';
 import { asset, path } from '../../routes';
-import { Booking, Notification, SharedProps, UserSummary } from '../../types';
+import { Booking, Notification, PublicDriverSummary, SharedProps, UserSummary } from '../../types';
 
 type TravelerProps = {
     traveler: UserSummary;
@@ -349,7 +349,7 @@ function BookingHistory({ bookings, errors }: { bookings: Booking[]; errors: Rec
     );
 }
 
-function DriverAvatar({ driver }: { driver?: UserSummary | null }) {
+function DriverAvatar({ driver }: { driver?: PublicDriverSummary | null }) {
     const fallback = driver?.initials
         ?? driver?.name?.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
         ?? '—';

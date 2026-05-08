@@ -4,10 +4,13 @@ namespace App\Http\Controllers;
 
 use App\Http\Requests\BecomeDriverRequest;
 use App\Models\User;
+use App\Support\DriverIdentityPhotos;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use Inertia\Inertia;
 use Inertia\Response;
+use Throwable;
 
 class DriverOnboardingController extends Controller
 {
@@ -25,34 +28,47 @@ class DriverOnboardingController extends Controller
     public function store(BecomeDriverRequest $request): RedirectResponse
     {
         $validated = $request->validated();
-        $cinFrontPhotoPath = $request->file('cin_front_photo')->store('cin/front', 'public');
-        $cinBackPhotoPath = $request->file('cin_back_photo')->store('cin/back', 'public');
 
-        DB::transaction(function () use ($request, $validated, $cinFrontPhotoPath, $cinBackPhotoPath): void {
-            /** @var User $user */
-            $user = User::query()
-                ->whereKey($request->user()->id)
-                ->lockForUpdate()
-                ->firstOrFail();
+        $cinFrontPhotoPath = null;
+        $cinBackPhotoPath = null;
 
-            $driverProfile = $user->driverProfile()->create([
-                'cin_number' => $validated['cin_number'],
-                'cin_photo' => $cinFrontPhotoPath,
-                'cin_front_photo' => $cinFrontPhotoPath,
-                'cin_back_photo' => $cinBackPhotoPath,
-                'cin_verified' => false,
-            ]);
+        try {
+            $cinFrontPhotoPath = $request->file('cin_front_photo')->store('cin/front', DriverIdentityPhotos::DISK);
+            $cinBackPhotoPath = $request->file('cin_back_photo')->store('cin/back', DriverIdentityPhotos::DISK);
 
-            $driverProfile->vehicles()->create([
-                'brand' => $validated['vehicle_brand'],
-                'model' => $validated['vehicle_model'],
-                'photo' => null,
-            ]);
+            DB::transaction(function () use ($request, $validated, $cinFrontPhotoPath, $cinBackPhotoPath): void {
+                /** @var User $user */
+                $user = User::query()
+                    ->whereKey($request->user()->id)
+                    ->lockForUpdate()
+                    ->firstOrFail();
 
-            $user->forceFill([
-                'role' => User::ROLE_DRIVER,
-            ])->save();
-        });
+                $driverProfile = $user->driverProfile()->create([
+                    'cin_number' => $validated['cin_number'],
+                    'cin_photo' => $cinFrontPhotoPath,
+                    'cin_front_photo' => $cinFrontPhotoPath,
+                    'cin_back_photo' => $cinBackPhotoPath,
+                    'cin_verified' => false,
+                ]);
+
+                $driverProfile->vehicles()->create([
+                    'brand' => $validated['vehicle_brand'],
+                    'model' => $validated['vehicle_model'],
+                    'photo' => null,
+                ]);
+
+                $user->forceFill([
+                    'role' => User::ROLE_DRIVER,
+                ])->save();
+            });
+        } catch (Throwable $exception) {
+            Storage::disk(DriverIdentityPhotos::DISK)->delete(array_filter([
+                $cinFrontPhotoPath,
+                $cinBackPhotoPath,
+            ]));
+
+            throw $exception;
+        }
 
         return redirect()->route('dashboards.driver')
             ->with('status', 'Your driver account is ready. You can publish your first ride now.');

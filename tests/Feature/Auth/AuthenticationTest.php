@@ -68,6 +68,36 @@ class AuthenticationTest extends TestCase
         $this->assertGuest();
     }
 
+    public function test_suspended_existing_session_is_logged_out_from_protected_pages(): void
+    {
+        $traveler = User::factory()->traveler()->create([
+            'account_status' => 'active',
+            'email' => 'active-session@example.test',
+            'password_hash' => 'password',
+        ]);
+
+        $this->post(route('login.store'), [
+            'email' => 'active-session@example.test',
+            'password' => 'password',
+        ])->assertRedirect(route('dashboards.traveler'));
+
+        $this->assertAuthenticated();
+
+        User::query()
+            ->whereKey($traveler->id)
+            ->update([
+                'account_status' => 'suspended',
+                'suspended_at' => now(),
+            ]);
+        auth()->forgetGuards();
+
+        $this->get(route('dashboards.traveler'))
+            ->assertRedirect(route('login'))
+            ->assertSessionHas('status', 'Your account is suspended. Contact support if this looks wrong.');
+
+        $this->assertGuest();
+    }
+
     public function test_guest_can_create_a_traveler_account(): void
     {
         $response = $this->post(route('signup.store'), [

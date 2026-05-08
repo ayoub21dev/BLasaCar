@@ -10,7 +10,6 @@ use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
 
 class InertiaProps
 {
@@ -59,10 +58,10 @@ class InertiaProps
      */
     public static function driverProfile(DriverProfile $profile): array
     {
-        $frontPath = $profile->cin_front_photo ?: $profile->cin_photo;
-        $backPath = $profile->cin_back_photo;
-        $frontExists = filled($frontPath) && Storage::disk('public')->exists($frontPath);
-        $backExists = filled($backPath) && Storage::disk('public')->exists($backPath);
+        $frontPath = DriverIdentityPhotos::path($profile, DriverIdentityPhotos::FRONT);
+        $backPath = DriverIdentityPhotos::path($profile, DriverIdentityPhotos::BACK);
+        $frontExists = DriverIdentityPhotos::exists($profile, DriverIdentityPhotos::FRONT);
+        $backExists = DriverIdentityPhotos::exists($profile, DriverIdentityPhotos::BACK);
 
         return [
             'id' => $profile->id,
@@ -72,12 +71,12 @@ class InertiaProps
             'total_trips' => (int) $profile->total_trips,
             'cin_front_photo' => [
                 'path' => $frontPath,
-                'url' => $frontExists ? Storage::url($frontPath) : null,
+                'url' => $frontExists ? route('admin.driver-profiles.cin', [$profile, DriverIdentityPhotos::FRONT]) : null,
                 'exists' => $frontExists,
             ],
             'cin_back_photo' => [
                 'path' => $backPath,
-                'url' => $backExists ? Storage::url($backPath) : null,
+                'url' => $backExists ? route('admin.driver-profiles.cin', [$profile, DriverIdentityPhotos::BACK]) : null,
                 'exists' => $backExists,
             ],
             'vehicle' => $profile->vehicles->first() ? self::vehicle($profile->vehicles->first()) : null,
@@ -131,7 +130,7 @@ class InertiaProps
             'notes' => $ride->notes,
             'vehicle' => $ride->vehicle ? self::vehicle($ride->vehicle) : null,
             'driver' => $driver ? [
-                ...self::user($driver),
+                ...self::publicUser($driver),
                 'profile' => $profile ? [
                     'avg_rating' => number_format((float) $profile->avg_rating, 1),
                     'total_trips' => (int) $profile->total_trips,
@@ -179,6 +178,20 @@ class InertiaProps
     private static function initials(User $user): string
     {
         return strtoupper(str($user->first_name)->substr(0, 1).str($user->last_name)->substr(0, 1));
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    private static function publicUser(User $user): array
+    {
+        return [
+            'id' => $user->id,
+            'first_name' => $user->first_name,
+            'last_name' => $user->last_name,
+            'name' => trim($user->first_name.' '.$user->last_name),
+            'initials' => self::initials($user),
+        ];
     }
 
     private static function dayLabel(Carbon $date): string

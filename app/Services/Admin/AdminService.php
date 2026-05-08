@@ -6,9 +6,10 @@ use App\Models\Booking;
 use App\Models\DriverProfile;
 use App\Models\Ride;
 use App\Models\User;
+use App\Support\DriverIdentityPhotos;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\DB;
 use InvalidArgumentException;
 
 class AdminService
@@ -72,6 +73,8 @@ class AdminService
             'suspended_at' => $suspendedAt ?? now(),
         ])->save();
 
+        DB::table('sessions')->where('user_id', $user->id)->delete();
+
         return $user->refresh();
     }
 
@@ -116,13 +119,9 @@ class AdminService
 
     public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
     {
-        $cinFrontPhoto = $driverProfile->cin_front_photo ?: $driverProfile->cin_photo;
-
         if (
-            blank($cinFrontPhoto)
-            || blank($driverProfile->cin_back_photo)
-            || ! Storage::disk('public')->exists($cinFrontPhoto)
-            || ! Storage::disk('public')->exists($driverProfile->cin_back_photo)
+            ! DriverIdentityPhotos::exists($driverProfile, DriverIdentityPhotos::FRONT)
+            || ! DriverIdentityPhotos::exists($driverProfile, DriverIdentityPhotos::BACK)
         ) {
             throw new InvalidArgumentException('Driver profile cannot be verified without both front and back CIN photos.');
         }

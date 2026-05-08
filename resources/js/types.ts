@@ -48,6 +48,19 @@ export type DriverProfile = {
     photos_complete: boolean;
 };
 
+export type PublicDriverSummary = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    name: string;
+    initials?: string;
+    profile: {
+        avg_rating: string;
+        total_trips: number;
+        cin_verified: boolean;
+    } | null;
+};
+
 export type Ride = {
     id: number;
     status: string;
@@ -68,13 +81,7 @@ export type Ride = {
     meeting_point: string | null;
     notes: string | null;
     vehicle: Vehicle | null;
-    driver: (UserSummary & {
-        profile: {
-            avg_rating: string;
-            total_trips: number;
-            cin_verified: boolean;
-        } | null;
-    }) | null;
+    driver: PublicDriverSummary | null;
     can_request: boolean;
     can_complete: boolean;
 };

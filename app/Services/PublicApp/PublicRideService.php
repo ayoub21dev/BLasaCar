@@ -58,6 +58,32 @@ class PublicRideService
         ]);
     }
 
+    public function canViewRideDetails(?User $viewer, Ride $ride): bool
+    {
+        $ride->loadMissing('driverProfile.user');
+
+        if ($this->isPubliclyVisible($ride)) {
+            return true;
+        }
+
+        if ($viewer === null || $viewer->account_status !== 'active') {
+            return false;
+        }
+
+        if ($viewer->isAdmin()) {
+            return true;
+        }
+
+        if ($ride->driverProfile?->user_id === $viewer->id) {
+            return true;
+        }
+
+        return Booking::query()
+            ->where('ride_id', $ride->id)
+            ->where('traveler_id', $viewer->id)
+            ->exists();
+    }
+
     public function requestSeat(User $traveler, Ride $ride, int $seatsRequested): Booking
     {
         if ($seatsRequested < 1) {
@@ -267,6 +293,14 @@ class PublicRideService
         if ($ride->available_seats < $seatsRequested) {
             throw new RuntimeException('Not enough seats available for this booking.');
         }
+    }
+
+    private function isPubliclyVisible(Ride $ride): bool
+    {
+        return $ride->status === 'scheduled'
+            && $ride->available_seats > 0
+            && $ride->departure_time->isFuture()
+            && $ride->driverProfile?->user?->account_status === 'active';
     }
 
     private function assertTravelerHasNoActiveBooking(User $traveler, Ride $ride): void

@@ -9,7 +9,9 @@ use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use App\Services\Admin\AdminService;
+use App\Support\DriverIdentityPhotos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
 use InvalidArgumentException;
 use Tests\TestCase;
@@ -118,6 +120,28 @@ class AdminServiceTest extends TestCase
         $this->assertNull($user->fresh()->suspended_at);
     }
 
+    public function test_suspending_a_user_removes_existing_database_sessions(): void
+    {
+        $service = new AdminService;
+        $user = User::factory()->create();
+
+        DB::table('sessions')->insert([
+            'id' => 'test-session-id',
+            'user_id' => $user->id,
+            'ip_address' => '127.0.0.1',
+            'user_agent' => 'Feature test',
+            'payload' => 'serialized-session',
+            'last_activity' => now()->timestamp,
+        ]);
+
+        $service->suspendUser($user);
+
+        $this->assertDatabaseMissing('sessions', [
+            'id' => 'test-session-id',
+            'user_id' => $user->id,
+        ]);
+    }
+
     public function test_it_can_filter_users_by_status(): void
     {
         $service = new AdminService;
@@ -147,9 +171,9 @@ class AdminServiceTest extends TestCase
 
     public function test_it_can_verify_a_driver_profile(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('cin/front/cc123456.jpg', 'id-photo-front');
-        Storage::disk('public')->put('cin/back/cc123456.jpg', 'id-photo-back');
+        Storage::fake(DriverIdentityPhotos::DISK);
+        Storage::disk(DriverIdentityPhotos::DISK)->put('cin/front/cc123456.jpg', 'id-photo-front');
+        Storage::disk(DriverIdentityPhotos::DISK)->put('cin/back/cc123456.jpg', 'id-photo-back');
 
         $service = new AdminService;
         $driver = User::factory()->driver()->create();
@@ -172,8 +196,8 @@ class AdminServiceTest extends TestCase
 
     public function test_it_requires_both_cin_photos_before_verifying_a_driver_profile(): void
     {
-        Storage::fake('public');
-        Storage::disk('public')->put('cin/front/dd123456.jpg', 'id-photo-front');
+        Storage::fake(DriverIdentityPhotos::DISK);
+        Storage::disk(DriverIdentityPhotos::DISK)->put('cin/front/dd123456.jpg', 'id-photo-front');
 
         $service = new AdminService;
         $driver = User::factory()->driver()->create();
