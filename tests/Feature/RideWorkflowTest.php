@@ -39,7 +39,7 @@ class RideWorkflowTest extends TestCase
         $response->assertRedirect(route('rides.show', $ride));
         $this->assertDatabaseHas('rides', [
             'id' => $ride->id,
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $casablanca->id,
             'arrival_city_id' => $rabat->id,
@@ -77,7 +77,7 @@ class RideWorkflowTest extends TestCase
         $traveler = User::factory()->traveler()->create();
 
         $ride = Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $casablanca->id,
             'arrival_city_id' => $rabat->id,
@@ -113,7 +113,7 @@ class RideWorkflowTest extends TestCase
         $traveler = User::factory()->traveler()->create();
 
         $ride = Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $casablanca->id,
             'arrival_city_id' => $rabat->id,
@@ -314,8 +314,8 @@ class RideWorkflowTest extends TestCase
         $this->assertDatabaseHas('notifications', [
             'user_id' => $traveler->id,
             'type' => 'ride_completed',
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $confirmedBooking->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $confirmedBooking->id,
         ]);
     }
 
@@ -383,9 +383,9 @@ class RideWorkflowTest extends TestCase
 
         $this->assertDatabaseHas('reviews', [
             'id' => $review->id,
-            'reviewer_id' => $traveler->id,
-            'reviewed_user_id' => $driver->id,
-            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
+            'traveler_id' => $traveler->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'rating' => 5,
         ]);
         $this->assertSame(5.0, (float) $driver->driverProfile->fresh()->avg_rating);
@@ -393,8 +393,8 @@ class RideWorkflowTest extends TestCase
             'user_id' => $driver->id,
             'type' => 'review_received',
             'channel' => 'in_app',
-            'related_entity_type' => Review::class,
-            'related_entity_id' => $review->id,
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -524,7 +524,7 @@ class RideWorkflowTest extends TestCase
     private function createScheduledRide(User $driver, Vehicle $vehicle, City $departureCity, City $arrivalCity, int $availableSeats): Ride
     {
         return Ride::query()->create([
-            'user_id' => $driver->id,
+            'driver_profile_id' => $driver->driverProfile->id,
             'vehicle_id' => $vehicle->id,
             'departure_city_id' => $departureCity->id,
             'arrival_city_id' => $arrivalCity->id,

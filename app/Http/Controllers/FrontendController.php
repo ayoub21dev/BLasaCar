@@ -69,8 +69,10 @@ class FrontendController extends Controller
         ]);
     }
 
-    public function showRide(Ride $ride, PublicRideService $publicRideService): Response
+    public function showRide(Request $request, Ride $ride, PublicRideService $publicRideService): Response
     {
+        abort_unless($publicRideService->canViewRideDetails($request->user(), $ride), 404);
+
         return Inertia::render('RideDetails', [
             'ride' => InertiaProps::ride($publicRideService->getRideDetails($ride)),
         ]);
@@ -83,7 +85,7 @@ class FrontendController extends Controller
 
         if ($user?->isDriver()) {
             $vehicles = Vehicle::query()
-                ->whereHas('driverProfile', fn ($query) => $query->where('user_id', $user->id))
+                ->where('driver_profile_id', $user->driverProfile?->id)
                 ->orderBy('brand')
                 ->orderBy('model')
                 ->get();
@@ -158,7 +160,7 @@ class FrontendController extends Controller
                 'rides.departureCity',
                 'rides.arrivalCity',
                 'rides.vehicle',
-                'rides.user.driverProfile',
+                'rides.driverProfile.user',
             ])
             ->whereKey(auth()->id())
             ->role(User::ROLE_DRIVER)
@@ -171,12 +173,12 @@ class FrontendController extends Controller
         $bookings = Booking::query()
             ->with([
                 'traveler',
-                'ride.user.driverProfile',
+                'ride.driverProfile.user',
                 'ride.vehicle',
                 'ride.departureCity',
                 'ride.arrivalCity',
             ])
-            ->whereHas('ride', fn ($query) => $query->where('user_id', $driver->id))
+            ->whereHas('ride.driverProfile', fn ($query) => $query->where('user_id', $driver->id))
             ->orderByDesc('booked_at')
             ->get();
 
@@ -215,7 +217,7 @@ class FrontendController extends Controller
     {
         $traveler = User::query()
             ->with([
-                'bookings.ride.user.driverProfile',
+                'bookings.ride.driverProfile.user',
                 'bookings.ride.vehicle',
                 'bookings.ride.departureCity',
                 'bookings.ride.arrivalCity',
@@ -231,21 +233,21 @@ class FrontendController extends Controller
         })->values();
 
         $averageDriverRating = $bookings
-            ->filter(fn (Booking $booking) => $booking->ride?->user?->driverProfile !== null)
-            ->avg(fn (Booking $booking) => (float) $booking->ride->user->driverProfile->avg_rating);
+            ->filter(fn (Booking $booking) => $booking->ride?->driverProfile !== null)
+            ->avg(fn (Booking $booking) => (float) $booking->ride->driverProfile->avg_rating);
 
-        $reviewedRideIds = Review::query()
-            ->where('reviewer_id', $traveler->id)
-            ->whereIn('ride_id', $bookings->pluck('ride_id'))
-            ->pluck('ride_id');
+        $reviewedBookingIds = Review::query()
+            ->where('traveler_id', $traveler->id)
+            ->whereIn('booking_id', $bookings->pluck('id'))
+            ->pluck('booking_id');
 
         return Inertia::render('Dashboards/Traveler', [
             'traveler' => InertiaProps::user($traveler),
-            'bookings' => $bookings->map(function (Booking $booking) use ($reviewedRideIds) {
+            'bookings' => $bookings->map(function (Booking $booking) use ($reviewedBookingIds) {
                 return [
                     ...InertiaProps::booking($booking),
-                    'reviewed' => $reviewedRideIds->contains($booking->ride_id),
-                    'can_review' => $booking->status === 'completed' && ! $reviewedRideIds->contains($booking->ride_id),
+                    'reviewed' => $reviewedBookingIds->contains($booking->id),
+                    'can_review' => $booking->status === 'completed' && ! $reviewedBookingIds->contains($booking->id),
                 ];
             })->values(),
             'upcomingBookings' => $upcomingBookings->map(fn (Booking $booking) => InertiaProps::booking($booking))->values(),
@@ -268,7 +270,7 @@ class FrontendController extends Controller
     {
         return Ride::query()
             ->with([
-                'user.driverProfile',
+                'driverProfile.user',
                 'vehicle',
                 'departureCity',
                 'arrivalCity',
@@ -276,7 +278,7 @@ class FrontendController extends Controller
             ->where('status', 'scheduled')
             ->where('available_seats', '>', 0)
             ->where('departure_time', '>', now())
-            ->whereHas('user', fn ($query) => $query->where('account_status', 'active'))
+            ->whereHas('driverProfile.user', fn ($query) => $query->where('account_status', 'active'))
             ->orderBy('departure_time');
     }
 

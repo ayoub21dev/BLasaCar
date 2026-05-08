@@ -25,7 +25,7 @@ class PublicRideService
     {
         $query = Ride::query()
             ->with([
-                'user.driverProfile',
+                'driverProfile.user',
                 'vehicle',
                 'departureCity',
                 'arrivalCity',
@@ -35,7 +35,7 @@ class PublicRideService
             ->where('status', 'scheduled')
             ->where('available_seats', '>', 0)
             ->where('departure_time', '>', now())
-            ->whereHas('user', fn ($builder) => $builder->where('account_status', 'active'))
+            ->whereHas('driverProfile.user', fn ($builder) => $builder->where('account_status', 'active'))
             ->orderBy('departure_time');
 
         if ($departureDate !== null) {
@@ -50,12 +50,38 @@ class PublicRideService
     public function getRideDetails(Ride $ride): Ride
     {
         return $ride->load([
-            'user.driverProfile',
+            'driverProfile.user',
             'vehicle',
             'departureCity',
             'arrivalCity',
             'bookings.traveler',
         ]);
+    }
+
+    public function canViewRideDetails(?User $viewer, Ride $ride): bool
+    {
+        $ride->loadMissing('driverProfile.user');
+
+        if ($this->isPubliclyVisible($ride)) {
+            return true;
+        }
+
+        if ($viewer === null || $viewer->account_status !== 'active') {
+            return false;
+        }
+
+        if ($viewer->isAdmin()) {
+            return true;
+        }
+
+        if ($ride->driverProfile?->user_id === $viewer->id) {
+            return true;
+        }
+
+        return Booking::query()
+            ->where('ride_id', $ride->id)
+            ->where('traveler_id', $viewer->id)
+            ->exists();
     }
 
     public function requestSeat(User $traveler, Ride $ride, int $seatsRequested): Booking
@@ -84,7 +110,7 @@ class PublicRideService
 
             $lockedRide->decrement('available_seats', $seatsRequested);
 
-            $booking = $booking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $booking = $booking->fresh(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
             $this->notifications->bookingRequested($booking);
 
             return $booking;
@@ -98,7 +124,7 @@ class PublicRideService
     {
         return Booking::query()
             ->with([
-                'ride.user',
+                'ride.driverProfile.user',
                 'ride.departureCity',
                 'ride.arrivalCity',
             ])
@@ -136,7 +162,7 @@ class PublicRideService
 
             $ride->increment('available_seats', $lockedBooking->seats_reserved);
 
-            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
             $this->notifications->bookingCancelledByTraveler($lockedBooking);
 
             return $lockedBooking;
@@ -148,7 +174,7 @@ class PublicRideService
         return DB::transaction(function () use ($driver, $booking): Booking {
             /** @var Booking $lockedBooking */
             $lockedBooking = Booking::query()
-                ->with('ride')
+                ->with('ride.driverProfile')
                 ->whereKey($booking->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
@@ -159,7 +185,7 @@ class PublicRideService
                 'status' => 'confirmed',
             ]);
 
-            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
             $this->notifications->bookingConfirmed($lockedBooking);
 
             return $lockedBooking;
@@ -171,7 +197,7 @@ class PublicRideService
         return DB::transaction(function () use ($driver, $booking): Booking {
             /** @var Booking $lockedBooking */
             $lockedBooking = Booking::query()
-                ->with('ride')
+                ->with('ride.driverProfile')
                 ->whereKey($booking->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
@@ -190,7 +216,7 @@ class PublicRideService
 
             $ride->increment('available_seats', $lockedBooking->seats_reserved);
 
-            $lockedBooking = $lockedBooking->fresh(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
+            $lockedBooking = $lockedBooking->fresh(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']);
             $this->notifications->bookingRejected($lockedBooking);
 
             return $lockedBooking;
@@ -206,7 +232,7 @@ class PublicRideService
                     'bookings.traveler',
                     'departureCity',
                     'arrivalCity',
-                    'user.driverProfile',
+                    'driverProfile.user',
                 ])
                 ->whereKey($ride->getKey())
                 ->lockForUpdate()
@@ -227,10 +253,10 @@ class PublicRideService
                 ->where('status', 'confirmed')
                 ->update(['status' => 'completed']);
 
-            $lockedRide->user?->driverProfile?->increment('total_trips');
+            $lockedRide->driverProfile?->increment('total_trips');
 
             $completedBookings = $lockedRide->bookings()
-                ->with(['ride.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler'])
+                ->with(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler'])
                 ->where('status', 'completed')
                 ->get();
 
@@ -238,7 +264,7 @@ class PublicRideService
                 $this->notifications->rideCompleted($booking);
             }
 
-            return $lockedRide->fresh(['bookings.traveler', 'departureCity', 'arrivalCity', 'user.driverProfile']);
+            return $lockedRide->fresh(['bookings.traveler', 'departureCity', 'arrivalCity', 'driverProfile.user']);
         });
     }
 
@@ -248,7 +274,7 @@ class PublicRideService
             throw new RuntimeException('Suspended users cannot book rides.');
         }
 
-        if ($ride->user_id === $traveler->id) {
+        if ($ride->driverProfile?->user_id === $traveler->id) {
             throw new RuntimeException('Drivers cannot book their own rides.');
         }
 
@@ -260,13 +286,21 @@ class PublicRideService
             throw new RuntimeException('Only future rides can be booked.');
         }
 
-        if ($ride->user?->account_status !== 'active') {
+        if ($ride->driverProfile?->user?->account_status !== 'active') {
             throw new RuntimeException('This ride is not available for booking.');
         }
 
         if ($ride->available_seats < $seatsRequested) {
             throw new RuntimeException('Not enough seats available for this booking.');
         }
+    }
+
+    private function isPubliclyVisible(Ride $ride): bool
+    {
+        return $ride->status === 'scheduled'
+            && $ride->available_seats > 0
+            && $ride->departure_time->isFuture()
+            && $ride->driverProfile?->user?->account_status === 'active';
     }
 
     private function assertTravelerHasNoActiveBooking(User $traveler, Ride $ride): void
@@ -284,7 +318,7 @@ class PublicRideService
 
     private function assertDriverCanHandleBooking(User $driver, Booking $booking): void
     {
-        if ($booking->ride?->user_id !== $driver->id) {
+        if ($booking->ride?->driverProfile?->user_id !== $driver->id) {
             throw new RuntimeException('This booking does not belong to one of your rides.');
         }
 
@@ -303,7 +337,7 @@ class PublicRideService
 
     private function assertDriverCanCompleteRide(User $driver, Ride $ride): void
     {
-        if ($ride->user_id !== $driver->id) {
+        if ($ride->driverProfile?->user_id !== $driver->id) {
             throw new RuntimeException('This ride does not belong to you.');
         }
 

@@ -10,7 +10,7 @@ return new class extends Migration
     {
         Schema::create('rides', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('driver_profile_id')->constrained()->cascadeOnDelete();
             $table->foreignId('vehicle_id')->constrained()->cascadeOnDelete();
             $table->foreignId('departure_city_id')->constrained('cities');
             $table->foreignId('arrival_city_id')->constrained('cities');

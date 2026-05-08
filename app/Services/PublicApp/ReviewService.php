@@ -3,6 +3,7 @@
 namespace App\Services\PublicApp;
 
 use App\Models\Booking;
+use App\Models\DriverProfile;
 use App\Models\Review;
 use App\Models\User;
 use App\Services\Notifications\ReviewNotificationService;
@@ -22,7 +23,7 @@ class ReviewService
             /** @var Booking $lockedBooking */
             $lockedBooking = Booking::query()
                 ->with([
-                    'ride.user.driverProfile',
+                    'ride.driverProfile.user',
                     'ride.departureCity',
                     'ride.arrivalCity',
                     'traveler',
@@ -35,9 +36,9 @@ class ReviewService
 
             try {
                 $review = Review::query()->create([
-                    'reviewer_id' => $traveler->id,
-                    'reviewed_user_id' => $lockedBooking->ride->user_id,
-                    'ride_id' => $lockedBooking->ride_id,
+                    'booking_id' => $lockedBooking->id,
+                    'traveler_id' => $traveler->id,
+                    'driver_profile_id' => $lockedBooking->ride->driver_profile_id,
                     'rating' => $rating,
                     'comment' => $comment,
                 ]);
@@ -45,9 +46,9 @@ class ReviewService
                 throw new RuntimeException('You already reviewed this ride.', previous: $exception);
             }
 
-            $this->refreshDriverRating($lockedBooking->ride->user);
+            $this->refreshDriverRating($lockedBooking->ride->driverProfile);
 
-            $review = $review->fresh(['reviewer', 'reviewedUser', 'ride.departureCity', 'ride.arrivalCity']);
+            $review = $review->fresh(['traveler', 'driverProfile.user', 'booking.ride.departureCity', 'booking.ride.arrivalCity']);
             $this->notifications->reviewReceived($review);
 
             return $review;
@@ -64,18 +65,16 @@ class ReviewService
             throw new RuntimeException('Only completed trips can be reviewed.');
         }
 
-        if ($booking->ride?->user_id === $traveler->id) {
+        if ($booking->ride?->driverProfile?->user_id === $traveler->id) {
             throw new RuntimeException('You cannot review yourself.');
         }
 
-        if ($booking->ride?->user?->driverProfile === null) {
+        if ($booking->ride?->driverProfile === null) {
             throw new RuntimeException('This driver profile is not available for review.');
         }
 
         $alreadyReviewed = Review::query()
-            ->where('reviewer_id', $traveler->id)
-            ->where('reviewed_user_id', $booking->ride->user_id)
-            ->where('ride_id', $booking->ride_id)
+            ->where('booking_id', $booking->id)
             ->exists();
 
         if ($alreadyReviewed) {
@@ -83,13 +82,13 @@ class ReviewService
         }
     }
 
-    private function refreshDriverRating(User $driver): void
+    private function refreshDriverRating(DriverProfile $driverProfile): void
     {
         $averageRating = Review::query()
-            ->where('reviewed_user_id', $driver->id)
+            ->where('driver_profile_id', $driverProfile->id)
             ->avg('rating');
 
-        $driver->driverProfile?->update([
+        $driverProfile->update([
             'avg_rating' => round((float) $averageRating, 2),
         ]);
     }

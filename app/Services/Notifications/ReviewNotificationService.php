@@ -11,25 +11,25 @@ class ReviewNotificationService
     public function reviewReceived(Review $review): Notification
     {
         $review = $review->loadMissing([
-            'reviewer',
-            'reviewedUser',
-            'ride.departureCity',
-            'ride.arrivalCity',
+            'traveler',
+            'driverProfile.user',
+            'booking.ride.departureCity',
+            'booking.ride.arrivalCity',
         ]);
 
         return Notification::query()->create([
-            'user_id' => $review->reviewed_user_id,
+            'user_id' => $review->driverProfile->user_id,
             'type' => 'review_received',
             'channel' => 'in_app',
             'title' => 'New review',
             'message' => sprintf(
                 '%s rated you %d/5 for the %s ride.',
-                $this->userName($review->reviewer),
+                $this->userName($review->traveler),
                 $review->rating,
                 $this->routeLabel($review),
             ),
-            'related_entity_type' => Review::class,
-            'related_entity_id' => $review->id,
+            'ride_id' => $review->booking->ride_id,
+            'booking_id' => $review->booking_id,
             'is_read' => false,
         ]);
     }
@@ -38,8 +38,8 @@ class ReviewNotificationService
     {
         return sprintf(
             '%s to %s',
-            $review->ride?->departureCity?->name ?? 'departure',
-            $review->ride?->arrivalCity?->name ?? 'arrival',
+            $review->booking?->ride?->departureCity?->name ?? 'departure',
+            $review->booking?->ride?->arrivalCity?->name ?? 'arrival',
         );
     }
 

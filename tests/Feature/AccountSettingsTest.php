@@ -59,6 +59,32 @@ class AccountSettingsTest extends TestCase
         ]);
     }
 
+    public function test_contact_verification_is_reset_when_email_or_phone_changes(): void
+    {
+        $user = User::factory()->traveler()->create([
+            'first_name' => 'Old',
+            'last_name' => 'Name',
+            'email' => 'old@example.test',
+            'phone' => '0600000000',
+            'email_verified' => true,
+            'phone_verified' => true,
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('account.settings.profile.update'), [
+                'first_name' => 'Nora',
+                'last_name' => 'Amrani',
+                'email' => 'nora@example.test',
+                'phone' => '0611111111',
+            ])
+            ->assertRedirect();
+
+        $user->refresh();
+
+        $this->assertFalse($user->email_verified);
+        $this->assertFalse($user->phone_verified);
+    }
+
     public function test_authenticated_user_can_update_password(): void
     {
         $user = User::factory()->traveler()->create([

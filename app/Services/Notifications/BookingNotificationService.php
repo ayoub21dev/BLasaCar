@@ -13,8 +13,8 @@ class BookingNotificationService
         $booking = $this->loadBookingContext($booking);
 
         return $this->createForUser(
-            user: $booking->ride->user,
-            type: 'booking_created',
+            user: $booking->ride->driverProfile->user,
+            type: 'new_booking',
             title: 'New booking request',
             message: sprintf(
                 '%s requested %s on your %s ride.',
@@ -32,7 +32,7 @@ class BookingNotificationService
 
         return $this->createForUser(
             user: $booking->traveler,
-            type: 'booking_confirmed',
+            type: 'booking_accepted',
             title: 'Booking accepted',
             message: sprintf(
                 'Your request for %s on the %s ride was accepted.',
@@ -65,7 +65,7 @@ class BookingNotificationService
         $booking = $this->loadBookingContext($booking);
 
         return $this->createForUser(
-            user: $booking->ride->user,
+            user: $booking->ride->driverProfile->user,
             type: 'booking_cancelled',
             title: 'Booking cancelled',
             message: sprintf(
@@ -102,8 +102,8 @@ class BookingNotificationService
             'channel' => 'in_app',
             'title' => $title,
             'message' => $message,
-            'related_entity_type' => Booking::class,
-            'related_entity_id' => $booking->id,
+            'ride_id' => $booking->ride_id,
+            'booking_id' => $booking->id,
             'is_read' => false,
         ]);
     }
@@ -111,7 +111,7 @@ class BookingNotificationService
     private function loadBookingContext(Booking $booking): Booking
     {
         return $booking->loadMissing([
-            'ride.user',
+            'ride.driverProfile.user',
             'ride.departureCity',
             'ride.arrivalCity',
             'traveler',

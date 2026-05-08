@@ -10,8 +10,8 @@ return new class extends Migration
     {
         Schema::table('reviews', function (Blueprint $table) {
             $table->unique(
-                ['ride_id', 'reviewer_id', 'reviewed_user_id'],
-                'reviews_ride_reviewer_reviewed_unique'
+                ['booking_id'],
+                'reviews_booking_unique'
             );
         });
     }
@@ -19,7 +19,7 @@ return new class extends Migration
     public function down(): void
     {
         Schema::table('reviews', function (Blueprint $table) {
-            $table->dropUnique('reviews_ride_reviewer_reviewed_unique');
+            $table->dropUnique('reviews_booking_unique');
         });
     }
 };

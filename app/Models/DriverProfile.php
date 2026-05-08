@@ -40,4 +40,14 @@ class DriverProfile extends Model
     {
         return $this->hasMany(Vehicle::class);
     }
+
+    public function rides(): HasMany
+    {
+        return $this->hasMany(Ride::class);
+    }
+
+    public function receivedReviews(): HasMany
+    {
+        return $this->hasMany(Review::class);
+    }
 }
