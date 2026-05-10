@@ -99,6 +99,36 @@ class FrontendController extends Controller
         ]);
     }
 
+    public function editRide(Ride $ride): Response
+    {
+        $user = auth()->user();
+        $ride->loadMissing(['driverProfile', 'vehicle', 'departureCity', 'arrivalCity']);
+
+        abort_unless(
+            $user?->isDriver()
+            && $user->driverProfile?->cin_verified === true
+            && $ride->driverProfile?->user_id === $user->id
+            && $ride->status === 'scheduled'
+            && $ride->departure_time->isFuture(),
+            403,
+        );
+
+        $vehicles = Vehicle::query()
+            ->where('driver_profile_id', $user->driverProfile?->id)
+            ->orderBy('brand')
+            ->orderBy('model')
+            ->get();
+
+        return Inertia::render('Publish', [
+            'cities' => City::query()->orderBy('name')->get()->map(fn (City $city) => InertiaProps::city($city))->values(),
+            'canPublishRide' => true,
+            'verificationPending' => false,
+            'vehicles' => $vehicles->map(fn (Vehicle $vehicle) => InertiaProps::vehicle($vehicle))->values(),
+            'mode' => 'edit',
+            'ride' => InertiaProps::ride($ride),
+        ]);
+    }
+
     public function login(): Response
     {
         return Inertia::render('Auth/Login');

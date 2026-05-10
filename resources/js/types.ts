@@ -80,10 +80,13 @@ export type Ride = {
     available_seats_label: string;
     meeting_point: string | null;
     notes: string | null;
+    admin_note?: string | null;
     vehicle: Vehicle | null;
     driver: PublicDriverSummary | null;
     can_request: boolean;
     can_complete: boolean;
+    can_edit?: boolean;
+    can_cancel?: boolean;
 };
 
 export type Booking = {

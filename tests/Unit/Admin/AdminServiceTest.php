@@ -227,6 +227,20 @@ class AdminServiceTest extends TestCase
         $service->moderateRide($ride, 'archived');
     }
 
+    public function test_it_rejects_rescheduling_from_admin_moderation(): void
+    {
+        $service = new AdminService;
+        $ride = $this->createRide();
+        $ride->update([
+            'status' => 'cancelled',
+            'available_seats' => 0,
+        ]);
+
+        $this->expectException(InvalidArgumentException::class);
+
+        $service->moderateRide($ride, 'scheduled');
+    }
+
     private function createRide(): Ride
     {
         $driver = User::factory()->create();

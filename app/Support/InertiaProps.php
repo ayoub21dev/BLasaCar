@@ -128,6 +128,7 @@ class InertiaProps
             'available_seats_label' => $ride->available_seats.' '.str('seat')->plural($ride->available_seats).' left',
             'meeting_point' => $ride->meeting_point,
             'notes' => $ride->notes,
+            'admin_note' => $ride->admin_note,
             'vehicle' => $ride->vehicle ? self::vehicle($ride->vehicle) : null,
             'driver' => $driver ? [
                 ...self::publicUser($driver),
@@ -141,6 +142,8 @@ class InertiaProps
                 && $ride->available_seats > 0
                 && $departureTime->isFuture(),
             'can_complete' => $ride->status === 'scheduled' && $departureTime->lessThanOrEqualTo(now()),
+            'can_edit' => $ride->status === 'scheduled' && $departureTime->isFuture(),
+            'can_cancel' => $ride->status === 'scheduled' && $departureTime->isFuture(),
         ];
     }
 

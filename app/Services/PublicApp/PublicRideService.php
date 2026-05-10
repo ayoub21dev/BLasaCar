@@ -192,6 +192,81 @@ class PublicRideService
         });
     }
 
+    /**
+     * @param  array<string, mixed>  $validated
+     */
+    public function updateRide(User $driver, Ride $ride, array $validated): Ride
+    {
+        return DB::transaction(function () use ($driver, $ride, $validated): Ride {
+            /** @var Ride $lockedRide */
+            $lockedRide = Ride::query()
+                ->with('driverProfile')
+                ->whereKey($ride->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->assertDriverCanEditRide($driver, $lockedRide);
+
+            $reservedSeats = (int) Booking::query()
+                ->where('ride_id', $lockedRide->id)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->sum('seats_reserved');
+
+            $totalSeats = (int) $validated['seats_offered'];
+
+            if ($reservedSeats > $totalSeats) {
+                throw new RuntimeException('Seats offered cannot be lower than currently reserved seats.');
+            }
+
+            $lockedRide->update([
+                'vehicle_id' => $validated['vehicle_id'],
+                'departure_city_id' => $validated['departure_city_id'],
+                'arrival_city_id' => $validated['arrival_city_id'],
+                'departure_time' => Carbon::parse($validated['departure_date'].' '.$validated['departure_time']),
+                'price_per_seat' => $validated['price_per_seat'],
+                'total_seats' => $totalSeats,
+                'available_seats' => $totalSeats - $reservedSeats,
+                'meeting_point' => $validated['meeting_point'],
+                'notes' => $validated['notes'] ?? null,
+            ]);
+
+            return $lockedRide->fresh(['driverProfile.user', 'vehicle', 'departureCity', 'arrivalCity']);
+        });
+    }
+
+    public function cancelRide(User $driver, Ride $ride): Ride
+    {
+        return DB::transaction(function () use ($driver, $ride): Ride {
+            /** @var Ride $lockedRide */
+            $lockedRide = Ride::query()
+                ->with('driverProfile')
+                ->whereKey($ride->getKey())
+                ->lockForUpdate()
+                ->firstOrFail();
+
+            $this->assertDriverCanCancelRide($driver, $lockedRide);
+
+            $activeBookings = Booking::query()
+                ->with(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler'])
+                ->where('ride_id', $lockedRide->id)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->lockForUpdate()
+                ->get();
+
+            $lockedRide->update([
+                'status' => 'cancelled',
+                'available_seats' => 0,
+            ]);
+
+            foreach ($activeBookings as $booking) {
+                $booking->update(['status' => 'cancelled']);
+                $this->notifications->rideCancelledByDriver($booking->fresh(['ride.driverProfile.user', 'ride.departureCity', 'ride.arrivalCity', 'traveler']));
+            }
+
+            return $lockedRide->fresh(['bookings.traveler', 'departureCity', 'arrivalCity', 'driverProfile.user']);
+        });
+    }
+
     public function rejectBooking(User $driver, Booking $booking): Booking
     {
         return DB::transaction(function () use ($driver, $booking): Booking {
@@ -347,6 +422,36 @@ class PublicRideService
 
         if ($ride->departure_time->isFuture()) {
             throw new RuntimeException('Future rides cannot be completed yet.');
+        }
+    }
+
+    private function assertDriverCanEditRide(User $driver, Ride $ride): void
+    {
+        if ($ride->driverProfile?->user_id !== $driver->id) {
+            throw new RuntimeException('This ride does not belong to you.');
+        }
+
+        if ($ride->status !== 'scheduled') {
+            throw new RuntimeException('Only scheduled rides can be edited.');
+        }
+
+        if ($ride->departure_time->lessThanOrEqualTo(now())) {
+            throw new RuntimeException('Past rides cannot be edited.');
+        }
+    }
+
+    private function assertDriverCanCancelRide(User $driver, Ride $ride): void
+    {
+        if ($ride->driverProfile?->user_id !== $driver->id) {
+            throw new RuntimeException('This ride does not belong to you.');
+        }
+
+        if ($ride->status !== 'scheduled') {
+            throw new RuntimeException('Only scheduled rides can be cancelled.');
+        }
+
+        if ($ride->departure_time->lessThanOrEqualTo(now())) {
+            throw new RuntimeException('Past rides cannot be cancelled.');
         }
     }
 }

@@ -5,8 +5,8 @@ namespace Tests\Feature;
 use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
-use App\Models\Ride;
 use App\Models\Review;
+use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
@@ -68,6 +68,71 @@ class RideWorkflowTest extends TestCase
         ])->assertForbidden();
 
         $this->assertDatabaseCount('rides', 0);
+    }
+
+    public function test_driver_can_update_a_future_scheduled_ride(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $marrakech = City::query()->create(['name' => 'Marrakech']);
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+        $departureAt = now()->addDays(3)->setTime(14, 15);
+
+        $this->actingAs($driver)
+            ->from(route('rides.edit', $ride))
+            ->patch(route('rides.update', $ride), [
+                'vehicle_id' => $vehicle->id,
+                'departure_city_id' => $casablanca->id,
+                'arrival_city_id' => $marrakech->id,
+                'departure_date' => $departureAt->format('Y-m-d'),
+                'departure_time' => $departureAt->format('H:i'),
+                'seats_offered' => 3,
+                'price_per_seat' => 95,
+                'meeting_point' => 'Casa Port',
+                'notes' => 'No smoking.',
+            ])
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHas('status', 'Ride updated.');
+
+        $ride->refresh();
+
+        $this->assertSame($marrakech->id, $ride->arrival_city_id);
+        $this->assertSame(3, $ride->total_seats);
+        $this->assertSame(3, $ride->available_seats);
+        $this->assertSame('95.00', $ride->price_per_seat);
+        $this->assertSame('Casa Port', $ride->meeting_point);
+    }
+
+    public function test_driver_cannot_reduce_ride_seats_below_active_reservations(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 4);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 2,
+        ]);
+
+        $departureAt = now()->addDays(3)->setTime(14, 15);
+
+        $this->actingAs($driver)
+            ->from(route('rides.edit', $ride))
+            ->patch(route('rides.update', $ride), [
+                'vehicle_id' => $vehicle->id,
+                'departure_city_id' => $casablanca->id,
+                'arrival_city_id' => $rabat->id,
+                'departure_date' => $departureAt->format('Y-m-d'),
+                'departure_time' => $departureAt->format('H:i'),
+                'seats_offered' => 1,
+                'price_per_seat' => 95,
+                'meeting_point' => 'Casa Port',
+                'notes' => null,
+            ])
+            ->assertRedirect(route('rides.edit', $ride))
+            ->assertSessionHasErrors('ride');
+
+        $this->assertSame(4, $ride->fresh()->total_seats);
     }
 
     public function test_traveler_can_request_a_seat(): void
@@ -316,6 +381,36 @@ class RideWorkflowTest extends TestCase
             'type' => 'ride_completed',
             'ride_id' => $ride->id,
             'booking_id' => $confirmedBooking->id,
+        ]);
+    }
+
+    public function test_driver_can_cancel_a_future_scheduled_ride_and_close_active_bookings(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+
+        $this->actingAs($driver)
+            ->from(route('dashboards.driver'))
+            ->patch(route('rides.cancel', $ride))
+            ->assertRedirect(route('dashboards.driver'))
+            ->assertSessionHas('status', 'Ride cancelled.');
+
+        $this->assertSame('cancelled', $ride->fresh()->status);
+        $this->assertSame(0, $ride->fresh()->available_seats);
+        $this->assertSame('cancelled', $booking->fresh()->status);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $traveler->id,
+            'type' => 'ride_cancelled',
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
         ]);
     }
 

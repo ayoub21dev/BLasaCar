@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\AdminModerateRideRequest;
 use App\Models\DriverProfile;
+use App\Models\Ride;
+use App\Models\User;
 use App\Services\Admin\AdminService;
 use App\Support\DriverIdentityPhotos;
 use Illuminate\Http\RedirectResponse;
@@ -21,6 +24,35 @@ class AdminWorkflowController extends Controller
         }
 
         return back()->with('status', 'Driver profile verified.');
+    }
+
+    public function suspendUser(User $user, AdminService $adminService): RedirectResponse
+    {
+        if ($user->id === auth()->id()) {
+            return back()->withErrors(['user' => 'You cannot suspend your own account.']);
+        }
+
+        $adminService->suspendUser($user);
+
+        return back()->with('status', 'User suspended.');
+    }
+
+    public function activateUser(User $user, AdminService $adminService): RedirectResponse
+    {
+        $adminService->activateUser($user);
+
+        return back()->with('status', 'User activated.');
+    }
+
+    public function moderateRide(AdminModerateRideRequest $request, Ride $ride, AdminService $adminService): RedirectResponse
+    {
+        $adminService->moderateRide(
+            ride: $ride,
+            status: $request->validated('status'),
+            adminNote: $request->validated('admin_note'),
+        );
+
+        return back()->with('status', 'Ride moderation saved.');
     }
 
     public function showDriverProfileCinPhoto(DriverProfile $driverProfile, string $side): StreamedResponse
