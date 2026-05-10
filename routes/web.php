@@ -41,6 +41,8 @@ Route::middleware(['auth', 'active'])->controller(AccountSettingsController::cla
 
 Route::middleware(['auth', 'active', 'role:driver'])->controller(RideWorkflowController::class)->group(function () {
     Route::post('/rides/publish', 'store')->name('rides.publish.store');
+    Route::patch('/rides/{ride}', 'update')->name('rides.update');
+    Route::patch('/rides/{ride}/cancel', 'cancelRide')->name('rides.cancel');
     Route::patch('/rides/{ride}/complete', 'completeRide')->name('rides.complete');
     Route::patch('/bookings/{booking}/confirm', 'confirmBooking')->name('bookings.confirm');
     Route::patch('/bookings/{booking}/reject', 'rejectBooking')->name('bookings.reject');
@@ -66,6 +68,9 @@ Route::middleware(['auth', 'active', 'role:admin'])->controller(FrontendControll
 
 Route::middleware(['auth', 'active', 'role:admin'])->controller(AdminWorkflowController::class)->group(function () {
     Route::patch('/admin/driver-profiles/{driverProfile}/verify', 'verifyDriverProfile')->name('admin.driver-profiles.verify');
+    Route::patch('/admin/users/{user}/suspend', 'suspendUser')->name('admin.users.suspend');
+    Route::patch('/admin/users/{user}/activate', 'activateUser')->name('admin.users.activate');
+    Route::patch('/admin/rides/{ride}/moderate', 'moderateRide')->name('admin.rides.moderate');
     Route::get('/admin/driver-profiles/{driverProfile}/cin/{side}', 'showDriverProfileCinPhoto')
         ->whereIn('side', ['front', 'back'])
         ->name('admin.driver-profiles.cin');
@@ -73,6 +78,7 @@ Route::middleware(['auth', 'active', 'role:admin'])->controller(AdminWorkflowCon
 
 Route::middleware(['auth', 'active', 'role:driver'])->controller(FrontendController::class)->group(function () {
     Route::get('/dashboards/driver', 'driverDashboard')->name('dashboards.driver');
+    Route::get('/rides/{ride}/edit', 'editRide')->name('rides.edit');
 });
 
 Route::middleware(['auth', 'active', 'role:traveler'])->controller(FrontendController::class)->group(function () {

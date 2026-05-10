@@ -218,7 +218,6 @@ function Footer() {
                                     <button type="button" onClick={() => logout.post(path('logout'))} className="block transition hover:text-brand-700">Log out</button>
                                 </>
                             )}
-                            <span className="block text-slate-400">WhatsApp notifications and reviews coming next</span>
                         </div>
                     </div>
                 </div>

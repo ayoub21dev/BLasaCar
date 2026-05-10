@@ -79,6 +79,8 @@ export default function Admin(props: AdminProps) {
 
                         <div className="mx-auto mt-6 max-w-[1320px] space-y-6">
                             {errors.driver_profile && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.driver_profile}</div>}
+                            {errors.user && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.user}</div>}
+                            {errors.ride && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.ride}</div>}
                             <PageHeader section={props.section} admin={admin} pendingCount={pendingCount} metrics={props.metrics} alerts={props.alerts} />
 
                             {props.section === 'overview' && <Overview {...props} />}
@@ -414,6 +416,7 @@ function Users({ metrics, alerts, users }: AdminProps) {
                             <th className="px-4 py-3">Identity</th>
                             <th className="px-4 py-3">Status</th>
                             <th className="px-4 py-3">Data</th>
+                            <th className="px-4 py-3">Action</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-slate-100 bg-white">
@@ -469,7 +472,33 @@ function RideCard({ ride }: { ride: Ride }) {
                 <Data label="Price" value={ride.price_label} />
                 <Data label="Vehicle" value={ride.vehicle ? `${ride.vehicle.brand} ${ride.vehicle.model}` : 'Not listed'} />
             </div>
+            <RideModerationForm ride={ride} />
         </article>
+    );
+}
+
+function RideModerationForm({ ride }: { ride: Ride }) {
+    const form = useForm({
+        status: ride.status,
+        admin_note: ride.admin_note ?? '',
+    });
+
+    return (
+        <form
+            onSubmit={(event) => {
+                event.preventDefault();
+                form.patch(path('admin.rides.moderate', ride.id));
+            }}
+            className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[180px_minmax(0,1fr)_auto]"
+        >
+            <select value={form.data.status === 'scheduled' ? '' : form.data.status} onChange={(event) => form.setData('status', event.target.value)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none">
+                <option value="" disabled>Moderate</option>
+                <option value="completed">Completed</option>
+                <option value="cancelled">Cancelled</option>
+            </select>
+            <input value={form.data.admin_note} onChange={(event) => form.setData('admin_note', event.target.value)} placeholder="Admin note" className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none" />
+            <button type="submit" disabled={form.processing} className="rounded-lg bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">Save</button>
+        </form>
     );
 }
 
@@ -504,6 +533,7 @@ function UserRow({ user }: { user: UserSummary }) {
             <td className="px-4 py-3 text-slate-600">{profile ? <><p>{profile.cin_verified ? 'Verified' : 'Pending'}</p><p className="mt-1 text-xs text-slate-500">CIN {profile.cin_number}</p></> : <span className="text-slate-400">No driver profile</span>}</td>
             <td className="px-4 py-3"><StatusChip status={user.account_status ?? 'active'} /></td>
             <td className="px-4 py-3"><UserDetails user={user} /></td>
+            <td className="px-4 py-3"><UserAdminActions user={user} /></td>
         </tr>
     );
 }
@@ -526,7 +556,26 @@ function UserMobileCard({ user }: { user: UserSummary }) {
             <div className="mt-4">
                 <UserDetails user={user} />
             </div>
+            <div className="mt-4">
+                <UserAdminActions user={user} />
+            </div>
         </article>
+    );
+}
+
+function UserAdminActions({ user }: { user: UserSummary }) {
+    const form = useForm({});
+    const isSuspended = user.account_status === 'suspended';
+
+    return (
+        <button
+            type="button"
+            onClick={() => form.patch(path(isSuspended ? 'admin.users.activate' : 'admin.users.suspend', user.id))}
+            disabled={form.processing}
+            className={`rounded-lg px-4 py-2 text-xs font-semibold transition disabled:opacity-50 ${isSuspended ? 'bg-emerald-600 text-white hover:bg-emerald-700' : 'bg-rose-50 text-rose-700 hover:bg-rose-100'}`}
+        >
+            {isSuspended ? 'Activate' : 'Suspend'}
+        </button>
     );
 }
 

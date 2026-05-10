@@ -248,6 +248,8 @@ function DriverRideRow({ ride }: { ride: Ride }) {
                 </div>
                 <div className="flex shrink-0 flex-wrap items-center gap-2">
                     <StatusChip status={ride.status} />
+                    {ride.can_edit && <Link href={path('rides.edit', ride.id)} className="rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-xs font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700">Edit</Link>}
+                    {ride.can_cancel && <button type="button" onClick={() => form.patch(path('rides.cancel', ride.id))} disabled={form.processing} className="rounded-lg bg-rose-50 px-4 py-2.5 text-xs font-semibold text-rose-700 transition hover:bg-rose-100 disabled:opacity-50">Cancel</button>}
                     {ride.can_complete && <button type="button" onClick={() => form.patch(path('rides.complete', ride.id))} disabled={form.processing} className="rounded-lg bg-emerald-600 px-4 py-2.5 text-xs font-semibold text-white transition hover:bg-emerald-700 disabled:opacity-50">Complete</button>}
                 </div>
             </div>

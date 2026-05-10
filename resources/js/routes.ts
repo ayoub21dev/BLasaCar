@@ -46,8 +46,20 @@ export const path = (name: string, params?: Params): string => {
         return `/rides/${id(params)}`;
     }
 
+    if (name === 'rides.edit') {
+        return `/rides/${id(params)}/edit`;
+    }
+
+    if (name === 'rides.update') {
+        return `/rides/${id(params)}`;
+    }
+
     if (name === 'rides.book') {
         return `/rides/${id(params)}/book`;
+    }
+
+    if (name === 'rides.cancel') {
+        return `/rides/${id(params)}/cancel`;
     }
 
     if (name === 'rides.complete') {
@@ -72,6 +84,18 @@ export const path = (name: string, params?: Params): string => {
 
     if (name === 'admin.driver-profiles.verify') {
         return `/admin/driver-profiles/${id(params)}/verify`;
+    }
+
+    if (name === 'admin.users.suspend') {
+        return `/admin/users/${id(params)}/suspend`;
+    }
+
+    if (name === 'admin.users.activate') {
+        return `/admin/users/${id(params)}/activate`;
+    }
+
+    if (name === 'admin.rides.moderate') {
+        return `/admin/rides/${id(params)}/moderate`;
     }
 
     return routes[name] ?? '/';

@@ -4,31 +4,40 @@ import { CityCombobox } from '../components/CityCombobox';
 import { Layout } from '../components/Layout';
 import { ErrorText } from '../components/ui';
 import { path } from '../routes';
-import { City, SharedProps, Vehicle } from '../types';
+import { City, Ride, SharedProps, Vehicle } from '../types';
 
 type PublishProps = {
     cities: City[];
     canPublishRide: boolean;
     verificationPending: boolean;
     vehicles: Vehicle[];
+    mode?: 'create' | 'edit';
+    ride?: Ride;
 };
 
-export default function Publish({ cities, canPublishRide, verificationPending, vehicles }: PublishProps) {
-    const { auth } = usePage<SharedProps>().props;
+export default function Publish({ cities, canPublishRide, verificationPending, vehicles, mode = 'create', ride }: PublishProps) {
+    const { auth, errors } = usePage<SharedProps>().props;
+    const isEditing = mode === 'edit' && ride !== undefined;
     const form = useForm({
-        vehicle_id: '',
-        departure_city_id: '',
-        arrival_city_id: '',
-        departure_date: '',
-        departure_time: '',
-        seats_offered: '1',
-        price_per_seat: '',
-        meeting_point: '',
-        notes: '',
+        vehicle_id: ride?.vehicle?.id ? String(ride.vehicle.id) : '',
+        departure_city_id: ride?.departure_city?.id ? String(ride.departure_city.id) : '',
+        arrival_city_id: ride?.arrival_city?.id ? String(ride.arrival_city.id) : '',
+        departure_date: ride?.departure_date ?? '',
+        departure_time: ride?.departure_time_label ?? '',
+        seats_offered: ride?.total_seats ? String(ride.total_seats) : '1',
+        price_per_seat: ride?.price_per_seat ? String(ride.price_per_seat) : '',
+        meeting_point: ride?.meeting_point ?? '',
+        notes: ride?.notes ?? '',
     });
 
     const submit = (event: FormEvent) => {
         event.preventDefault();
+
+        if (isEditing) {
+            form.patch(path('rides.update', ride.id));
+            return;
+        }
+
         form.post(path('rides.publish.store'));
     };
 
@@ -41,9 +50,9 @@ export default function Publish({ cities, canPublishRide, verificationPending, v
                             <div className="relative px-8 py-12 sm:px-16 sm:py-16">
                                 <div className="relative z-10">
                                     <h1 className="text-[3rem] font-black leading-[0.95] tracking-tight text-slate-900 sm:text-[4.5rem]">
-                                        Publish a <span className="font-serif italic text-brand-500">ride</span>.
+                                        {isEditing ? 'Edit your' : 'Publish a'} <span className="font-serif italic text-brand-500">ride</span>.
                                     </h1>
-                                    <p className="mt-6 max-w-xl text-lg text-slate-500">Share your journey, save on travel costs, and meet great people along the way.</p>
+                                    <p className="mt-6 max-w-xl text-lg text-slate-500">{isEditing ? 'Update the route, timing, seats, and trip details while the ride is still scheduled.' : 'Share your journey, save on travel costs, and meet great people along the way.'}</p>
                                 </div>
                             </div>
 
@@ -57,6 +66,7 @@ export default function Publish({ cities, canPublishRide, verificationPending, v
                                 </div>
                             ) : (
                                 <form onSubmit={submit} className="grid gap-6 p-5 sm:p-8 lg:grid-cols-2">
+                                    {errors.ride && <div className="rounded-[1.25rem] bg-rose-50 px-4 py-3 text-sm font-semibold text-rose-700 lg:col-span-2">{errors.ride}</div>}
                                     {auth.user?.role === 'driver' && (
                                         <label className="space-y-2 lg:col-span-2">
                                             <span className="text-sm font-semibold text-slate-700">Vehicle</span>
@@ -96,8 +106,8 @@ export default function Publish({ cities, canPublishRide, verificationPending, v
                                     <div className="lg:col-span-2">
                                         {! auth.user ? (
                                             <Link href={path('login')} className="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">Log in to publish</Link>
-                                        ) : canPublishRide && vehicles.length > 0 ? (
-                                            <button type="submit" disabled={form.processing} className="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">Publish my ride</button>
+                                        ) : (canPublishRide || isEditing) && vehicles.length > 0 ? (
+                                            <button type="submit" disabled={form.processing} className="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">{isEditing ? 'Save ride changes' : 'Publish my ride'}</button>
                                         ) : auth.user.role === 'traveler' ? (
                                             <Link href={path('drivers.onboarding.create')} className="brand-button w-full justify-center rounded-[1.4rem] py-4 text-base">Become a driver first</Link>
                                         ) : (

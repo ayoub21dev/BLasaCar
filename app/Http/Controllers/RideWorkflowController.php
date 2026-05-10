@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\BookRideRequest;
 use App\Http\Requests\PublishRideRequest;
 use App\Http\Requests\StoreReviewRequest;
+use App\Http\Requests\UpdateRideRequest;
 use App\Models\Booking;
 use App\Models\Ride;
 use App\Services\PublicApp\PublicRideService;
@@ -37,6 +38,31 @@ class RideWorkflowController extends Controller
 
         return redirect()->route('rides.show', $ride)
             ->with('status', 'Your ride has been published.');
+    }
+
+    public function update(UpdateRideRequest $request, Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    {
+        try {
+            $publicRideService->updateRide($request->user(), $ride, $request->validated());
+        } catch (RuntimeException $exception) {
+            return back()
+                ->withErrors(['ride' => $exception->getMessage()])
+                ->withInput();
+        }
+
+        return redirect()->route('dashboards.driver')
+            ->with('status', 'Ride updated.');
+    }
+
+    public function cancelRide(Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    {
+        try {
+            $publicRideService->cancelRide(auth()->user(), $ride);
+        } catch (RuntimeException $exception) {
+            return back()->withErrors(['ride' => $exception->getMessage()]);
+        }
+
+        return back()->with('status', 'Ride cancelled.');
     }
 
     public function book(BookRideRequest $request, Ride $ride, PublicRideService $publicRideService): RedirectResponse

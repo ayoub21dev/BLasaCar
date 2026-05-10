@@ -94,6 +94,22 @@ class BookingNotificationService
         );
     }
 
+    public function rideCancelledByDriver(Booking $booking): Notification
+    {
+        $booking = $this->loadBookingContext($booking);
+
+        return $this->createForUser(
+            user: $booking->traveler,
+            type: 'ride_cancelled',
+            title: 'Ride cancelled',
+            message: sprintf(
+                'The driver cancelled your %s ride.',
+                $this->routeLabel($booking),
+            ),
+            booking: $booking,
+        );
+    }
+
     private function createForUser(User $user, string $type, string $title, string $message, Booking $booking): Notification
     {
         return Notification::query()->create([
