@@ -4,7 +4,6 @@ namespace App\Http\Requests;
 
 use App\Models\User;
 use Illuminate\Foundation\Http\FormRequest;
-use Illuminate\Validation\Rule;
 
 class AdminModerateRideRequest extends FormRequest
 {
@@ -20,7 +19,6 @@ class AdminModerateRideRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'status' => ['required', 'string', Rule::in(['completed', 'cancelled'])],
             'admin_note' => ['nullable', 'string', 'max:1000'],
         ];
     }

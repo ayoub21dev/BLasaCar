@@ -145,10 +145,10 @@ function TopBar({ admin, pendingCount }: { admin: UserSummary | null; pendingCou
             </div>
 
             <div className="flex items-center justify-between gap-4 px-1 md:ml-auto md:justify-end">
-                <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600">
+                <Link href={path('dashboards.admin.driver-verification')} className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-brand-200 hover:text-brand-700" aria-label="Open pending driver reviews">
                     <IconBell />
                     {pendingCount > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-black text-white">{pendingCount}</span>}
-                </div>
+                </Link>
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{initials}</div>
                     <div>
@@ -472,14 +472,13 @@ function RideCard({ ride }: { ride: Ride }) {
                 <Data label="Price" value={ride.price_label} />
                 <Data label="Vehicle" value={ride.vehicle ? `${ride.vehicle.brand} ${ride.vehicle.model}` : 'Not listed'} />
             </div>
-            <RideModerationForm ride={ride} />
+            <RideAdminNoteForm ride={ride} />
         </article>
     );
 }
 
-function RideModerationForm({ ride }: { ride: Ride }) {
+function RideAdminNoteForm({ ride }: { ride: Ride }) {
     const form = useForm({
-        status: ride.status,
         admin_note: ride.admin_note ?? '',
     });
 
@@ -487,17 +486,12 @@ function RideModerationForm({ ride }: { ride: Ride }) {
         <form
             onSubmit={(event) => {
                 event.preventDefault();
-                form.patch(path('admin.rides.moderate', ride.id));
+                form.patch(path('admin.rides.note', ride.id));
             }}
-            className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[180px_minmax(0,1fr)_auto]"
+            className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[minmax(0,1fr)_auto]"
         >
-            <select value={form.data.status === 'scheduled' ? '' : form.data.status} onChange={(event) => form.setData('status', event.target.value)} className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none">
-                <option value="" disabled>Moderate</option>
-                <option value="completed">Completed</option>
-                <option value="cancelled">Cancelled</option>
-            </select>
-            <input value={form.data.admin_note} onChange={(event) => form.setData('admin_note', event.target.value)} placeholder="Admin note" className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none" />
-            <button type="submit" disabled={form.processing} className="rounded-lg bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">Save</button>
+            <input value={form.data.admin_note} onChange={(event) => form.setData('admin_note', event.target.value)} placeholder="Internal admin note only" className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none" />
+            <button type="submit" disabled={form.processing} className="rounded-lg bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">Save note</button>
         </form>
     );
 }

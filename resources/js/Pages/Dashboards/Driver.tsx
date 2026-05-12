@@ -148,10 +148,10 @@ function TopBar({ driver, unreadNotifications }: { driver: UserSummary; unreadNo
             </div>
 
             <div className="flex items-center justify-between gap-4 px-1 md:ml-auto md:justify-end">
-                <div className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600">
+                <a href="#notifications" className="relative flex h-11 w-11 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 transition hover:border-brand-200 hover:text-brand-700" aria-label="Open notifications">
                     <IconBell />
                     {unreadNotifications > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-black text-white">{unreadNotifications}</span>}
-                </div>
+                </a>
                 <div className="flex items-center gap-3">
                     <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{driver.initials ?? driver.first_name.slice(0, 1)}</div>
                     <div>
@@ -209,7 +209,7 @@ function StatCard({ card, value }: { card: { label: string; note: string; icon: 
 
 function RidesPanel({ rides, error }: { rides: Ride[]; error?: string }) {
     return (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
+        <section id="notifications" className="rounded-2xl border border-slate-200 bg-white p-6">
             <div className="flex items-center justify-between gap-4">
                 <h2 className="text-lg font-semibold text-slate-950">My rides</h2>
                 <Link href={path('rides.publish')} className="inline-flex shrink-0 items-center justify-center rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">Publish ride</Link>

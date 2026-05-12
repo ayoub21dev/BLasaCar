@@ -25,7 +25,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
                 <section className="shell">
                     <div className="relative flex min-h-[700px] items-center overflow-hidden rounded-[5rem] bg-slate-950 shadow-2xl lg:min-h-[85vh]">
                         <div className="absolute inset-0 z-0">
-                            <img src={asset('images/Heropage.png')} className="hero-bg-img h-full w-full scale-105 object-cover object-bottom opacity-100" alt="Moroccan cityscape" />
+                            <img src={asset('images/Heropage.png')} className="hero-bg-img h-full w-full object-cover object-bottom opacity-100" alt="Moroccan cityscape" decoding="async" fetchPriority="high" />
                             <div className="absolute inset-0 bg-gradient-to-r from-slate-950/90 via-slate-950/40 to-transparent" />
                             <div className="absolute inset-0 bg-gradient-to-t from-slate-950/20 via-transparent to-transparent" />
                         </div>
@@ -39,11 +39,11 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
                                         Join thousands of Moroccans traveling together. Safe, reliable, and cost-effective carpooling for all your intercity trips.
                                     </p>
                                     <div className="mt-14 flex flex-wrap items-center gap-8">
-                                        <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/5 px-6 py-3 backdrop-blur-md">
+                                        <div className="flex items-center gap-4 rounded-full border border-white/10 bg-white/10 px-6 py-3">
                                             <div className="flex -space-x-3">
-                                                {[1, 2, 3].map((i) => (
-                                                    <div key={i} className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-slate-900 bg-slate-800">
-                                                        <img src={`https://i.pravatar.cc/100?u=${i}`} alt="User" />
+                                                {['YA', 'SA', 'ME'].map((initials) => (
+                                                    <div key={initials} className="flex h-12 w-12 items-center justify-center overflow-hidden rounded-full border-2 border-slate-900 bg-slate-800">
+                                                        <span className="text-xs font-black text-white">{initials}</span>
                                                     </div>
                                                 ))}
                                             </div>
@@ -90,7 +90,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
                 <HowItWorks />
                 <section className="shell">
                     <div className="relative overflow-hidden rounded-[3.5rem] bg-slate-50 p-12 lg:p-20">
-                        <div className="absolute right-0 top-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-brand-500/10 blur-[100px]" />
+                        <div className="absolute right-0 top-0 -mr-48 -mt-48 h-96 w-96 rounded-full bg-brand-100/60" />
                         <div className="relative z-10">
                             <div className="mb-16 flex flex-wrap items-end justify-between gap-10">
                                 <div className="max-w-xl">
@@ -110,7 +110,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
 
                 <section className="shell">
                     <div className="relative overflow-hidden rounded-[3.5rem] border border-slate-100 bg-white p-12 shadow-sm lg:p-24">
-                        <div className="absolute right-0 top-0 -mr-64 -mt-64 h-[500px] w-[500px] rounded-full bg-brand-500/5 blur-[120px]" />
+                        <div className="absolute right-0 top-0 -mr-64 -mt-64 h-[500px] w-[500px] rounded-full bg-brand-100/40" />
                         <div className="relative z-10 grid items-center gap-16 lg:grid-cols-2">
                             <div>
                                 <h2 className="font-serif text-[3.5rem] italic leading-[0.95] tracking-tight text-slate-900 sm:text-[5rem] lg:text-[6rem]">

@@ -163,7 +163,7 @@ class AdminWorkflowTest extends TestCase
         $this->assertNull($traveler->fresh()->suspended_at);
     }
 
-    public function test_admin_can_moderate_a_ride_from_workflow_route(): void
+    public function test_admin_can_add_a_note_to_a_ride_without_changing_status(): void
     {
         $admin = User::factory()->admin()->create();
         $traveler = User::factory()->traveler()->create();
@@ -179,20 +179,19 @@ class AdminWorkflowTest extends TestCase
 
         $this->actingAs($admin)
             ->from(route('dashboards.admin.rides'))
-            ->patch(route('admin.rides.moderate', $ride), [
-                'status' => 'cancelled',
-                'admin_note' => 'Cancelled after moderation review.',
+            ->patch(route('admin.rides.note', $ride), [
+                'admin_note' => 'Reported by users for review.',
             ])
             ->assertRedirect(route('dashboards.admin.rides'))
-            ->assertSessionHas('status', 'Ride moderation saved.');
+            ->assertSessionHas('status', 'Ride note saved.');
 
-        $this->assertSame('cancelled', $ride->fresh()->status);
-        $this->assertSame(0, $ride->fresh()->available_seats);
-        $this->assertSame('Cancelled after moderation review.', $ride->fresh()->admin_note);
-        $this->assertSame('cancelled', $booking->fresh()->status);
+        $this->assertSame('scheduled', $ride->fresh()->status);
+        $this->assertSame(3, $ride->fresh()->available_seats);
+        $this->assertSame('Reported by users for review.', $ride->fresh()->admin_note);
+        $this->assertSame('confirmed', $booking->fresh()->status);
     }
 
-    public function test_admin_cannot_reschedule_a_ride_through_moderation(): void
+    public function test_admin_ride_note_route_ignores_status_changes(): void
     {
         $admin = User::factory()->admin()->create();
         $ride = $this->createScheduledRide();
@@ -203,15 +202,16 @@ class AdminWorkflowTest extends TestCase
 
         $this->actingAs($admin)
             ->from(route('dashboards.admin.rides'))
-            ->patch(route('admin.rides.moderate', $ride), [
+            ->patch(route('admin.rides.note', $ride), [
                 'status' => 'scheduled',
                 'admin_note' => 'Restore this ride.',
             ])
             ->assertRedirect(route('dashboards.admin.rides'))
-            ->assertSessionHasErrors('status');
+            ->assertSessionHas('status', 'Ride note saved.');
 
         $this->assertSame('cancelled', $ride->fresh()->status);
         $this->assertSame(0, $ride->fresh()->available_seats);
+        $this->assertSame('Restore this ride.', $ride->fresh()->admin_note);
     }
 
     private function createScheduledRide(): Ride
