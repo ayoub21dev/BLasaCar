@@ -44,15 +44,14 @@ class AdminWorkflowController extends Controller
         return back()->with('status', 'User activated.');
     }
 
-    public function moderateRide(AdminModerateRideRequest $request, Ride $ride, AdminService $adminService): RedirectResponse
+    public function noteRide(AdminModerateRideRequest $request, Ride $ride, AdminService $adminService): RedirectResponse
     {
-        $adminService->moderateRide(
+        $adminService->annotateRide(
             ride: $ride,
-            status: $request->validated('status'),
             adminNote: $request->validated('admin_note'),
         );
 
-        return back()->with('status', 'Ride moderation saved.');
+        return back()->with('status', 'Ride note saved.');
     }
 
     public function showDriverProfileCinPhoto(DriverProfile $driverProfile, string $side): StreamedResponse

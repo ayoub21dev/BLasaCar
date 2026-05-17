@@ -16,7 +16,7 @@ class AdminService
 {
     private const USER_STATUSES = ['active', 'suspended'];
 
-    private const RIDE_STATUSES = ['completed', 'cancelled'];
+    private const RIDE_STATUSES = ['scheduled', 'completed', 'cancelled'];
 
     /**
      * @return array<string, int>
@@ -105,43 +105,18 @@ class AdminService
         return $query->get();
     }
 
-    public function moderateRide(Ride $ride, string $status, ?string $adminNote = null): Ride
+    public function annotateRide(Ride $ride, ?string $adminNote = null): Ride
     {
-        $this->assertValidRideStatus($status);
-
-        DB::transaction(function () use ($ride, $status, $adminNote): void {
+        DB::transaction(function () use ($ride, $adminNote): void {
             /** @var Ride $lockedRide */
             $lockedRide = Ride::query()
                 ->whereKey($ride->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            $attributes = [
-                'status' => $status,
+            $lockedRide->forceFill([
                 'admin_note' => $adminNote,
-            ];
-
-            if (in_array($status, ['cancelled', 'completed'], true)) {
-                $attributes['available_seats'] = 0;
-            }
-
-            $lockedRide->forceFill($attributes)->save();
-
-            if ($status === 'cancelled') {
-                $lockedRide->bookings()
-                    ->whereIn('status', ['pending', 'confirmed'])
-                    ->update(['status' => 'cancelled']);
-            }
-
-            if ($status === 'completed') {
-                $lockedRide->bookings()
-                    ->where('status', 'pending')
-                    ->update(['status' => 'rejected']);
-
-                $lockedRide->bookings()
-                    ->where('status', 'confirmed')
-                    ->update(['status' => 'completed']);
-            }
+            ])->save();
         });
 
         return $ride->refresh();
