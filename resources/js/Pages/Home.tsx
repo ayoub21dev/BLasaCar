@@ -76,7 +76,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
                                                     </select>
                                                 </label>
                                             </div>
-                                            <button type="submit" className="mt-6 h-20 w-full rounded-2xl bg-[#f97316] text-xl font-black text-white shadow-[0_20px_40px_-10px_rgba(249,115,22,0.4)] transition-all duration-300 hover:scale-[1.02] hover:bg-[#ea580c] active:scale-[0.98]">
+                                            <button type="submit" className="mt-6 h-20 w-full rounded-2xl bg-brand-500 text-xl font-black text-white shadow-[0_20px_40px_-10px_rgba(14,165,233,0.35)] transition-all duration-300 hover:scale-[1.02] hover:bg-brand-600 active:scale-[0.98]">
                                                 Find your ride
                                             </button>
                                         </form>
@@ -161,10 +161,10 @@ function HowItWorks() {
         <section id="how-it-works" className="shell py-12">
             <div className="relative min-h-[650px] overflow-hidden rounded-[3.5rem] px-7 py-12 sm:px-12 lg:min-h-[570px] lg:px-20 lg:py-16">
                 <div className="relative z-20 max-w-[410px] lg:pb-10 lg:pr-8">
-                    <p className="text-[11px] font-black uppercase tracking-[0.16em] text-[#fb6b55]">How it works</p>
+                    <p className="text-[11px] font-black uppercase tracking-[0.16em] text-brand-500">How it works</p>
                     <h2 className="mt-4 max-w-[360px] text-[2.9rem] font-black leading-[0.95] text-slate-950 sm:text-[4rem] lg:text-[4.6rem]">Simple process</h2>
                     <p className="mt-5 max-w-[360px] text-sm font-medium leading-7 text-slate-500">Say goodbye to Facebook groups and endless negotiations. BlasaCar connects you in three simple steps.</p>
-                    <Link href={path('rides.search')} className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-[#fb6b55] px-7 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(251,107,85,0.75)] transition hover:-translate-y-0.5 hover:bg-[#ef5d49]">Get Started</Link>
+                    <Link href={path('rides.search')} className="mt-7 inline-flex h-12 items-center justify-center rounded-full bg-brand-500 px-7 text-sm font-black text-white shadow-[0_18px_40px_-18px_rgba(14,165,233,0.55)] transition hover:-translate-y-0.5 hover:bg-brand-600">Get Started</Link>
                 </div>
                 <div className="absolute inset-y-12 left-[430px] right-0 hidden lg:block">
                     <svg className="absolute inset-0 z-10 h-full w-full" viewBox="0 0 1000 430" fill="none" preserveAspectRatio="none" aria-hidden="true">
@@ -172,7 +172,7 @@ function HowItWorks() {
                         <text x="445" y="198" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#f1f5f9" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 1 }}>2</text>
                         <text x="790" y="108" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#f1f5f9" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 1 }}>3</text>
 
-                        <path d="M-80 285 C-4 335 58 330 105 292 C194 168 300 166 445 198 C562 230 654 193 720 128 C748 101 766 108 790 108 C872 108 922 109 1030 99" stroke="#fb6b55" strokeWidth="5" strokeLinecap="round" />
+                        <path d="M-80 285 C-4 335 58 330 105 292 C194 168 300 166 445 198 C562 230 654 193 720 128 C748 101 766 108 790 108 C872 108 922 109 1030 99" stroke="var(--color-brand-500)" strokeWidth="5" strokeLinecap="round" />
                         <TimelineDot cx="105" cy="292" />
                         <TimelineDot cx="445" cy="198" />
                         <TimelineDot cx="790" cy="108" />
@@ -201,9 +201,9 @@ function HowItWorks() {
                 </div>
                 <div className="relative z-10 mt-12 grid gap-8 lg:hidden">
                     {features.map(([step, title, copy]) => (
-                        <div key={step} className="relative border-l-2 border-[#fb6b55] pl-8">
-                            <span className="absolute -left-[11px] top-1 h-5 w-5 rounded-full bg-white shadow-[0_0_0_8px_rgba(15,23,42,0.06)]" />
-                            <span className="absolute -left-[5px] top-[10px] h-2 w-2 rounded-full bg-slate-300" />
+                        <div key={step} className="relative border-l-2 border-brand-500 pl-8">
+                            <span className="absolute -left-[11px] top-1 h-5 w-5 rounded-full bg-white shadow-[0_0_0_8px_rgba(14,165,233,0.15)]" />
+                            <span className="absolute -left-[5px] top-[10px] h-2 w-2 rounded-full bg-brand-300" />
                             <span className="pointer-events-none absolute right-2 top-[-18px] text-7xl font-black leading-none text-slate-100">{step}</span>
                             <h3 className="text-base font-black text-slate-950">{title}</h3>
                             <p className="mt-2 max-w-[320px] text-sm font-medium leading-6 text-slate-500">{copy}</p>
@@ -220,7 +220,7 @@ function TimelineDot({ cx, cy }: { cx: string; cy: string }) {
         <g>
             <circle cx={cx} cy={cy} r="28" fill="#f3f4f6" opacity="0.95" />
             <circle cx={cx} cy={cy} r="14" fill="#ffffff" />
-            <circle cx={cx} cy={cy} r="6" fill="#cbd5e1" />
+            <circle cx={cx} cy={cy} r="6" fill="var(--color-brand-400)" />
         </g>
     );
 }
