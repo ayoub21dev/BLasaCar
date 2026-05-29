@@ -158,14 +158,15 @@ class AdminServiceTest extends TestCase
         $this->assertTrue($suspendedUsers->every(fn (User $user) => $user->account_status === 'suspended'));
     }
 
-    public function test_it_can_moderate_a_ride_and_store_admin_note(): void
+    public function test_it_can_store_an_admin_note_without_changing_ride_status(): void
     {
         $service = new AdminService;
         $ride = $this->createRide();
 
-        $updatedRide = $service->moderateRide($ride, 'cancelled', 'Fraudulent listing reported by users.');
+        $updatedRide = $service->annotateRide($ride, 'Fraudulent listing reported by users.');
 
-        $this->assertSame('cancelled', $updatedRide->status);
+        $this->assertSame('scheduled', $updatedRide->status);
+        $this->assertSame(3, $updatedRide->available_seats);
         $this->assertSame('Fraudulent listing reported by users.', $updatedRide->admin_note);
     }
 
@@ -217,28 +218,13 @@ class AdminServiceTest extends TestCase
         $service->verifyDriverProfile($driverProfile);
     }
 
-    public function test_it_rejects_unknown_moderation_statuses(): void
+    public function test_it_rejects_unknown_ride_status_filters(): void
     {
         $service = new AdminService;
-        $ride = $this->createRide();
 
         $this->expectException(InvalidArgumentException::class);
 
-        $service->moderateRide($ride, 'archived');
-    }
-
-    public function test_it_rejects_rescheduling_from_admin_moderation(): void
-    {
-        $service = new AdminService;
-        $ride = $this->createRide();
-        $ride->update([
-            'status' => 'cancelled',
-            'available_seats' => 0,
-        ]);
-
-        $this->expectException(InvalidArgumentException::class);
-
-        $service->moderateRide($ride, 'scheduled');
+        $service->listRides('archived');
     }
 
     private function createRide(): Ride

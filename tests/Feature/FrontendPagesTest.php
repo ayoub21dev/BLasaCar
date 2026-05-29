@@ -23,9 +23,9 @@ class FrontendPagesTest extends TestCase
         $ride = Ride::query()
             ->where('status', 'scheduled')
             ->where('available_seats', '>', 0)
-            ->where('departure_time', '>', now())
             ->whereHas('driverProfile.user', fn ($query) => $query->where('account_status', 'active'))
             ->firstOrFail();
+        $ride->forceFill(['departure_time' => now()->addDay()])->save();
 
         $this->get(route('home'))
             ->assertOk()

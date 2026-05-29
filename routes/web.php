@@ -70,7 +70,7 @@ Route::middleware(['auth', 'active', 'role:admin'])->controller(AdminWorkflowCon
     Route::patch('/admin/driver-profiles/{driverProfile}/verify', 'verifyDriverProfile')->name('admin.driver-profiles.verify');
     Route::patch('/admin/users/{user}/suspend', 'suspendUser')->name('admin.users.suspend');
     Route::patch('/admin/users/{user}/activate', 'activateUser')->name('admin.users.activate');
-    Route::patch('/admin/rides/{ride}/moderate', 'moderateRide')->name('admin.rides.moderate');
+    Route::patch('/admin/rides/{ride}/note', 'noteRide')->name('admin.rides.note');
     Route::get('/admin/driver-profiles/{driverProfile}/cin/{side}', 'showDriverProfileCinPhoto')
         ->whereIn('side', ['front', 'back'])
         ->name('admin.driver-profiles.cin');

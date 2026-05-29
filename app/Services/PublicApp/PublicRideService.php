@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Ride;
 use App\Models\User;
 use App\Services\Notifications\BookingNotificationService;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
@@ -21,22 +22,25 @@ class PublicRideService
     /**
      * @return Collection<int, Ride>
      */
+    public function listBookableRides(?int $limit = null): Collection
+    {
+        $query = $this->bookableRidesQuery();
+
+        if ($limit !== null) {
+            $query->limit($limit);
+        }
+
+        return $query->get();
+    }
+
+    /**
+     * @return Collection<int, Ride>
+     */
     public function searchRides(int $departureCityId, int $arrivalCityId, ?Carbon $departureDate = null): Collection
     {
-        $query = Ride::query()
-            ->with([
-                'driverProfile.user',
-                'vehicle',
-                'departureCity',
-                'arrivalCity',
-            ])
+        $query = $this->bookableRidesQuery()
             ->where('departure_city_id', $departureCityId)
-            ->where('arrival_city_id', $arrivalCityId)
-            ->where('status', 'scheduled')
-            ->where('available_seats', '>', 0)
-            ->where('departure_time', '>', now())
-            ->whereHas('driverProfile.user', fn ($builder) => $builder->where('account_status', 'active'))
-            ->orderBy('departure_time');
+            ->where('arrival_city_id', $arrivalCityId);
 
         if ($departureDate !== null) {
             $query
@@ -45,6 +49,22 @@ class PublicRideService
         }
 
         return $query->get();
+    }
+
+    private function bookableRidesQuery(): Builder
+    {
+        return Ride::query()
+            ->with([
+                'driverProfile.user',
+                'vehicle',
+                'departureCity',
+                'arrivalCity',
+            ])
+            ->where('status', 'scheduled')
+            ->where('available_seats', '>', 0)
+            ->where('departure_time', '>', now())
+            ->whereHas('driverProfile.user', fn ($builder) => $builder->where('account_status', 'active'))
+            ->orderBy('departure_time');
     }
 
     public function getRideDetails(Ride $ride): Ride
