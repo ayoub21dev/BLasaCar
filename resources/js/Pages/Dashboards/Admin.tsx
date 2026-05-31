@@ -96,6 +96,8 @@ export default function Admin(props: AdminProps) {
 }
 
 function AdminSidebar({ section }: { section: AdminSection }) {
+    const logout = useForm({});
+
     return (
         <aside className="hidden border-r border-slate-200 bg-white px-4 py-6 lg:block">
             <div className="sticky top-6 flex h-[calc(100vh-3rem)] flex-col">
@@ -113,6 +115,16 @@ function AdminSidebar({ section }: { section: AdminSection }) {
                     <SideLink href={path('dashboards.admin.users')} active={section === 'users'} icon={<IconUsers />}>All users</SideLink>
                     <SideLink href={path('dashboards.admin.rides')} active={section === 'rides'} icon={<IconCar />}>Ride activity</SideLink>
                     <SideLink href={path('rides.search')} icon={<IconSearch />}>Search rides</SideLink>
+                    <button
+                        type="button"
+                        onClick={() => logout.post(path('logout'))}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 cursor-pointer"
+                    >
+                        <span className="flex h-5 w-5 items-center justify-center">
+                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+                        </span>
+                        Log out
+                    </button>
                 </nav>
 
                 <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">

@@ -3,7 +3,7 @@ import { ReactNode } from 'react';
 import { Layout } from '../../components/Layout';
 import { StatusChip } from '../../components/ui';
 import { asset, path } from '../../routes';
-import { Booking, Notification, Ride, SharedProps, UserSummary } from '../../types';
+import { Booking, BookingContact, Notification, Ride, SharedProps, UserSummary } from '../../types';
 
 type DriverProps = {
     driver: UserSummary;
@@ -11,7 +11,7 @@ type DriverProps = {
     bookings: Booking[];
     notifications: Notification[];
     stats: Record<string, string | number>;
-    weeklySeatSales: Array<{ label: string; seats: number; height: number }>;
+
 };
 
 type IconProps = {
@@ -53,15 +53,13 @@ function IconArrow({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7" /></svg>;
 }
 
-function IconChart({ className = 'h-5 w-5' }: IconProps) {
-    return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M4 19V5" /><path d="M4 19h16" /><path d="M8 16v-4" /><path d="M12 16V8" /><path d="M16 16v-6" /></svg>;
-}
+
 
 function IconPlus({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>;
 }
 
-export default function Driver({ driver, rides, bookings, notifications, stats, weeklySeatSales }: DriverProps) {
+export default function Driver({ driver, rides, bookings, notifications, stats }: DriverProps) {
     const { errors } = usePage<SharedProps>().props;
     const unreadNotifications = notifications.filter((notification) => ! notification.is_read).length;
     const nextRide = rides.find((ride) => ride.status === 'scheduled') ?? rides[0];
@@ -88,7 +86,7 @@ export default function Driver({ driver, rides, bookings, notifications, stats, 
                                 </div>
                                 <aside className="min-w-0 space-y-5">
                                     <NotificationsPanel notifications={notifications} />
-                                    <WeeklySeatsPanel weeklySeatSales={weeklySeatSales} />
+
                                 </aside>
                             </div>
 
@@ -102,6 +100,8 @@ export default function Driver({ driver, rides, bookings, notifications, stats, 
 }
 
 function DriverSidebar() {
+    const logout = useForm({});
+
     return (
         <aside className="hidden border-r border-slate-200 bg-white px-4 py-6 lg:block">
             <div className="sticky top-6 flex h-[calc(100vh-3rem)] flex-col">
@@ -118,6 +118,16 @@ function DriverSidebar() {
                     <SideLink href={path('rides.publish')} icon={<IconPlus />}>Publish ride</SideLink>
                     <SideLink href={path('rides.search')} icon={<IconSearch />}>Search rides</SideLink>
                     <SideLink href="#booking-requests" icon={<IconCalendar />}>Booking requests</SideLink>
+                    <button
+                        type="button"
+                        onClick={() => logout.post(path('logout'))}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 cursor-pointer"
+                    >
+                        <span className="flex h-5 w-5 items-center justify-center">
+                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+                        </span>
+                        Log out
+                    </button>
                 </nav>
 
                 <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -289,32 +299,7 @@ function NotificationsPanel({ notifications }: { notifications: Notification[] }
     );
 }
 
-function WeeklySeatsPanel({ weeklySeatSales }: { weeklySeatSales: Array<{ label: string; seats: number; height: number }> }) {
-    return (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex items-center justify-between gap-4">
-                <div>
-                    <h2 className="text-lg font-semibold text-slate-950">Weekly seats sold</h2>
-                    <p className="mt-1 text-sm leading-6 text-slate-500">Recent booking activity.</p>
-                </div>
-                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg border border-slate-200 bg-slate-50 text-slate-600">
-                    <IconChart />
-                </span>
-            </div>
-            <div className="mt-6 flex h-52 items-end gap-3">
-                {weeklySeatSales.map((day) => (
-                    <div key={day.label} className="flex h-full flex-1 flex-col items-center justify-end gap-3">
-                        <div className="w-full rounded-t-xl bg-brand-600" style={{ height: `${day.height}%` }} />
-                        <div className="text-center text-xs text-slate-500">
-                            <div className="font-semibold text-slate-700">{day.seats}</div>
-                            <div>{day.label}</div>
-                        </div>
-                    </div>
-                ))}
-            </div>
-        </section>
-    );
-}
+
 
 function BookingRequests({ bookings, error }: { bookings: Booking[]; error?: string }) {
     return (
@@ -360,7 +345,10 @@ function DriverBookingTableRow({ booking }: { booking: Booking }) {
 
     return (
         <tr>
-            <td className="px-4 py-3 font-semibold text-slate-800">{booking.traveler?.name ?? 'Traveler'}</td>
+            <td className="px-4 py-3">
+                <p className="font-semibold text-slate-800">{booking.traveler?.name ?? 'Traveler'}</p>
+                <ContactLink contact={booking.traveler_contact} lockedLabel="Contact unlocks after acceptance" />
+            </td>
             <td className="px-4 py-3 font-semibold text-slate-600">{ride?.departure_city?.name ?? 'Departure'} <span className="text-slate-400">-&gt;</span> {ride?.arrival_city?.name ?? 'Arrival'}</td>
             <td className="px-4 py-3 text-slate-600">{booking.seats_reserved}</td>
             <td className="px-4 py-3"><StatusChip status={booking.status} /></td>
@@ -378,6 +366,7 @@ function DriverBookingMobileCard({ booking }: { booking: Booking }) {
                 <div className="min-w-0">
                     <p className="break-words font-semibold text-slate-950">{ride?.departure_city?.name ?? 'Departure'} <span className="text-slate-400">-&gt;</span> {ride?.arrival_city?.name ?? 'Arrival'}</p>
                     <p className="mt-1 text-sm font-semibold text-slate-500">{booking.traveler?.name ?? 'Traveler'} · {booking.seats_reserved} seat{booking.seats_reserved === 1 ? '' : 's'}</p>
+                    <ContactLink contact={booking.traveler_contact} lockedLabel="Contact unlocks after acceptance" />
                 </div>
                 <StatusChip status={booking.status} />
             </div>
@@ -385,6 +374,21 @@ function DriverBookingMobileCard({ booking }: { booking: Booking }) {
                 <BookingAction booking={booking} />
             </div>
         </article>
+    );
+}
+
+function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
+    if (! contact) {
+        return <p className="mt-1 text-xs font-medium text-slate-400">{lockedLabel}</p>;
+    }
+
+    return (
+        <div className="mt-2 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-slate-500">{contact.phone}</span>
+            <a href={contact.whatsapp_url} target="_blank" rel="noreferrer" className="rounded-lg bg-emerald-50 px-3 py-1.5 text-xs font-black text-emerald-700 transition hover:bg-emerald-100">
+                WhatsApp
+            </a>
+        </div>
     );
 }
 

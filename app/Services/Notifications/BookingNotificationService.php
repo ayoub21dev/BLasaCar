@@ -2,6 +2,7 @@
 
 namespace App\Services\Notifications;
 
+use App\Jobs\SendWhatsAppNotificationJob;
 use App\Models\Booking;
 use App\Models\Notification;
 use App\Models\User;
@@ -23,6 +24,7 @@ class BookingNotificationService
                 $this->routeLabel($booking),
             ),
             booking: $booking,
+            sendWhatsApp: true,
         );
     }
 
@@ -40,6 +42,7 @@ class BookingNotificationService
                 $this->routeLabel($booking),
             ),
             booking: $booking,
+            sendWhatsApp: true,
         );
     }
 
@@ -57,6 +60,7 @@ class BookingNotificationService
                 $this->routeLabel($booking),
             ),
             booking: $booking,
+            sendWhatsApp: true,
         );
     }
 
@@ -75,6 +79,7 @@ class BookingNotificationService
                 $this->routeLabel($booking),
             ),
             booking: $booking,
+            sendWhatsApp: true,
         );
     }
 
@@ -107,12 +112,13 @@ class BookingNotificationService
                 $this->routeLabel($booking),
             ),
             booking: $booking,
+            sendWhatsApp: true,
         );
     }
 
-    private function createForUser(User $user, string $type, string $title, string $message, Booking $booking): Notification
+    private function createForUser(User $user, string $type, string $title, string $message, Booking $booking, bool $sendWhatsApp = false): Notification
     {
-        return Notification::query()->create([
+        $notification = Notification::query()->create([
             'user_id' => $user->id,
             'type' => $type,
             'channel' => 'in_app',
@@ -122,6 +128,42 @@ class BookingNotificationService
             'booking_id' => $booking->id,
             'is_read' => false,
         ]);
+
+        if ($sendWhatsApp) {
+            $this->createWhatsAppForUser($user, $type, $title, $message, $booking);
+        }
+
+        return $notification;
+    }
+
+    private function createWhatsAppForUser(User $user, string $type, string $title, string $message, Booking $booking): ?Notification
+    {
+        if (! config('services.whatsapp.enabled')) {
+            return null;
+        }
+
+        $recipientPhone = $this->e164Phone($user->phone);
+
+        $notification = Notification::query()->create([
+            'user_id' => $user->id,
+            'type' => $type,
+            'channel' => 'whatsapp',
+            'title' => $title,
+            'message' => $message,
+            'recipient_phone' => $recipientPhone,
+            'delivery_status' => $recipientPhone ? 'pending' : 'failed',
+            'provider' => config('services.whatsapp.driver'),
+            'delivery_error' => $recipientPhone ? null : 'Recipient phone is missing.',
+            'ride_id' => $booking->ride_id,
+            'booking_id' => $booking->id,
+            'is_read' => false,
+        ]);
+
+        if ($recipientPhone) {
+            SendWhatsAppNotificationJob::dispatch($notification->id)->afterCommit();
+        }
+
+        return $notification;
     }
 
     private function loadBookingContext(Booking $booking): Booking
@@ -153,5 +195,34 @@ class BookingNotificationService
     private function userName(User $user): string
     {
         return trim($user->first_name.' '.$user->last_name) ?: $user->email;
+    }
+
+    private function e164Phone(?string $phone): ?string
+    {
+        if (! $phone) {
+            return null;
+        }
+
+        $trimmed = trim($phone);
+
+        if (str_starts_with($trimmed, '+')) {
+            return '+'.preg_replace('/\D+/', '', substr($trimmed, 1));
+        }
+
+        $digits = preg_replace('/\D+/', '', $trimmed);
+
+        if (! $digits) {
+            return null;
+        }
+
+        if (str_starts_with($digits, '00')) {
+            return '+'.substr($digits, 2);
+        }
+
+        if (str_starts_with($digits, '0')) {
+            return '+212'.substr($digits, 1);
+        }
+
+        return '+'.$digits;
     }
 }

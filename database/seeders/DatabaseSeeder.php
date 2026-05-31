@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 use RuntimeException;
@@ -82,16 +83,27 @@ class DatabaseSeeder extends Seeder
         }
 
         $rows = [];
+        $scheduledRideOffset = 1;
 
         while (($row = fgetcsv($handle)) !== false) {
             if ($row === [null] || $row === false) {
                 continue;
             }
 
-            $rows[] = array_combine($headers, array_map(
+            $data = array_combine($headers, array_map(
                 static fn (?string $value) => $value === '' ? null : $value,
                 $row,
             ));
+
+            if ($fileName === '05_rides.csv' && ($data['status'] ?? null) === 'scheduled') {
+                $departureTime = Carbon::parse($data['departure_time']);
+                $data['departure_time'] = today()
+                    ->addDays($scheduledRideOffset++)
+                    ->setTimeFrom($departureTime)
+                    ->toDateTimeString();
+            }
+
+            $rows[] = $data;
         }
 
         fclose($handle);

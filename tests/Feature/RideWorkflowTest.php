@@ -10,6 +10,7 @@ use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class RideWorkflowTest extends TestCase
@@ -222,6 +223,49 @@ class RideWorkflowTest extends TestCase
 
         $this->assertSame('confirmed', $booking->fresh()->status);
         $this->assertSame(1, $ride->fresh()->available_seats);
+    }
+
+    public function test_contact_details_unlock_only_after_driver_accepts_booking(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        $driver->update(['phone' => '0611111111']);
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create(['phone' => '0655555555']);
+        $ride = $this->createScheduledRide($driver, $vehicle, $casablanca, $rabat, availableSeats: 2);
+
+        $this->actingAs($traveler)->post(route('rides.book', $ride), [
+            'seats' => 1,
+        ]);
+
+        $booking = Booking::query()->where('ride_id', $ride->id)->firstOrFail();
+
+        $this->actingAs($driver)
+            ->get(route('dashboards.driver'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Driver', false)
+                ->where('bookings.0.can_view_contact', false)
+                ->missing('bookings.0.traveler.phone')
+                ->where('bookings.0.traveler_contact', null));
+
+        $this->actingAs($driver)->patch(route('bookings.confirm', $booking));
+
+        $this->actingAs($driver)
+            ->get(route('dashboards.driver'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Driver', false)
+                ->where('bookings.0.can_view_contact', true)
+                ->where('bookings.0.traveler_contact.phone', '0655555555')
+                ->where('bookings.0.traveler_contact.whatsapp_url', 'https://wa.me/212655555555'));
+
+        $this->actingAs($traveler)
+            ->get(route('dashboards.traveler'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Traveler', false)
+                ->where('bookings.0.driver_contact.phone', '0611111111')
+                ->where('bookings.0.driver_contact.whatsapp_url', 'https://wa.me/212611111111'));
     }
 
     public function test_driver_can_reject_a_pending_booking_request_and_restore_seats(): void

@@ -3,7 +3,7 @@ import { FormEvent, ReactNode, useState } from 'react';
 import { Layout } from '../../components/Layout';
 import { StatusChip } from '../../components/ui';
 import { asset, path } from '../../routes';
-import { Booking, Notification, PublicDriverSummary, SharedProps, UserSummary } from '../../types';
+import { Booking, BookingContact, Notification, PublicDriverSummary, SharedProps, UserSummary } from '../../types';
 
 type TravelerProps = {
     traveler: UserSummary;
@@ -92,13 +92,8 @@ export default function Traveler({ traveler, bookings, upcomingBookings, notific
                                 {statCards.map((card) => <StatCard key={card.key} card={card} value={stats[card.key] ?? '0'} />)}
                             </div>
 
-                            <div className="grid gap-6 xl:grid-cols-[minmax(0,1fr)_390px]">
-                                <div className="min-w-0 space-y-6">
-                                    <NextTripPanel booking={nextTrip} />
-                                </div>
-                                <aside className="min-w-0 space-y-5">
-                                    <NotificationsPanel notifications={notifications} />
-                                </aside>
+                            <div className="min-w-0 space-y-6">
+                                <NextTripPanel booking={nextTrip} />
                             </div>
 
                             <BookingHistory bookings={bookings} errors={errors} />
@@ -111,6 +106,8 @@ export default function Traveler({ traveler, bookings, upcomingBookings, notific
 }
 
 function TravelerSidebar() {
+    const logout = useForm({});
+
     return (
         <aside className="hidden border-r border-slate-200 bg-white px-4 py-6 lg:block">
             <div className="sticky top-6 flex h-[calc(100vh-3rem)] flex-col">
@@ -127,6 +124,16 @@ function TravelerSidebar() {
                     <SideLink href={path('rides.search')} icon={<IconSearch />}>Search rides</SideLink>
                     <SideLink href={path('drivers.onboarding.create')} icon={<IconCar />}>Become a driver</SideLink>
                     <SideLink href="#booking-history" icon={<IconCalendar />}>Booking history</SideLink>
+                    <button
+                        type="button"
+                        onClick={() => logout.post(path('logout'))}
+                        className="flex w-full items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium text-rose-600 transition hover:bg-rose-50 cursor-pointer"
+                    >
+                        <span className="flex h-5 w-5 items-center justify-center">
+                            <svg className="h-5 w-5" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><path d="m16 17 5-5-5-5" /><path d="M21 12H9" /></svg>
+                        </span>
+                        Log out
+                    </button>
                 </nav>
 
                 <div className="mt-auto rounded-2xl border border-slate-200 bg-slate-50 p-4">
@@ -257,6 +264,7 @@ function NextTripPanel({ booking }: { booking?: Booking }) {
                     <TripInfo label="Seats" value={String(booking.seats_reserved)} />
                     <TripInfo label="Price" value={ride?.price_label ?? '0 DH'} />
                 </div>
+                <ContactPanel contact={booking.driver_contact} lockedLabel="Driver contact unlocks after acceptance." />
 
                 <div className="mt-5 flex justify-end">
                     {ride && <Link href={path('rides.show', ride.id)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">View trip details <IconArrow /></Link>}
@@ -276,35 +284,19 @@ function TripInfo({ label, value, sub }: { label: string; value: string; sub?: s
     );
 }
 
-function NotificationsPanel({ notifications }: { notifications: Notification[] }) {
+function ContactPanel({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
     return (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6">
-            <div className="flex items-center justify-between">
-                <h2 className="text-lg font-semibold text-slate-950">Notifications</h2>
-                <span className="text-sm font-medium text-slate-500">Recent</span>
-            </div>
-            {notifications.length > 0 ? (
-                <div className="mt-5 space-y-3">
-                    {notifications.slice(0, 3).map((notification) => (
-                        <article key={notification.id} className="rounded-xl border border-slate-200 bg-white p-4">
-                            <div className="flex items-start gap-4">
-                                <span className={`mt-6 h-2 w-2 shrink-0 rounded-full ${notification.is_read ? 'bg-slate-300' : 'bg-brand-600'}`} />
-                                <span className="flex h-10 w-10 shrink-0 items-center justify-center rounded-lg bg-slate-50 text-slate-600"><IconCar /></span>
-                                <div className="min-w-0 flex-1">
-                                    <div className="flex flex-col gap-1 sm:flex-row sm:items-start sm:justify-between">
-                                        <p className="font-semibold text-slate-950">{notification.title}</p>
-                                        {notification.created_label && <p className="shrink-0 text-xs font-semibold text-slate-400">{notification.created_label}</p>}
-                                    </div>
-                                    <p className="mt-1 line-clamp-2 text-sm leading-6 text-slate-500">{notification.message}</p>
-                                </div>
-                            </div>
-                        </article>
-                    ))}
+        <div className="mt-5 rounded-xl border border-slate-200 bg-white px-4 py-3">
+            <p className="text-xs font-bold uppercase tracking-[0.14em] text-slate-400">Trip contact</p>
+            {contact ? (
+                <div className="mt-2 flex flex-wrap items-center justify-between gap-3">
+                    <p className="text-sm font-semibold text-slate-800">{contact.name} · {contact.phone}</p>
+                    <a href={contact.whatsapp_url} target="_blank" rel="noreferrer" className="rounded-lg bg-emerald-50 px-4 py-2 text-xs font-black text-emerald-700 transition hover:bg-emerald-100">WhatsApp driver</a>
                 </div>
             ) : (
-                <EmptyState title="No notifications" message="Booking updates will appear here." compact />
+                <p className="mt-2 text-sm font-medium text-slate-500">{lockedLabel}</p>
             )}
-        </section>
+        </div>
     );
 }
 
@@ -361,6 +353,19 @@ function DriverAvatar({ driver }: { driver?: PublicDriverSummary | null }) {
     );
 }
 
+function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
+    if (! contact) {
+        return <p className="mt-1 text-xs font-medium text-slate-400">{lockedLabel}</p>;
+    }
+
+    return (
+        <div className="mt-1 flex flex-wrap items-center gap-2">
+            <span className="text-xs font-semibold text-slate-500">{contact.phone}</span>
+            <a href={contact.whatsapp_url} target="_blank" rel="noreferrer" className="rounded-lg bg-emerald-50 px-2.5 py-1 text-xs font-black text-emerald-700 transition hover:bg-emerald-100">WhatsApp</a>
+        </div>
+    );
+}
+
 function BookingTableRow({ booking }: { booking: Booking }) {
     const [showReview, setShowReview] = useState(false);
     const ride = booking.ride;
@@ -373,7 +378,10 @@ function BookingTableRow({ booking }: { booking: Booking }) {
                 <td className="px-4 py-3">
                     <div className="flex items-center gap-3">
                         <DriverAvatar driver={ride?.driver} />
-                        <span className="font-semibold text-slate-700">{ride?.driver?.name ?? 'Not listed'}</span>
+                        <div className="min-w-0">
+                            <p className="font-semibold text-slate-700">{ride?.driver?.name ?? 'Not listed'}</p>
+                            <ContactLink contact={booking.driver_contact} lockedLabel="Hidden until accepted" />
+                        </div>
                     </div>
                 </td>
                 <td className="px-4 py-3"><StatusChip status={booking.status} /></td>
@@ -416,6 +424,7 @@ function BookingMobileCard({ booking }: { booking: Booking }) {
                     <div className="min-w-0">
                         <p className="text-xs font-medium text-slate-500">Driver</p>
                         <p className="truncate text-sm font-semibold text-slate-900">{ride?.driver?.name ?? 'Not listed'}</p>
+                        <ContactLink contact={booking.driver_contact} lockedLabel="Hidden until accepted" />
                     </div>
                 </div>
                 <p className="shrink-0 text-sm font-semibold text-slate-900">{ride?.price_label ?? '0 DH'}</p>

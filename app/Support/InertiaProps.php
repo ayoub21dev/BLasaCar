@@ -152,13 +152,22 @@ class InertiaProps
      */
     public static function booking(Booking $booking): array
     {
+        $canViewContact = in_array($booking->status, ['confirmed', 'completed'], true);
+
         return [
             'id' => $booking->id,
             'ride_id' => $booking->ride_id,
             'seats_reserved' => (int) $booking->seats_reserved,
             'status' => $booking->status,
             'ride' => $booking->ride ? self::ride($booking->ride) : null,
-            'traveler' => $booking->traveler ? self::user($booking->traveler) : null,
+            'traveler' => $booking->traveler ? self::publicUser($booking->traveler) : null,
+            'can_view_contact' => $canViewContact,
+            'traveler_contact' => $canViewContact && $booking->traveler
+                ? self::contact($booking->traveler)
+                : null,
+            'driver_contact' => $canViewContact && $booking->ride?->driverProfile?->user
+                ? self::contact($booking->ride->driverProfile->user)
+                : null,
             'can_cancel' => in_array($booking->status, ['pending', 'confirmed'], true)
                 && $booking->ride?->departure_time?->isFuture(),
         ];
@@ -195,6 +204,41 @@ class InertiaProps
             'name' => trim($user->first_name.' '.$user->last_name),
             'initials' => self::initials($user),
         ];
+    }
+
+    /**
+     * @return array{name:string,phone:string,whatsapp_url:string}
+     */
+    private static function contact(User $user): array
+    {
+        $phone = $user->phone ?? '';
+
+        return [
+            'name' => trim($user->first_name.' '.$user->last_name) ?: $user->email,
+            'phone' => $phone,
+            'whatsapp_url' => 'https://wa.me/'.self::whatsAppDigits($phone),
+        ];
+    }
+
+    private static function whatsAppDigits(string $phone): string
+    {
+        $trimmed = trim($phone);
+
+        if (str_starts_with($trimmed, '+')) {
+            return preg_replace('/\D+/', '', $trimmed);
+        }
+
+        $digits = preg_replace('/\D+/', '', $trimmed);
+
+        if (str_starts_with($digits, '00')) {
+            return substr($digits, 2);
+        }
+
+        if (str_starts_with($digits, '0')) {
+            return '212'.substr($digits, 1);
+        }
+
+        return $digits;
     }
 
     private static function dayLabel(Carbon $date): string

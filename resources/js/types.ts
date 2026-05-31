@@ -61,6 +61,20 @@ export type PublicDriverSummary = {
     } | null;
 };
 
+export type BookingUserSummary = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    name: string;
+    initials?: string;
+};
+
+export type BookingContact = {
+    name: string;
+    phone: string;
+    whatsapp_url: string;
+};
+
 export type Ride = {
     id: number;
     status: string;
@@ -95,7 +109,10 @@ export type Booking = {
     seats_reserved: number;
     status: string;
     ride: Ride | null;
-    traveler: UserSummary | null;
+    traveler: BookingUserSummary | null;
+    can_view_contact: boolean;
+    traveler_contact: BookingContact | null;
+    driver_contact: BookingContact | null;
     can_cancel: boolean;
     can_review?: boolean;
     reviewed?: boolean;

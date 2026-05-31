@@ -18,6 +18,13 @@ class Notification extends Model
         'channel',
         'title',
         'message',
+        'recipient_phone',
+        'delivery_status',
+        'provider',
+        'provider_message_id',
+        'sent_at',
+        'failed_at',
+        'delivery_error',
         'ride_id',
         'booking_id',
         'is_read',
@@ -28,6 +35,8 @@ class Notification extends Model
         return [
             'is_read' => 'boolean',
             'created_at' => 'datetime',
+            'sent_at' => 'datetime',
+            'failed_at' => 'datetime',
         ];
     }
 
