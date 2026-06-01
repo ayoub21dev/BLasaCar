@@ -2,6 +2,7 @@
 
 namespace Tests\Unit\PublicApp;
 
+use App\Jobs\SendWhatsAppNotificationJob;
 use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
@@ -10,6 +11,7 @@ use App\Models\User;
 use App\Models\Vehicle;
 use App\Services\PublicApp\PublicRideService;
 use Illuminate\Foundation\Testing\RefreshDatabase;
+use Illuminate\Support\Facades\Queue;
 use InvalidArgumentException;
 use RuntimeException;
 use Tests\TestCase;
@@ -83,6 +85,9 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_creates_a_pending_booking_and_decrements_available_seats(): void
     {
+        config(['services.whatsapp.enabled' => true]);
+        Queue::fake();
+
         $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
@@ -106,6 +111,16 @@ class PublicRideServiceTest extends TestCase
             'booking_id' => $booking->id,
             'is_read' => false,
         ]);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $ride->driverProfile->user_id,
+            'type' => 'new_booking',
+            'channel' => 'whatsapp',
+            'recipient_phone' => '+212'.substr($ride->driverProfile->user->phone, 1),
+            'delivery_status' => 'pending',
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
+        ]);
+        Queue::assertPushed(SendWhatsAppNotificationJob::class);
     }
 
     public function test_it_rejects_duplicate_active_booking_requests_for_the_same_ride(): void
@@ -277,6 +292,9 @@ class PublicRideServiceTest extends TestCase
 
     public function test_it_notifies_the_traveler_when_a_booking_is_confirmed(): void
     {
+        config(['services.whatsapp.enabled' => true]);
+        Queue::fake();
+
         $service = $this->service();
         [$casablanca, $rabat] = $this->createRouteCities();
         $ride = $this->createRide(
@@ -304,6 +322,16 @@ class PublicRideServiceTest extends TestCase
             'booking_id' => $booking->id,
             'is_read' => false,
         ]);
+        $this->assertDatabaseHas('notifications', [
+            'user_id' => $traveler->id,
+            'type' => 'booking_accepted',
+            'channel' => 'whatsapp',
+            'recipient_phone' => '+212'.substr($traveler->phone, 1),
+            'delivery_status' => 'pending',
+            'ride_id' => $ride->id,
+            'booking_id' => $booking->id,
+        ]);
+        Queue::assertPushed(SendWhatsAppNotificationJob::class);
     }
 
     public function test_it_notifies_the_traveler_when_a_booking_is_rejected(): void

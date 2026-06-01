@@ -1,5 +1,4 @@
 *.log
-*.sqlite
 .agents/
 .DS_Store
 .env

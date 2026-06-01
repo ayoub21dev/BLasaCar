@@ -35,4 +35,16 @@ return [
         ],
     ],
 
+    'whatsapp' => [
+        'enabled' => env('WHATSAPP_NOTIFICATIONS_ENABLED', false),
+        'driver' => env('WHATSAPP_NOTIFICATIONS_DRIVER', 'log'),
+    ],
+
+    'twilio' => [
+        'account_sid' => env('TWILIO_ACCOUNT_SID'),
+        'auth_token' => env('TWILIO_AUTH_TOKEN'),
+        'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
+        'status_callback_url' => env('TWILIO_STATUS_CALLBACK_URL'),
+    ],
+
 ];

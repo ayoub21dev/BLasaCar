@@ -29,7 +29,9 @@ class FrontendPagesTest extends TestCase
 
         $this->get(route('home'))
             ->assertOk()
-            ->assertInertia(fn (Assert $page) => $page->component('Home', false));
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Home', false)
+                ->where('featuredRides', fn ($rides) => collect($rides)->isNotEmpty()));
 
         $this->get(route('rides.search'))
             ->assertOk()

@@ -34,7 +34,7 @@ export default function Search({ cities, rides, filters }: SearchProps) {
         <Layout title="Find a route that fits your next trip.">
             <section className="py-12">
                 <div className="shell page-enter">
-                    <div className="relative overflow-hidden rounded-[3.5rem] border border-slate-100 bg-white p-8 shadow-sm sm:p-12 lg:p-16">
+                    <div className="relative z-20 rounded-[3.5rem] border border-slate-100 bg-white p-8 shadow-sm sm:p-12 lg:p-16">
                         <div className="flex flex-col gap-6 lg:flex-row lg:items-end lg:justify-between">
                             <div>
                                 <div className="mb-6 inline-flex items-center gap-2 rounded-full bg-brand-100 px-4 py-2 text-[12px] font-black uppercase tracking-widest text-brand-600">Search Rides</div>
@@ -74,7 +74,7 @@ export default function Search({ cities, rides, filters }: SearchProps) {
                         </form>
                     </div>
 
-                    <div className="mt-10">
+                    <div className="relative z-0 mt-10">
                         <div className="space-y-6">
                             {rides.length > 0 ? rides.map((ride) => <RideCard key={ride.id} ride={ride} />) : (
                                 <div className="surface-soft p-10 text-center">
