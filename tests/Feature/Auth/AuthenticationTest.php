@@ -14,10 +14,13 @@ class AuthenticationTest extends TestCase
     public function test_admin_can_log_in_and_reach_admin_dashboard(): void
     {
         $this->withoutVite();
-        $this->seed();
+        $admin = User::factory()->admin()->create([
+            'email' => 'admin@example.test',
+            'password_hash' => 'password',
+        ]);
 
         $response = $this->post(route('login.store'), [
-            'email' => 'admin@blassacar.test',
+            'email' => $admin->email,
             'password' => 'password',
         ]);
 
@@ -28,10 +31,13 @@ class AuthenticationTest extends TestCase
     public function test_driver_can_log_in_and_reach_driver_dashboard(): void
     {
         $this->withoutVite();
-        $this->seed();
+        $driver = User::factory()->driver()->create([
+            'email' => 'driver@example.test',
+            'password_hash' => 'password',
+        ]);
 
         $response = $this->post(route('login.store'), [
-            'email' => 'yassine.elmansouri@blassacar.test',
+            'email' => $driver->email,
             'password' => 'password',
         ]);
 
@@ -42,10 +48,13 @@ class AuthenticationTest extends TestCase
     public function test_traveler_can_log_in_and_reach_traveler_dashboard(): void
     {
         $this->withoutVite();
-        $this->seed();
+        $traveler = User::factory()->traveler()->create([
+            'email' => 'traveler@example.test',
+            'password_hash' => 'password',
+        ]);
 
         $response = $this->post(route('login.store'), [
-            'email' => 'ayoub.rami@blassacar.test',
+            'email' => $traveler->email,
             'password' => 'password',
         ]);
 
@@ -56,10 +65,15 @@ class AuthenticationTest extends TestCase
     public function test_suspended_account_cannot_log_in(): void
     {
         $this->withoutVite();
-        $this->seed();
+        $suspendedUser = User::factory()->traveler()->create([
+            'email' => 'suspended@example.test',
+            'password_hash' => 'password',
+            'account_status' => 'suspended',
+            'suspended_at' => now(),
+        ]);
 
         $response = $this->from(route('login'))->post(route('login.store'), [
-            'email' => 'imane.tazi@blassacar.test',
+            'email' => $suspendedUser->email,
             'password' => 'password',
         ]);
 
@@ -123,11 +137,7 @@ class AuthenticationTest extends TestCase
     public function test_role_middleware_redirects_users_to_their_own_dashboard(): void
     {
         $this->withoutVite();
-        $this->seed();
-
-        $traveler = User::query()
-            ->where('email', 'ayoub.rami@blassacar.test')
-            ->firstOrFail();
+        $traveler = User::factory()->traveler()->create();
 
         $this->actingAs($traveler)
             ->get(route('dashboards.admin'))
@@ -137,11 +147,7 @@ class AuthenticationTest extends TestCase
     public function test_admin_can_open_each_admin_dashboard_section(): void
     {
         $this->withoutVite();
-        $this->seed();
-
-        $admin = User::query()
-            ->where('email', 'admin@blassacar.test')
-            ->firstOrFail();
+        $admin = User::factory()->admin()->create();
 
         $this->actingAs($admin)
             ->get(route('dashboards.admin'))
@@ -175,11 +181,7 @@ class AuthenticationTest extends TestCase
     public function test_authenticated_user_can_log_out(): void
     {
         $this->withoutVite();
-        $this->seed();
-
-        $user = User::query()
-            ->where('email', 'admin@blassacar.test')
-            ->firstOrFail();
+        $user = User::factory()->admin()->create();
 
         $response = $this->actingAs($user)->post(route('logout'));
 
