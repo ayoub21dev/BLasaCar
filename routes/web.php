@@ -6,8 +6,17 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DriverOnboardingController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\MobileAppController;
 use App\Http\Controllers\RideWorkflowController;
 use Illuminate\Support\Facades\Route;
+
+Route::prefix('mobile')->name('mobile.')->controller(MobileAppController::class)->group(function () {
+    Route::get('/', 'index')->name('index');
+    Route::get('/home', 'home')->name('home');
+    Route::get('/search', 'search')->name('search');
+    Route::get('/trips', 'trips')->name('trips');
+    Route::get('/account', 'account')->name('account');
+});
 
 Route::controller(FrontendController::class)->group(function () {
     Route::get('/', 'home')->name('home');

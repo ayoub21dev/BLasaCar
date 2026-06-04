@@ -45,6 +45,7 @@ return [
         'auth_token' => env('TWILIO_AUTH_TOKEN'),
         'whatsapp_from' => env('TWILIO_WHATSAPP_FROM'),
         'status_callback_url' => env('TWILIO_STATUS_CALLBACK_URL'),
+        'http_verify' => env('TWILIO_HTTP_VERIFY', true),
     ],
 
 ];

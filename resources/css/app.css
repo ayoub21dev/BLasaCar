@@ -177,6 +177,15 @@
         color: #f59e0b;
         transform: scale(1.15);
     }
+
+    .mobile-app {
+        min-height: 100dvh;
+        background: #f7fafc;
+    }
+
+    .mobile-screen {
+        min-height: 100dvh;
+    }
 }
 
 @keyframes page-enter {

@@ -21,6 +21,11 @@ const id = (params?: Params): string => {
 export const path = (name: string, params?: Params): string => {
     const routes: Record<string, string> = {
         home: '/',
+        'mobile.index': '/mobile',
+        'mobile.home': '/mobile/home',
+        'mobile.search': '/mobile/search',
+        'mobile.trips': '/mobile/trips',
+        'mobile.account': '/mobile/account',
         login: '/login',
         signup: '/signup',
         'login.store': '/login',

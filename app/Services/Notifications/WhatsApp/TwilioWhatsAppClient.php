@@ -19,6 +19,9 @@ class TwilioWhatsAppClient implements WhatsAppClient
 
         $response = Http::asForm()
             ->withBasicAuth($accountSid, $authToken)
+            ->withOptions([
+                'verify' => config('services.twilio.http_verify'),
+            ])
             ->connectTimeout(5)
             ->timeout(10)
             ->post("https://api.twilio.com/2010-04-01/Accounts/{$accountSid}/Messages.json", array_filter([

@@ -149,9 +149,9 @@ function HowItWorks() {
                 </div>
                 <div className="absolute inset-y-12 left-[430px] right-0 hidden lg:block">
                     <svg className="absolute inset-0 z-10 h-full w-full" viewBox="0 0 1000 430" fill="none" preserveAspectRatio="none" aria-hidden="true">
-                        <text x="105" y="292" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#f1f5f9" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 1 }}>1</text>
-                        <text x="445" y="198" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#f1f5f9" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 1 }}>2</text>
-                        <text x="790" y="108" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#f1f5f9" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 1 }}>3</text>
+                        <text x="105" y="292" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#dbeafe" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 0.78 }}>1</text>
+                        <text x="445" y="198" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#dbeafe" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 0.78 }}>2</text>
+                        <text x="790" y="108" textAnchor="middle" dominantBaseline="central" fontWeight="900" fill="#dbeafe" style={{ fontSize: '200px', fontFamily: 'sans-serif', opacity: 0.78 }}>3</text>
 
                         <path d="M-80 285 C-4 335 58 330 105 292 C194 168 300 166 445 198 C562 230 654 193 720 128 C748 101 766 108 790 108 C872 108 922 109 1030 99" stroke="var(--color-brand-500)" strokeWidth="5" strokeLinecap="round" />
                         <TimelineDot cx="105" cy="292" />
@@ -185,7 +185,7 @@ function HowItWorks() {
                         <div key={step} className="relative border-l-2 border-brand-500 pl-8">
                             <span className="absolute -left-[11px] top-1 h-5 w-5 rounded-full bg-white shadow-[0_0_0_8px_rgba(14,165,233,0.15)]" />
                             <span className="absolute -left-[5px] top-[10px] h-2 w-2 rounded-full bg-brand-300" />
-                            <span className="pointer-events-none absolute right-2 top-[-18px] text-7xl font-black leading-none text-slate-100">{step}</span>
+                            <span className="pointer-events-none absolute right-2 top-[-18px] text-7xl font-black leading-none text-brand-100">{step}</span>
                             <h3 className="text-base font-black text-slate-950">{title}</h3>
                             <p className="mt-2 max-w-[320px] text-sm font-medium leading-6 text-slate-500">{copy}</p>
                         </div>
