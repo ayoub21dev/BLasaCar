@@ -2,3 +2,11 @@ id,booking_id,traveler_id,driver_profile_id,rating,comment,created_at,updated_at
 1,4,8,2,5,Very punctual and the ride was comfortable,2026-03-08 22:00:00,2026-03-08 22:00:00
 2,5,1,2,4,Good communication and smooth driving,2026-03-08 22:10:00,2026-03-08 22:10:00
 3,6,5,3,5,Excellent trip and clean car,2026-03-09 14:20:00,2026-03-09 14:20:00
+4,9,5,1,5,Clear pickup instructions and very calm driving,2026-03-01 12:00:00,2026-03-01 12:00:00
+5,10,6,1,5,Car was clean and Yassine arrived a few minutes early,2026-03-01 12:05:00,2026-03-01 12:05:00
+6,11,7,1,5,Comfortable trip with safe highway driving,2026-03-01 12:10:00,2026-03-01 12:10:00
+7,12,8,1,5,Respectful driver and smooth communication before pickup,2026-03-04 20:00:00,2026-03-04 20:00:00
+8,13,5,1,4,Good ride overall and the price was fair,2026-03-04 20:05:00,2026-03-04 20:05:00
+9,14,7,2,5,Easy pickup at Agdal and the trip felt organized,2026-03-08 22:15:00,2026-03-08 22:15:00
+10,15,6,3,5,Mehdi kept the car clean and drove carefully,2026-03-09 14:25:00,2026-03-09 14:25:00
+11,16,8,3,5,Great communication and a comfortable ride to Agadir,2026-03-09 14:30:00,2026-03-09 14:30:00

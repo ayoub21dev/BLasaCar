@@ -46,6 +46,14 @@ export const path = (name: string, params?: Params): string => {
         return `/rides/${id(params)}`;
     }
 
+    if (name === 'profiles.drivers.show') {
+        return `/drivers/${id(params)}`;
+    }
+
+    if (name === 'profiles.travelers.show') {
+        return `/travelers/${id(params)}`;
+    }
+
     if (name === 'rides.edit') {
         return `/rides/${id(params)}/edit`;
     }

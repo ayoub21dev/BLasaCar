@@ -28,7 +28,6 @@ class User {
 
 class DriverProfile {
   id : bigint
-  user_id : bigint
   cinNumber : string
   cinPhotoFront : string
   cinPhotoBack : string
@@ -41,7 +40,6 @@ class DriverProfile {
 
 class Vehicle {
   id : bigint
-  driver_profile_id : bigint
   brand : string
   model : string
   photo : string
@@ -51,10 +49,6 @@ class Vehicle {
 
 class Ride {
   id : bigint
-  driver_profile_id : bigint
-  vehicle_id : bigint
-  departureCityId : bigint
-  arrivalCityId : bigint
   departureTime : datetime
   pricePerSeat : decimal
   totalSeats : int
@@ -73,8 +67,6 @@ class City {
 
 class Booking {
   id : bigint
-  ride_id : bigint
-  traveler_id : bigint
   seatsReserved : int
   status : string
   bookedAt : datetime
@@ -84,9 +76,6 @@ class Booking {
 
 class Review {
   id : bigint
-  booking_id : bigint
-  traveler_id : bigint
-  driver_profile_id : bigint
   rating : int
   comment : text
   createdAt : datetime
@@ -95,13 +84,10 @@ class Review {
 
 class Notification {
   id : bigint
-  user_id : bigint
   type : string
   channel : string
   title : string
   message : text
-  ride_id : bigint nullable
-  booking_id : bigint nullable
   isRead : boolean
   createdAt : datetime
 }

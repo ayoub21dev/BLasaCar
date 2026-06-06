@@ -22,11 +22,25 @@ export type UserSummary = {
     account_status?: string;
     dashboard_route: string;
     initials?: string;
+    profile_photo_url?: string | null;
     joined_date?: string;
     email_verified?: boolean;
     phone_verified?: boolean;
     suspended_at?: string | null;
     driver_profile?: DriverProfile | null;
+};
+
+export type ProfileUserSummary = {
+    id: number;
+    first_name: string;
+    last_name: string;
+    name: string;
+    initials?: string;
+    profile_photo_url?: string | null;
+    role: Role;
+    joined_date?: string | null;
+    email_verified?: boolean;
+    phone_verified?: boolean;
 };
 
 export type PhotoFile = {
@@ -48,13 +62,25 @@ export type DriverProfile = {
     photos_complete: boolean;
 };
 
+export type PublicDriverProfile = {
+    id: number;
+    cin_verified: boolean;
+    avg_rating: string;
+    total_trips: number;
+    vehicle: Vehicle | null;
+    vehicles: Vehicle[];
+    submitted_at: string | null;
+};
+
 export type PublicDriverSummary = {
     id: number;
     first_name: string;
     last_name: string;
     name: string;
     initials?: string;
+    profile_photo_url?: string | null;
     profile: {
+        id: number;
         avg_rating: string;
         total_trips: number;
         cin_verified: boolean;
@@ -67,6 +93,7 @@ export type BookingUserSummary = {
     last_name: string;
     name: string;
     initials?: string;
+    profile_photo_url?: string | null;
 };
 
 export type BookingContact = {
@@ -124,6 +151,19 @@ export type Notification = {
     message: string;
     is_read: boolean;
     created_label: string | null;
+};
+
+export type ReviewSummary = {
+    id: number;
+    rating: number;
+    comment: string | null;
+    created_label: string | null;
+    traveler: BookingUserSummary | null;
+    ride: {
+        id: number;
+        route: string;
+        departure_datetime_label: string | null;
+    } | null;
 };
 
 export type SharedProps = {

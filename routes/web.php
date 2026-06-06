@@ -6,6 +6,7 @@ use App\Http\Controllers\Auth\AuthenticatedSessionController;
 use App\Http\Controllers\Auth\RegisteredUserController;
 use App\Http\Controllers\DriverOnboardingController;
 use App\Http\Controllers\FrontendController;
+use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\RideWorkflowController;
 use Illuminate\Support\Facades\Route;
 
@@ -59,6 +60,10 @@ Route::middleware(['auth', 'active', 'role:traveler'])->controller(DriverOnboard
     Route::post('/drivers/onboarding', 'store')->name('drivers.onboarding.store');
 });
 
+Route::controller(ProfileController::class)->group(function () {
+    Route::get('/drivers/{driverProfile}', 'showDriver')->name('profiles.drivers.show');
+});
+
 Route::middleware(['auth', 'active', 'role:admin'])->controller(FrontendController::class)->group(function () {
     Route::get('/dashboards/admin', 'adminDashboard')->name('dashboards.admin');
     Route::get('/dashboards/admin/driver-verification', 'adminDriverVerification')->name('dashboards.admin.driver-verification');
@@ -79,6 +84,10 @@ Route::middleware(['auth', 'active', 'role:admin'])->controller(AdminWorkflowCon
 Route::middleware(['auth', 'active', 'role:driver'])->controller(FrontendController::class)->group(function () {
     Route::get('/dashboards/driver', 'driverDashboard')->name('dashboards.driver');
     Route::get('/rides/{ride}/edit', 'editRide')->name('rides.edit');
+});
+
+Route::middleware(['auth', 'active', 'role:driver'])->controller(ProfileController::class)->group(function () {
+    Route::get('/travelers/{traveler}', 'showTraveler')->name('profiles.travelers.show');
 });
 
 Route::middleware(['auth', 'active', 'role:traveler'])->controller(FrontendController::class)->group(function () {
