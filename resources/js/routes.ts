@@ -22,6 +22,8 @@ export const path = (name: string, params?: Params): string => {
     const routes: Record<string, string> = {
         home: '/',
         'mobile.index': '/mobile',
+        'mobile.login': '/mobile/login',
+        'mobile.signup': '/mobile/signup',
         'mobile.home': '/mobile/home',
         'mobile.search': '/mobile/search',
         'mobile.trips': '/mobile/trips',
@@ -49,6 +51,10 @@ export const path = (name: string, params?: Params): string => {
 
     if (name === 'rides.show') {
         return `/rides/${id(params)}`;
+    }
+
+    if (name === 'mobile.rides.show') {
+        return `/mobile/rides/${id(params)}`;
     }
 
     if (name === 'rides.edit') {

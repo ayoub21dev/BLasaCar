@@ -75,6 +75,11 @@ class RideWorkflowController extends Controller
                 ->withInput();
         }
 
+        if ($this->expectsMobileRedirect($request)) {
+            return redirect($this->mobileRedirectUrl($request, route('mobile.trips')))
+                ->with('status', 'Your seat request has been sent.');
+        }
+
         return redirect()->route('dashboards.traveler')
             ->with('status', 'Your seat request has been sent.');
     }
@@ -147,5 +152,21 @@ class RideWorkflowController extends Controller
         }
 
         return back()->with('status', 'Review submitted.');
+    }
+
+    private function expectsMobileRedirect($request): bool
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+        $referer = (string) $request->headers->get('referer', '');
+
+        return str_starts_with($redirectTo, '/mobile')
+            || str_contains($referer, '/mobile');
+    }
+
+    private function mobileRedirectUrl($request, string $fallback): string
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+
+        return str_starts_with($redirectTo, '/mobile') ? $redirectTo : $fallback;
     }
 }

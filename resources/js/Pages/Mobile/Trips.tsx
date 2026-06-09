@@ -43,7 +43,7 @@ export default function Trips({ bookings, upcomingBookings }: TripsProps) {
                                 {nextBooking.ride.departure_time_label}
                             </span>
                         </div>
-                        <Link href={path('rides.show', nextBooking.ride.id)} className="mt-4 flex h-11 items-center justify-center gap-2 rounded-lg bg-white text-sm font-black text-slate-950">
+                        <Link href={path('mobile.rides.show', nextBooking.ride.id)} className="mt-4 flex h-11 items-center justify-center gap-2 rounded-lg bg-white text-sm font-black text-slate-950">
                             Open trip
                             <IconArrowRight />
                         </Link>
@@ -112,7 +112,7 @@ function BookingCard({ booking }: { booking: Booking }) {
 
             <div className="mt-4 grid grid-cols-2 gap-2">
                 {ride ? (
-                    <Link href={path('rides.show', ride.id)} className="flex h-10 items-center justify-center rounded-lg bg-slate-950 text-sm font-black text-white">
+                    <Link href={path('mobile.rides.show', ride.id)} className="flex h-10 items-center justify-center rounded-lg bg-slate-950 text-sm font-black text-white">
                         Details
                     </Link>
                 ) : (

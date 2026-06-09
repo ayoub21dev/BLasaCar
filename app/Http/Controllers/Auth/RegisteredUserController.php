@@ -31,7 +31,28 @@ class RegisteredUserController extends Controller
         Auth::login($user);
         $request->session()->regenerate();
 
+        if ($this->expectsMobileRedirect($request)) {
+            return redirect($this->mobileRedirectUrl($request, route('mobile.home')))
+                ->with('status', 'Your account has been created.');
+        }
+
         return redirect()->route($user->dashboardRoute())
             ->with('status', 'Your account has been created.');
+    }
+
+    private function expectsMobileRedirect(RegisterRequest $request): bool
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+        $referer = (string) $request->headers->get('referer', '');
+
+        return str_starts_with($redirectTo, '/mobile')
+            || str_contains($referer, '/mobile');
+    }
+
+    private function mobileRedirectUrl(RegisterRequest $request, string $fallback): string
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+
+        return str_starts_with($redirectTo, '/mobile') ? $redirectTo : $fallback;
     }
 }

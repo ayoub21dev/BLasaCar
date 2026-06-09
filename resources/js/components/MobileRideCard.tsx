@@ -15,7 +15,7 @@ export function MobileRideCard({ ride, ctaLabel = 'View' }: MobileRideCardProps)
 
     return (
         <article className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">
-            <Link href={path('rides.show', ride.id)} className="block">
+            <Link href={path('mobile.rides.show', ride.id)} className="block">
                 <div className="flex items-start justify-between gap-3">
                     <div className="flex min-w-0 items-center gap-3">
                         <div className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full bg-slate-950 text-xs font-black text-white">

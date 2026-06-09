@@ -21,7 +21,7 @@ export default function Onboarding() {
     };
 
     return (
-        <MobileShell title="Welcome" showNav={false} rightAction={<Link href={path('login')} className="text-sm font-black text-slate-700">Log in</Link>}>
+        <MobileShell title="Welcome" showNav={false} rightAction={<Link href={path('mobile.login')} className="text-sm font-black text-slate-700">Log in</Link>}>
             <section className="px-5 pb-8 pt-4">
                 <div className="relative min-h-[34rem] overflow-hidden rounded-lg bg-slate-950 shadow-2xl">
                     <img src={asset('images/Heropage.png')} alt="Moroccan road trip" className="absolute inset-0 h-full w-full object-cover object-bottom opacity-80" />

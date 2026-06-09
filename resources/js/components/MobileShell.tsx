@@ -84,6 +84,11 @@ function MobileBottomNav({ active }: { active?: MobileShellProps['active'] }) {
 }
 
 export function AuthPrompt({ title, message }: { title: string; message: string }) {
+    const currentUrl = usePage().url;
+    const redirectTo = currentUrl.startsWith('/mobile') ? currentUrl : path('mobile.home');
+    const loginHref = `${path('mobile.login')}?redirect_to=${encodeURIComponent(redirectTo)}`;
+    const signupHref = `${path('mobile.signup')}?redirect_to=${encodeURIComponent(redirectTo)}`;
+
     return (
         <section className="px-5 py-6">
             <div className="rounded-lg border border-slate-200 bg-white p-5 shadow-sm">
@@ -93,8 +98,8 @@ export function AuthPrompt({ title, message }: { title: string; message: string 
                 <h1 className="mt-5 text-2xl font-black tracking-tight text-slate-950">{title}</h1>
                 <p className="mt-2 text-sm font-medium leading-6 text-slate-500">{message}</p>
                 <div className="mt-5 grid grid-cols-2 gap-3">
-                    <Link href={path('login')} className="flex h-12 items-center justify-center rounded-lg bg-slate-950 text-sm font-black text-white">Log in</Link>
-                    <Link href={path('signup')} className="flex h-12 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-black text-slate-800">Sign up</Link>
+                    <Link href={loginHref} className="flex h-12 items-center justify-center rounded-lg bg-slate-950 text-sm font-black text-white">Log in</Link>
+                    <Link href={signupHref} className="flex h-12 items-center justify-center rounded-lg border border-slate-200 bg-white text-sm font-black text-slate-800">Sign up</Link>
                 </div>
             </div>
         </section>
@@ -102,7 +107,7 @@ export function AuthPrompt({ title, message }: { title: string; message: string 
 }
 
 export function LogoutButton() {
-    const logout = useForm({});
+    const logout = useForm({ redirect_to: path('mobile.home') });
 
     return (
         <button

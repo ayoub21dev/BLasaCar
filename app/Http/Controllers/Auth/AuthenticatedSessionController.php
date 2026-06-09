@@ -28,6 +28,10 @@ class AuthenticatedSessionController extends Controller
 
         $request->session()->regenerate();
 
+        if ($this->expectsMobileRedirect($request)) {
+            return redirect()->intended($this->mobileRedirectUrl($request, route('mobile.home')));
+        }
+
         return redirect()->intended(route($request->user()->dashboardRoute()));
     }
 
@@ -38,6 +42,24 @@ class AuthenticatedSessionController extends Controller
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('home')->with('status', 'You have been logged out.');
+        $route = $this->expectsMobileRedirect($request) ? 'mobile.home' : 'home';
+
+        return redirect()->route($route)->with('status', 'You have been logged out.');
+    }
+
+    private function expectsMobileRedirect(Request $request): bool
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+        $referer = (string) $request->headers->get('referer', '');
+
+        return str_starts_with($redirectTo, '/mobile')
+            || str_contains($referer, '/mobile');
+    }
+
+    private function mobileRedirectUrl(Request $request, string $fallback): string
+    {
+        $redirectTo = (string) $request->input('redirect_to', '');
+
+        return str_starts_with($redirectTo, '/mobile') ? $redirectTo : $fallback;
     }
 }

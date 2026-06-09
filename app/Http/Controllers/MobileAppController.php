@@ -21,6 +21,16 @@ class MobileAppController extends Controller
         return Inertia::render('Mobile/Onboarding');
     }
 
+    public function login(): Response
+    {
+        return Inertia::render('Mobile/Login');
+    }
+
+    public function signup(): Response
+    {
+        return Inertia::render('Mobile/Signup');
+    }
+
     public function home(PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -67,6 +77,17 @@ class MobileAppController extends Controller
             'cities' => $this->cities(),
             'rides' => $rides->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
             'filters' => $filters,
+        ]);
+    }
+
+    public function ride(Ride $ride, PublicRideService $publicRideService): Response
+    {
+        $this->seedNativeDatabaseIfEmpty();
+
+        abort_unless($publicRideService->canViewRideDetails(auth()->user(), $ride), 404);
+
+        return Inertia::render('Mobile/RideDetails', [
+            'ride' => InertiaProps::ride($publicRideService->getRideDetails($ride)),
         ]);
     }
 

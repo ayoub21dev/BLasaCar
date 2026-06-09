@@ -12,8 +12,11 @@ use Illuminate\Support\Facades\Route;
 
 Route::prefix('mobile')->name('mobile.')->controller(MobileAppController::class)->group(function () {
     Route::get('/', 'index')->name('index');
+    Route::get('/login', 'login')->middleware('guest')->name('login');
+    Route::get('/signup', 'signup')->middleware('guest')->name('signup');
     Route::get('/home', 'home')->name('home');
     Route::get('/search', 'search')->name('search');
+    Route::get('/rides/{ride}', 'ride')->name('rides.show');
     Route::get('/trips', 'trips')->name('trips');
     Route::get('/account', 'account')->name('account');
 });
