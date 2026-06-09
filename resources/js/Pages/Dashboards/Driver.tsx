@@ -62,7 +62,6 @@ function IconPlus({ className = 'h-5 w-5' }: IconProps) {
 export default function Driver({ driver, rides, bookings, notifications, stats }: DriverProps) {
     const { errors } = usePage<SharedProps>().props;
     const unreadNotifications = notifications.filter((notification) => ! notification.is_read).length;
-    const nextRide = rides.find((ride) => ride.status === 'scheduled') ?? rides[0];
 
     return (
         <Layout title="Driver Dashboard" showHeader={false} showFooter={false}>
@@ -74,8 +73,6 @@ export default function Driver({ driver, rides, bookings, notifications, stats }
                         <TopBar driver={driver} unreadNotifications={unreadNotifications} />
 
                         <div className="mx-auto mt-6 max-w-[1320px] space-y-6">
-                            <PageHeader driver={driver} nextRide={nextRide} />
-
                             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
                                 {statCards.map((card) => <StatCard key={card.key} card={card} value={stats[card.key] ?? '0'} />)}
                             </div>
@@ -163,7 +160,11 @@ function TopBar({ driver, unreadNotifications }: { driver: UserSummary; unreadNo
                     {unreadNotifications > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-black text-white">{unreadNotifications}</span>}
                 </a>
                 <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{driver.initials ?? driver.first_name.slice(0, 1)}</div>
+                    {driver.profile_photo_url ? (
+                        <img src={driver.profile_photo_url} alt={driver.name} className="h-10 w-10 rounded-full object-cover" />
+                    ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{driver.initials ?? driver.first_name.slice(0, 1)}</div>
+                    )}
                     <div>
                         <p className="text-sm font-semibold text-slate-950">{driver.first_name}</p>
                         <p className="text-xs text-slate-500">Driver</p>
@@ -171,30 +172,6 @@ function TopBar({ driver, unreadNotifications }: { driver: UserSummary; unreadNo
                 </div>
             </div>
         </header>
-    );
-}
-
-function PageHeader({ driver, nextRide }: { driver: UserSummary; nextRide?: Ride }) {
-    return (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-7">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <p className="text-sm font-medium text-slate-500">Driver dashboard</p>
-                    <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Welcome back, {driver.first_name}</h1>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Manage published rides, booking requests, seat activity, and notifications in one clean place.</p>
-                </div>
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
-                    <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-                        <p className="font-medium text-slate-500">Next ride</p>
-                        <p className="mt-1 font-semibold text-slate-950">{nextRide ? `${nextRide.departure_city?.name ?? 'Departure'} → ${nextRide.arrival_city?.name ?? 'Arrival'}` : 'No ride scheduled'}</p>
-                    </div>
-                    <Link href={path('rides.publish')} className="inline-flex shrink-0 items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-3 text-sm font-semibold text-white">
-                        <IconPlus className="h-4 w-4" />
-                        Publish ride
-                    </Link>
-                </div>
-            </div>
-        </section>
     );
 }
 
@@ -342,11 +319,16 @@ function BookingRequests({ bookings, error }: { bookings: Booking[]; error?: str
 
 function DriverBookingTableRow({ booking }: { booking: Booking }) {
     const ride = booking.ride;
+    const traveler = booking.traveler;
 
     return (
         <tr>
             <td className="px-4 py-3">
-                <p className="font-semibold text-slate-800">{booking.traveler?.name ?? 'Traveler'}</p>
+                {traveler ? (
+                    <Link href={path('profiles.travelers.show', traveler.id)} className="font-semibold text-slate-800 transition hover:text-brand-700">{traveler.name}</Link>
+                ) : (
+                    <p className="font-semibold text-slate-800">Traveler</p>
+                )}
                 <ContactLink contact={booking.traveler_contact} lockedLabel="Contact unlocks after acceptance" />
             </td>
             <td className="px-4 py-3 font-semibold text-slate-600">{ride?.departure_city?.name ?? 'Departure'} <span className="text-slate-400">-&gt;</span> {ride?.arrival_city?.name ?? 'Arrival'}</td>
@@ -359,13 +341,18 @@ function DriverBookingTableRow({ booking }: { booking: Booking }) {
 
 function DriverBookingMobileCard({ booking }: { booking: Booking }) {
     const ride = booking.ride;
+    const traveler = booking.traveler;
 
     return (
         <article className="rounded-xl border border-slate-200 bg-white p-4">
             <div className="flex items-start justify-between gap-3">
                 <div className="min-w-0">
                     <p className="break-words font-semibold text-slate-950">{ride?.departure_city?.name ?? 'Departure'} <span className="text-slate-400">-&gt;</span> {ride?.arrival_city?.name ?? 'Arrival'}</p>
-                    <p className="mt-1 text-sm font-semibold text-slate-500">{booking.traveler?.name ?? 'Traveler'} · {booking.seats_reserved} seat{booking.seats_reserved === 1 ? '' : 's'}</p>
+                    <p className="mt-1 text-sm font-semibold text-slate-500">
+                        {traveler ? (
+                            <Link href={path('profiles.travelers.show', traveler.id)} className="transition hover:text-brand-700">{traveler.name}</Link>
+                        ) : 'Traveler'} · {booking.seats_reserved} seat{booking.seats_reserved === 1 ? '' : 's'}
+                    </p>
                     <ContactLink contact={booking.traveler_contact} lockedLabel="Contact unlocks after acceptance" />
                 </div>
                 <StatusChip status={booking.status} />

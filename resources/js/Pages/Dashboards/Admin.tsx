@@ -81,7 +81,7 @@ export default function Admin(props: AdminProps) {
                             {errors.driver_profile && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.driver_profile}</div>}
                             {errors.user && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.user}</div>}
                             {errors.ride && <div className="rounded-2xl border border-rose-200 bg-rose-50 px-5 py-4 text-sm font-semibold text-rose-700">{errors.ride}</div>}
-                            <PageHeader section={props.section} admin={admin} pendingCount={pendingCount} metrics={props.metrics} alerts={props.alerts} />
+                            {props.section !== 'overview' && <PageHeader section={props.section} admin={admin} pendingCount={pendingCount} metrics={props.metrics} alerts={props.alerts} />}
 
                             {props.section === 'overview' && <Overview {...props} />}
                             {props.section === 'driver-verification' && <DriverVerification {...props} />}

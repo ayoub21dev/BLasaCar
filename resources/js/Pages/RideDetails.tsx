@@ -1,4 +1,4 @@
-import { useForm } from '@inertiajs/react';
+import { Link, useForm } from '@inertiajs/react';
 import { FormEvent } from 'react';
 import { Layout } from '../components/Layout';
 import { StatusChip } from '../components/ui';
@@ -60,13 +60,22 @@ export default function RideDetails({ ride }: { ride: Ride }) {
 
                             <div className="rounded-[3.5rem] border border-slate-100 bg-white p-8 shadow-sm sm:p-12">
                                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center">
-                                    <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-lg font-bold text-white">{ride.driver?.initials ?? 'BC'}</div>
+                                    {ride.driver?.profile_photo_url ? (
+                                        <img src={ride.driver.profile_photo_url} alt={ride.driver.name} className="h-16 w-16 rounded-full object-cover shadow-sm" />
+                                    ) : (
+                                        <div className="flex h-16 w-16 items-center justify-center rounded-full bg-gradient-to-br from-brand-500 to-brand-700 text-lg font-bold text-white">{ride.driver?.initials ?? 'BC'}</div>
+                                    )}
                                     <div>
                                         <p className="text-sm font-semibold uppercase tracking-[0.18em] text-slate-400">Driver</p>
                                         <h2 className="mt-1 text-2xl font-bold text-slate-950">{ride.driver?.name}</h2>
                                         <p className="mt-1 text-sm text-slate-500">
                                             Rating {ride.driver?.profile?.avg_rating ?? '0.0'} &middot; {ride.driver?.profile?.total_trips ?? 0} trips &middot; {ride.driver?.profile?.cin_verified ? 'ID verified' : 'Verification pending'}
                                         </p>
+                                        {ride.driver?.profile?.id && (
+                                            <Link href={path('profiles.drivers.show', ride.driver.profile.id)} className="mt-4 inline-flex items-center rounded-xl border border-slate-200 px-4 py-2 text-sm font-black text-slate-700 transition hover:border-brand-200 hover:text-brand-700">
+                                                View driver profile
+                                            </Link>
+                                        )}
                                     </div>
                                 </div>
                             </div>

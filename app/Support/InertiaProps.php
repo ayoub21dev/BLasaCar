@@ -6,10 +6,12 @@ use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
 use App\Models\Notification;
+use App\Models\Review;
 use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Facades\Storage;
 
 class InertiaProps
 {
@@ -40,6 +42,7 @@ class InertiaProps
             'account_status' => $user->account_status,
             'dashboard_route' => $user->dashboardRoute(),
             'initials' => self::initials($user),
+            'profile_photo_url' => self::profilePhotoUrl($user),
             'joined_date' => $user->created_at?->format('d M Y'),
             'email_verified' => (bool) $user->email_verified,
             'phone_verified' => (bool) $user->phone_verified,
@@ -82,6 +85,22 @@ class InertiaProps
             'vehicle' => $profile->vehicles->first() ? self::vehicle($profile->vehicles->first()) : null,
             'submitted_at' => $profile->created_at?->format('d M Y H:i'),
             'photos_complete' => $frontExists && $backExists,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function publicDriverProfile(DriverProfile $profile): array
+    {
+        return [
+            'id' => $profile->id,
+            'cin_verified' => (bool) $profile->cin_verified,
+            'avg_rating' => number_format((float) $profile->avg_rating, 1),
+            'total_trips' => (int) $profile->total_trips,
+            'vehicle' => $profile->vehicles->first() ? self::vehicle($profile->vehicles->first()) : null,
+            'vehicles' => $profile->vehicles->map(fn (Vehicle $vehicle) => self::vehicle($vehicle))->values(),
+            'submitted_at' => $profile->created_at?->format('d M Y'),
         ];
     }
 
@@ -133,6 +152,7 @@ class InertiaProps
             'driver' => $driver ? [
                 ...self::publicUser($driver),
                 'profile' => $profile ? [
+                    'id' => $profile->id,
                     'avg_rating' => number_format((float) $profile->avg_rating, 1),
                     'total_trips' => (int) $profile->total_trips,
                     'cin_verified' => (bool) $profile->cin_verified,
@@ -187,6 +207,41 @@ class InertiaProps
         ];
     }
 
+    /**
+     * @return array<string, mixed>
+     */
+    public static function profileUser(User $user): array
+    {
+        return [
+            ...self::publicUser($user),
+            'role' => $user->role,
+            'joined_date' => $user->created_at?->format('d M Y'),
+            'email_verified' => (bool) $user->email_verified,
+            'phone_verified' => (bool) $user->phone_verified,
+        ];
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public static function review(Review $review): array
+    {
+        $ride = $review->booking?->ride;
+
+        return [
+            'id' => $review->id,
+            'rating' => (int) $review->rating,
+            'comment' => $review->comment,
+            'created_label' => $review->created_at?->format('d M Y'),
+            'traveler' => $review->traveler ? self::publicUser($review->traveler) : null,
+            'ride' => $ride ? [
+                'id' => $ride->id,
+                'route' => trim(($ride->departureCity?->name ?? 'Departure').' -> '.($ride->arrivalCity?->name ?? 'Arrival')),
+                'departure_datetime_label' => $ride->departure_time?->format('d M Y \a\t H:i'),
+            ] : null,
+        ];
+    }
+
     private static function initials(User $user): string
     {
         return strtoupper(str($user->first_name)->substr(0, 1).str($user->last_name)->substr(0, 1));
@@ -195,7 +250,7 @@ class InertiaProps
     /**
      * @return array<string, mixed>
      */
-    private static function publicUser(User $user): array
+    public static function publicUser(User $user): array
     {
         return [
             'id' => $user->id,
@@ -203,7 +258,31 @@ class InertiaProps
             'last_name' => $user->last_name,
             'name' => trim($user->first_name.' '.$user->last_name),
             'initials' => self::initials($user),
+            'profile_photo_url' => self::profilePhotoUrl($user),
         ];
+    }
+
+    private static function profilePhotoUrl(User $user): ?string
+    {
+        if (! $user->profile_photo) {
+            return null;
+        }
+
+        $path = ltrim($user->profile_photo, '/');
+
+        if (str_starts_with($path, 'http://') || str_starts_with($path, 'https://')) {
+            return $path;
+        }
+
+        if (is_file(public_path($path))) {
+            return '/'.$path;
+        }
+
+        if (Storage::disk('public')->exists($path)) {
+            return Storage::url($path);
+        }
+
+        return null;
     }
 
     /**

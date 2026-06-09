@@ -98,6 +98,7 @@ class DatabaseSeeder extends Seeder
             if ($fileName === '05_rides.csv' && ($data['status'] ?? null) === 'scheduled') {
                 $departureTime = Carbon::parse($data['departure_time']);
                 $data['departure_time'] = today()
+                    ->addMonthNoOverflow()
                     ->addDays($scheduledRideOffset++)
                     ->setTimeFrom($departureTime)
                     ->toDateTimeString();

@@ -11,9 +11,13 @@ export function RideCard({ ride }: { ride: Ride }) {
             <Link href={path('rides.show', ride.id)} className="block p-6">
                 <div className="flex items-center gap-3">
                     <div className="relative">
-                        <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-slate-100 text-sm font-bold text-slate-600 shadow-sm">
-                            {firstInitial}
-                        </div>
+                        {driver?.profile_photo_url ? (
+                            <img src={driver.profile_photo_url} alt={driver.name} className="h-12 w-12 rounded-full border-2 border-white object-cover shadow-sm" />
+                        ) : (
+                            <div className="flex h-12 w-12 items-center justify-center rounded-full border-2 border-white bg-slate-100 text-sm font-bold text-slate-600 shadow-sm">
+                                {firstInitial}
+                            </div>
+                        )}
                         <div className="absolute -bottom-1 -right-1 flex h-5 w-5 items-center justify-center rounded-full bg-white shadow-sm">
                             <svg className="h-4 w-4 text-emerald-500" viewBox="0 0 20 20" fill="currentColor">
                                 <path fillRule="evenodd" d="M10 18a8 8 0 1 0 0-16 8 8 0 0 0 0 16Zm3.707-9.293a1 1 0 0 0-1.414-1.414L9 10.586 7.707 9.293a1 1 0 0 0-1.414 1.414l2 2a1 1 0 0 0 1.414 0l4-4Z" clipRule="evenodd" />

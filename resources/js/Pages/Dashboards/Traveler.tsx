@@ -86,8 +86,6 @@ export default function Traveler({ traveler, bookings, upcomingBookings, notific
                         <TopBar traveler={traveler} unreadNotifications={unreadNotifications} />
 
                         <div className="mx-auto mt-6 max-w-[1320px] space-y-6">
-                            <PageHeader traveler={traveler} nextTrip={nextTrip} />
-
                             <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
                                 {statCards.map((card) => <StatCard key={card.key} card={card} value={stats[card.key] ?? '0'} />)}
                             </div>
@@ -169,7 +167,11 @@ function TopBar({ traveler, unreadNotifications }: { traveler: UserSummary; unre
                     {unreadNotifications > 0 && <span className="absolute -right-1 -top-1 flex h-5 min-w-5 items-center justify-center rounded-full bg-brand-600 px-1 text-[10px] font-black text-white">{unreadNotifications}</span>}
                 </a>
                 <div className="flex items-center gap-3">
-                    <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{traveler.initials ?? traveler.first_name.slice(0, 1)}</div>
+                    {traveler.profile_photo_url ? (
+                        <img src={traveler.profile_photo_url} alt={traveler.name} className="h-10 w-10 rounded-full object-cover" />
+                    ) : (
+                        <div className="flex h-10 w-10 items-center justify-center rounded-full bg-slate-950 text-sm font-semibold text-white">{traveler.initials ?? traveler.first_name.slice(0, 1)}</div>
+                    )}
                     <div>
                         <p className="text-sm font-semibold text-slate-950">{traveler.first_name}</p>
                         <p className="text-xs text-slate-500">Traveler</p>
@@ -177,26 +179,6 @@ function TopBar({ traveler, unreadNotifications }: { traveler: UserSummary; unre
                 </div>
             </div>
         </header>
-    );
-}
-
-function PageHeader({ traveler, nextTrip }: { traveler: UserSummary; nextTrip?: Booking }) {
-    const ride = nextTrip?.ride;
-
-    return (
-        <section className="rounded-2xl border border-slate-200 bg-white p-6 sm:p-7">
-            <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-                <div>
-                    <p className="text-sm font-medium text-slate-500">Traveler dashboard</p>
-                    <h1 className="mt-2 text-2xl font-semibold tracking-tight text-slate-950 sm:text-3xl">Welcome back, {traveler.first_name}</h1>
-                    <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">Manage your upcoming rides, booking history, and notifications in one clean place.</p>
-                </div>
-                <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm">
-                    <p className="font-medium text-slate-500">Next ride</p>
-                    <p className="mt-1 font-semibold text-slate-950">{ride ? `${ride.departure_city?.name ?? 'Departure'} → ${ride.arrival_city?.name ?? 'Arrival'}` : 'No trip scheduled'}</p>
-                </div>
-            </div>
-        </section>
     );
 }
 
@@ -266,7 +248,8 @@ function NextTripPanel({ booking }: { booking?: Booking }) {
                 </div>
                 <ContactPanel contact={booking.driver_contact} lockedLabel="Driver contact unlocks after acceptance." />
 
-                <div className="mt-5 flex justify-end">
+                <div className="mt-5 flex flex-wrap justify-end gap-2">
+                    {ride?.driver?.profile?.id && <Link href={path('profiles.drivers.show', ride.driver.profile.id)} className="inline-flex items-center justify-center gap-2 rounded-lg border border-slate-200 bg-white px-4 py-2.5 text-sm font-semibold text-slate-700 transition hover:border-brand-200 hover:text-brand-700">View driver profile</Link>}
                     {ride && <Link href={path('rides.show', ride.id)} className="inline-flex items-center justify-center gap-2 rounded-lg bg-slate-950 px-4 py-2.5 text-sm font-semibold text-white">View trip details <IconArrow /></Link>}
                 </div>
             </div>
@@ -346,6 +329,12 @@ function DriverAvatar({ driver }: { driver?: PublicDriverSummary | null }) {
         ?? driver?.name?.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
         ?? '—';
 
+    if (driver?.profile_photo_url) {
+        return (
+            <img src={driver.profile_photo_url} alt={driver.name} className="h-9 w-9 shrink-0 rounded-full object-cover" />
+        );
+    }
+
     return (
         <span className="flex h-9 w-9 shrink-0 items-center justify-center rounded-full bg-slate-900 text-xs font-semibold uppercase text-white">
             {fallback}
@@ -379,7 +368,11 @@ function BookingTableRow({ booking }: { booking: Booking }) {
                     <div className="flex items-center gap-3">
                         <DriverAvatar driver={ride?.driver} />
                         <div className="min-w-0">
-                            <p className="font-semibold text-slate-700">{ride?.driver?.name ?? 'Not listed'}</p>
+                            {ride?.driver?.profile?.id ? (
+                                <Link href={path('profiles.drivers.show', ride.driver.profile.id)} className="font-semibold text-slate-700 transition hover:text-brand-700">{ride.driver.name}</Link>
+                            ) : (
+                                <p className="font-semibold text-slate-700">{ride?.driver?.name ?? 'Not listed'}</p>
+                            )}
                             <ContactLink contact={booking.driver_contact} lockedLabel="Hidden until accepted" />
                         </div>
                     </div>
@@ -423,7 +416,11 @@ function BookingMobileCard({ booking }: { booking: Booking }) {
                     <DriverAvatar driver={ride?.driver} />
                     <div className="min-w-0">
                         <p className="text-xs font-medium text-slate-500">Driver</p>
-                        <p className="truncate text-sm font-semibold text-slate-900">{ride?.driver?.name ?? 'Not listed'}</p>
+                        {ride?.driver?.profile?.id ? (
+                            <Link href={path('profiles.drivers.show', ride.driver.profile.id)} className="block truncate text-sm font-semibold text-slate-900 transition hover:text-brand-700">{ride.driver.name}</Link>
+                        ) : (
+                            <p className="truncate text-sm font-semibold text-slate-900">{ride?.driver?.name ?? 'Not listed'}</p>
+                        )}
                         <ContactLink contact={booking.driver_contact} lockedLabel="Hidden until accepted" />
                     </div>
                 </div>
