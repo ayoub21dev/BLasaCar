@@ -484,27 +484,7 @@ function RideCard({ ride }: { ride: Ride }) {
                 <Data label="Price" value={ride.price_label} />
                 <Data label="Vehicle" value={ride.vehicle ? `${ride.vehicle.brand} ${ride.vehicle.model}` : 'Not listed'} />
             </div>
-            <RideAdminNoteForm ride={ride} />
         </article>
-    );
-}
-
-function RideAdminNoteForm({ ride }: { ride: Ride }) {
-    const form = useForm({
-        admin_note: ride.admin_note ?? '',
-    });
-
-    return (
-        <form
-            onSubmit={(event) => {
-                event.preventDefault();
-                form.patch(path('admin.rides.note', ride.id));
-            }}
-            className="mt-4 grid gap-3 border-t border-slate-200 pt-4 sm:grid-cols-[minmax(0,1fr)_auto]"
-        >
-            <input value={form.data.admin_note} onChange={(event) => form.setData('admin_note', event.target.value)} placeholder="Internal admin note only" className="rounded-lg border border-slate-200 bg-white px-3 py-2 text-xs font-semibold text-slate-700 outline-none" />
-            <button type="submit" disabled={form.processing} className="rounded-lg bg-slate-950 px-4 py-2 text-xs font-semibold text-white transition hover:bg-slate-800 disabled:opacity-50">Save note</button>
-        </form>
     );
 }
 

@@ -2,9 +2,7 @@
 
 namespace App\Http\Controllers;
 
-use App\Http\Requests\AdminModerateRideRequest;
 use App\Models\DriverProfile;
-use App\Models\Ride;
 use App\Models\User;
 use App\Services\Admin\AdminService;
 use App\Support\DriverIdentityPhotos;
@@ -42,16 +40,6 @@ class AdminWorkflowController extends Controller
         $adminService->activateUser($user);
 
         return back()->with('status', 'User activated.');
-    }
-
-    public function noteRide(AdminModerateRideRequest $request, Ride $ride, AdminService $adminService): RedirectResponse
-    {
-        $adminService->annotateRide(
-            ride: $ride,
-            adminNote: $request->validated('admin_note'),
-        );
-
-        return back()->with('status', 'Ride note saved.');
     }
 
     public function showDriverProfileCinPhoto(DriverProfile $driverProfile, string $side): StreamedResponse

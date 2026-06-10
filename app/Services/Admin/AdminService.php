@@ -105,23 +105,6 @@ class AdminService
         return $query->get();
     }
 
-    public function annotateRide(Ride $ride, ?string $adminNote = null): Ride
-    {
-        DB::transaction(function () use ($ride, $adminNote): void {
-            /** @var Ride $lockedRide */
-            $lockedRide = Ride::query()
-                ->whereKey($ride->getKey())
-                ->lockForUpdate()
-                ->firstOrFail();
-
-            $lockedRide->forceFill([
-                'admin_note' => $adminNote,
-            ])->save();
-        });
-
-        return $ride->refresh();
-    }
-
     public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
     {
         if (

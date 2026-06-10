@@ -158,18 +158,6 @@ class AdminServiceTest extends TestCase
         $this->assertTrue($suspendedUsers->every(fn (User $user) => $user->account_status === 'suspended'));
     }
 
-    public function test_it_can_store_an_admin_note_without_changing_ride_status(): void
-    {
-        $service = new AdminService;
-        $ride = $this->createRide();
-
-        $updatedRide = $service->annotateRide($ride, 'Fraudulent listing reported by users.');
-
-        $this->assertSame('scheduled', $updatedRide->status);
-        $this->assertSame(3, $updatedRide->available_seats);
-        $this->assertSame('Fraudulent listing reported by users.', $updatedRide->admin_note);
-    }
-
     public function test_it_can_verify_a_driver_profile(): void
     {
         Storage::fake(DriverIdentityPhotos::DISK);

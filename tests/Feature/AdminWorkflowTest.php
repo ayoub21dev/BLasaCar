@@ -2,7 +2,6 @@
 
 namespace Tests\Feature;
 
-use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
 use App\Models\Ride;
@@ -11,6 +10,7 @@ use App\Models\Vehicle;
 use App\Support\DriverIdentityPhotos;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Storage;
+use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
 
 class AdminWorkflowTest extends TestCase
@@ -163,55 +163,21 @@ class AdminWorkflowTest extends TestCase
         $this->assertNull($traveler->fresh()->suspended_at);
     }
 
-    public function test_admin_can_add_a_note_to_a_ride_without_changing_status(): void
+    public function test_admin_ride_activity_page_lists_all_rides(): void
     {
-        $admin = User::factory()->admin()->create();
-        $traveler = User::factory()->traveler()->create();
-        $ride = $this->createScheduledRide();
+        $this->withoutVite();
+        $this->seed();
 
-        $booking = Booking::query()->create([
-            'ride_id' => $ride->id,
-            'traveler_id' => $traveler->id,
-            'seats_reserved' => 1,
-            'status' => 'confirmed',
-            'booked_at' => now(),
-        ]);
+        $admin = User::factory()->admin()->create();
+        $rideCount = Ride::query()->count();
 
         $this->actingAs($admin)
-            ->from(route('dashboards.admin.rides'))
-            ->patch(route('admin.rides.note', $ride), [
-                'admin_note' => 'Reported by users for review.',
-            ])
-            ->assertRedirect(route('dashboards.admin.rides'))
-            ->assertSessionHas('status', 'Ride note saved.');
-
-        $this->assertSame('scheduled', $ride->fresh()->status);
-        $this->assertSame(3, $ride->fresh()->available_seats);
-        $this->assertSame('Reported by users for review.', $ride->fresh()->admin_note);
-        $this->assertSame('confirmed', $booking->fresh()->status);
-    }
-
-    public function test_admin_ride_note_route_ignores_status_changes(): void
-    {
-        $admin = User::factory()->admin()->create();
-        $ride = $this->createScheduledRide();
-        $ride->update([
-            'status' => 'cancelled',
-            'available_seats' => 0,
-        ]);
-
-        $this->actingAs($admin)
-            ->from(route('dashboards.admin.rides'))
-            ->patch(route('admin.rides.note', $ride), [
-                'status' => 'scheduled',
-                'admin_note' => 'Restore this ride.',
-            ])
-            ->assertRedirect(route('dashboards.admin.rides'))
-            ->assertSessionHas('status', 'Ride note saved.');
-
-        $this->assertSame('cancelled', $ride->fresh()->status);
-        $this->assertSame(0, $ride->fresh()->available_seats);
-        $this->assertSame('Restore this ride.', $ride->fresh()->admin_note);
+            ->get(route('dashboards.admin.rides'))
+            ->assertOk()
+            ->assertInertia(fn (Assert $page) => $page
+                ->component('Dashboards/Admin', false)
+                ->where('section', 'rides')
+                ->has('rides', $rideCount));
     }
 
     private function createScheduledRide(): Ride

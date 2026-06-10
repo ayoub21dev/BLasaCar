@@ -168,7 +168,9 @@ class FrontendController extends Controller
             'section' => $section,
             'metrics' => $adminService->dashboardMetrics(),
             'users' => $users->map(fn (User $user) => InertiaProps::user($user, true))->values(),
-            'rides' => $rides->take(6)->map(fn (Ride $ride) => InertiaProps::ride($ride))->values(),
+            'rides' => ($section === 'rides' ? $rides : $rides->take(6))
+                ->map(fn (Ride $ride) => InertiaProps::ride($ride))
+                ->values(),
             'pendingDriverProfiles' => $adminService->listPendingDriverVerifications()
                 ->map(fn ($profile) => [
                     ...InertiaProps::driverProfile($profile),

@@ -85,6 +85,30 @@ class AccountSettingsTest extends TestCase
         $this->assertFalse($user->phone_verified);
     }
 
+    public function test_profile_update_keeps_optional_last_name_database_safe(): void
+    {
+        $user = User::factory()->traveler()->create([
+            'first_name' => 'Old',
+            'last_name' => 'Name',
+            'email' => 'old@example.test',
+            'phone' => '0600000000',
+        ]);
+
+        $this->actingAs($user)
+            ->patch(route('account.settings.profile.update'), [
+                'first_name' => 'Nora',
+                'email' => 'nora@example.test',
+                'phone' => '0611111111',
+            ])
+            ->assertRedirect();
+
+        $this->assertDatabaseHas('users', [
+            'id' => $user->id,
+            'first_name' => 'Nora',
+            'last_name' => '',
+        ]);
+    }
+
     public function test_authenticated_user_can_update_password(): void
     {
         $user = User::factory()->traveler()->create([

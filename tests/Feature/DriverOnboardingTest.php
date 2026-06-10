@@ -69,6 +69,38 @@ class DriverOnboardingTest extends TestCase
         ]);
     }
 
+    public function test_cin_number_is_normalized_and_validated(): void
+    {
+        Storage::fake(DriverIdentityPhotos::DISK);
+
+        $traveler = User::factory()->traveler()->create();
+
+        $this->actingAs($traveler)->post(route('drivers.onboarding.store'), [
+            'cin_number' => 'not a cin',
+            'cin_front_photo' => UploadedFile::fake()->image('cin-front.jpg'),
+            'cin_back_photo' => UploadedFile::fake()->image('cin-back.jpg'),
+            'vehicle_brand' => 'Dacia',
+            'vehicle_model' => 'Logan',
+        ])->assertSessionHasErrors('cin_number');
+
+        $this->assertDatabaseMissing('driver_profiles', [
+            'user_id' => $traveler->id,
+        ]);
+
+        $this->actingAs($traveler)->post(route('drivers.onboarding.store'), [
+            'cin_number' => ' bk987654 ',
+            'cin_front_photo' => UploadedFile::fake()->image('cin-front.jpg'),
+            'cin_back_photo' => UploadedFile::fake()->image('cin-back.jpg'),
+            'vehicle_brand' => ' Dacia ',
+            'vehicle_model' => ' Logan ',
+        ])->assertRedirect(route('dashboards.driver'));
+
+        $this->assertDatabaseHas('driver_profiles', [
+            'user_id' => $traveler->id,
+            'cin_number' => 'BK987654',
+        ]);
+    }
+
     public function test_uploaded_cin_photos_are_removed_when_onboarding_fails(): void
     {
         Storage::fake(DriverIdentityPhotos::DISK);

@@ -9,6 +9,7 @@ use App\Models\Review;
 use App\Models\Ride;
 use App\Models\User;
 use App\Models\Vehicle;
+use App\Support\InertiaProps;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Inertia\Testing\AssertableInertia as Assert;
 use Tests\TestCase;
@@ -97,6 +98,37 @@ class ProfileVisibilityTest extends TestCase
                 ->where('bookings.0.can_view_contact', true)
                 ->where('bookings.0.traveler_contact.phone', '0655555555')
                 ->where('bookings.0.traveler_contact.whatsapp_url', 'https://wa.me/212655555555'));
+    }
+
+    public function test_contact_stays_hidden_when_a_confirmed_booking_involves_a_suspended_account(): void
+    {
+        [$driver, $vehicle] = $this->createDriverWithVehicle();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $traveler = User::factory()->traveler()->create();
+        $ride = $this->createRide($driver, $vehicle, $casablanca, $rabat);
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'confirmed',
+            'booked_at' => now(),
+        ]);
+
+        $driver->forceFill([
+            'account_status' => 'suspended',
+            'suspended_at' => now(),
+        ])->save();
+
+        $payload = InertiaProps::booking($booking->fresh([
+            'traveler',
+            'ride.driverProfile.user',
+            'ride.departureCity',
+            'ride.arrivalCity',
+        ]));
+
+        $this->assertFalse($payload['can_view_contact']);
+        $this->assertNull($payload['traveler_contact']);
+        $this->assertNull($payload['driver_contact']);
     }
 
     public function test_driver_cannot_view_unrelated_traveler_profile(): void

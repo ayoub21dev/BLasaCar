@@ -155,20 +155,15 @@ class PublicRideService
 
     public function cancelBooking(Booking $booking): Booking
     {
-        if (! in_array($booking->status, ['pending', 'confirmed'], true)) {
-            throw new RuntimeException('Only pending or confirmed bookings can be cancelled.');
-        }
-
         return DB::transaction(function () use ($booking): Booking {
             /** @var Booking $lockedBooking */
             $lockedBooking = Booking::query()
+                ->with('ride')
                 ->whereKey($booking->getKey())
                 ->lockForUpdate()
                 ->firstOrFail();
 
-            if (! in_array($lockedBooking->status, ['pending', 'confirmed'], true)) {
-                throw new RuntimeException('Only pending or confirmed bookings can be cancelled.');
-            }
+            $this->assertBookingCanBeCancelled($lockedBooking);
 
             /** @var Ride $ride */
             $ride = Ride::query()
@@ -387,6 +382,21 @@ class PublicRideService
 
         if ($ride->available_seats < $seatsRequested) {
             throw new RuntimeException('Not enough seats available for this booking.');
+        }
+    }
+
+    private function assertBookingCanBeCancelled(Booking $booking): void
+    {
+        if (! in_array($booking->status, ['pending', 'confirmed'], true)) {
+            throw new RuntimeException('Only pending or confirmed bookings can be cancelled.');
+        }
+
+        if ($booking->ride?->status !== 'scheduled') {
+            throw new RuntimeException('Only bookings for scheduled rides can be cancelled.');
+        }
+
+        if ($booking->ride?->departure_time?->lessThanOrEqualTo(now())) {
+            throw new RuntimeException('Departed rides cannot be cancelled.');
         }
     }
 

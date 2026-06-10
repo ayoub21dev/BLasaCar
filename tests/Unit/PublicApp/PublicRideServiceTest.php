@@ -290,6 +290,31 @@ class PublicRideServiceTest extends TestCase
         $service->cancelBooking($booking);
     }
 
+    public function test_it_rejects_cancellation_after_departure_time(): void
+    {
+        $service = $this->service();
+        [$casablanca, $rabat] = $this->createRouteCities();
+        $ride = $this->createRide(
+            departureCity: $casablanca,
+            arrivalCity: $rabat,
+            departureTimeModifier: '-1 hour',
+        );
+        $traveler = User::factory()->create();
+
+        $booking = Booking::query()->create([
+            'ride_id' => $ride->id,
+            'traveler_id' => $traveler->id,
+            'seats_reserved' => 1,
+            'status' => 'confirmed',
+            'booked_at' => now()->subDay(),
+        ]);
+
+        $this->expectException(RuntimeException::class);
+        $this->expectExceptionMessage('Departed rides cannot be cancelled.');
+
+        $service->cancelBooking($booking);
+    }
+
     public function test_it_notifies_the_traveler_when_a_booking_is_confirmed(): void
     {
         config(['services.whatsapp.enabled' => true]);

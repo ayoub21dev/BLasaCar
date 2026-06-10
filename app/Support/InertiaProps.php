@@ -147,7 +147,6 @@ class InertiaProps
             'available_seats_label' => $ride->available_seats.' '.str('seat')->plural($ride->available_seats).' left',
             'meeting_point' => $ride->meeting_point,
             'notes' => $ride->notes,
-            'admin_note' => $ride->admin_note,
             'vehicle' => $ride->vehicle ? self::vehicle($ride->vehicle) : null,
             'driver' => $driver ? [
                 ...self::publicUser($driver),
@@ -172,7 +171,11 @@ class InertiaProps
      */
     public static function booking(Booking $booking): array
     {
-        $canViewContact = in_array($booking->status, ['confirmed', 'completed'], true);
+        $driver = $booking->ride?->driverProfile?->user;
+        $traveler = $booking->traveler;
+        $canViewContact = in_array($booking->status, ['confirmed', 'completed'], true)
+            && $traveler?->account_status === 'active'
+            && $driver?->account_status === 'active';
 
         return [
             'id' => $booking->id,
@@ -180,13 +183,13 @@ class InertiaProps
             'seats_reserved' => (int) $booking->seats_reserved,
             'status' => $booking->status,
             'ride' => $booking->ride ? self::ride($booking->ride) : null,
-            'traveler' => $booking->traveler ? self::publicUser($booking->traveler) : null,
+            'traveler' => $traveler ? self::publicUser($traveler) : null,
             'can_view_contact' => $canViewContact,
-            'traveler_contact' => $canViewContact && $booking->traveler
-                ? self::contact($booking->traveler)
+            'traveler_contact' => $canViewContact && $traveler
+                ? self::contact($traveler)
                 : null,
-            'driver_contact' => $canViewContact && $booking->ride?->driverProfile?->user
-                ? self::contact($booking->ride->driverProfile->user)
+            'driver_contact' => $canViewContact && $driver
+                ? self::contact($driver)
                 : null,
             'can_cancel' => in_array($booking->status, ['pending', 'confirmed'], true)
                 && $booking->ride?->departure_time?->isFuture(),

@@ -113,10 +113,6 @@ export const path = (name: string, params?: Params): string => {
         return `/admin/users/${id(params)}/activate`;
     }
 
-    if (name === 'admin.rides.note') {
-        return `/admin/rides/${id(params)}/note`;
-    }
-
     return routes[name] ?? '/';
 };
 

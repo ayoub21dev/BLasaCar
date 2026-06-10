@@ -2,6 +2,7 @@
 
 namespace Tests\Feature;
 
+use App\Models\Booking;
 use App\Models\City;
 use App\Models\DriverProfile;
 use App\Models\Ride;
@@ -133,6 +134,26 @@ class FrontendPagesTest extends TestCase
                     ->component('Publish', false)
                     ->where('cities', fn ($cities) => collect($cities)->pluck('name')->contains($city)));
         }
+    }
+
+    public function test_seeded_ride_seat_counts_match_booking_state(): void
+    {
+        $this->seed();
+
+        Ride::query()->each(function (Ride $ride): void {
+            $activeSeats = (int) Booking::query()
+                ->where('ride_id', $ride->id)
+                ->whereIn('status', ['pending', 'confirmed'])
+                ->sum('seats_reserved');
+
+            if ($ride->status === 'scheduled') {
+                $this->assertSame($ride->total_seats - $activeSeats, $ride->available_seats);
+
+                return;
+            }
+
+            $this->assertSame(0, $ride->available_seats);
+        });
     }
 
     /**

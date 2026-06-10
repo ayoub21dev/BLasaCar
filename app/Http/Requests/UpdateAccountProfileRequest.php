@@ -7,6 +7,16 @@ use Illuminate\Validation\Rule;
 
 class UpdateAccountProfileRequest extends FormRequest
 {
+    protected function prepareForValidation(): void
+    {
+        $this->merge([
+            'first_name' => trim((string) $this->input('first_name', '')),
+            'last_name' => trim((string) $this->input('last_name', '')),
+            'email' => trim((string) $this->input('email', '')),
+            'phone' => trim((string) $this->input('phone', '')),
+        ]);
+    }
+
     public function authorize(): bool
     {
         return $this->user() !== null;

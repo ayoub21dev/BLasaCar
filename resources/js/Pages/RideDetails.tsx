@@ -12,7 +12,6 @@ export default function RideDetails({ ride }: { ride: Ride }) {
         event.preventDefault();
         form.post(path('rides.book', ride.id));
     };
-
     return (
         <Layout title={`${ride.departure_city?.name} to ${ride.arrival_city?.name}`}>
             <section className="py-8 sm:py-12">
