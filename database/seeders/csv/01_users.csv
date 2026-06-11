@@ -8,3 +8,5 @@ id,first_name,last_name,email,phone,password_hash,profile_photo,email_verified,p
 7,Omar,Idrissi,omar.idrissi@blassacar.test,0677777777,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/omar.jpg,1,1,active,traveler,,2026-02-07 11:25:00,2026-03-06 13:30:00
 8,Salma,Naciri,salma.naciri@blassacar.test,0688888888,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,profiles/salma.jpg,1,0,active,traveler,,2026-02-08 14:20:00,2026-03-07 16:45:00
 9,Admin,Team,admin@blassacar.test,0699999999,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,,1,1,active,admin,,2026-02-09 09:00:00,2026-03-07 17:00:00
+10,Noura,ElFassi,noura.elfassi@blassacar.test,0601010101,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,,1,1,active,driver,,2026-02-09 10:00:00,2026-03-07 17:15:00
+11,Hamza,Berrada,hamza.berrada@blassacar.test,0602020202,$2y$12$/UcdqjtEjMNMQ44TAJ.FDeHN6UM3ejPV7cMQR.4nSlaeX0iyMZyYu,,1,1,active,driver,,2026-02-09 10:30:00,2026-03-07 17:30:00

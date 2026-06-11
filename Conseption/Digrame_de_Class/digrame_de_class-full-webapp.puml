@@ -1,93 +1,30 @@
-@startuml BlasaCarDomainClassDiagram
+@startuml
+' Final Class Diagram - BlasaCar
+
 left to right direction
-hide empty methods
-
-skinparam classAttributeIconSize 0
+skinparam dpi 200
 skinparam shadowing false
-skinparam linetype ortho
-skinparam nodesep 65
-skinparam ranksep 60
-skinparam ArrowFontSize 11
+skinparam classAttributeIconSize 0
+skinparam defaultFontName Arial
+skinparam defaultFontSize 16
+skinparam classFontSize 18
+skinparam classAttributeFontSize 15
 
-title BlasaCar - Domain Class Diagram
-
-class User <<entity>> {
-  id : bigint
-  first_name : string
-  last_name : string
-  email : string
-  phone : string
-  password_hash : string
-  profile_photo : string?
-  email_verified : boolean
-  phone_verified : boolean
-  role : UserRole
-  account_status : AccountStatus
-  suspended_at : datetime?
+skinparam class {
+  BackgroundColor White
+  BorderColor Black
+  ArrowColor Black
+  HeaderBackgroundColor #D9EBFF
 }
 
-class DriverProfile <<entity>> {
-  id : bigint
-  cin_number : string
-  cin_front_photo : string?
-  cin_back_photo : string?
-  cin_verified : boolean
-  /avg_rating : decimal(3,2)
-  /total_trips : int
+skinparam enum {
+  BackgroundColor #EEF8E8
+  BorderColor Black
 }
 
-class Vehicle <<entity>> {
-  id : bigint
-  brand : string
-  model : string
-  photo : string?
-}
-
-class City <<entity>> {
-  id : bigint
-  name : string
-}
-
-class Ride <<entity>> {
-  id : bigint
-  departure_time : datetime
-  price_per_seat : decimal(10,2)
-  total_seats : int
-  /available_seats : int
-  meeting_point : string
-  notes : text?
-  admin_note : text?
-  status : RideStatus
-}
-
-class Booking <<entity>> {
-  id : bigint
-  seats_reserved : int
-  status : BookingStatus
-  booked_at : datetime
-}
-
-class Review <<entity>> {
-  id : bigint
-  rating : tinyint
-  comment : text?
-}
-
-class Notification <<entity>> {
-  id : bigint
-  type : string
-  channel : NotificationChannel
-  title : string
-  message : text
-  recipient_phone : string?
-  delivery_status : NotificationDeliveryStatus?
-  provider : string?
-  provider_message_id : string?
-  sent_at : datetime?
-  failed_at : datetime?
-  delivery_error : text?
-  is_read : boolean
-}
+' =======================
+' Enums
+' =======================
 
 enum UserRole {
   admin
@@ -125,87 +62,107 @@ enum NotificationDeliveryStatus {
   failed
 }
 
-' Core domain relationships
+' =======================
+' Classes
+' =======================
+
+class User {
+  id : bigint
+  first_name : string
+  last_name : string
+  email : string
+  phone : string
+  password_hash : string
+  profile_photo : string?
+  email_verified : boolean
+  phone_verified : boolean
+  role : UserRole
+  account_status : AccountStatus
+  suspended_at : datetime?
+}
+
+class DriverProfile {
+  id : bigint
+  cin_number : string
+  cin_front_photo : string
+  cin_back_photo : string
+  cin_verified : boolean
+}
+
+class Vehicle {
+  id : bigint
+  brand : string
+  model : string
+  photo : string?
+}
+
+class Ride {
+  id : bigint
+  departure_time : datetime
+  total_seats : int
+  meeting_point : string
+  notes : text?
+  admin_note : text?
+  status : RideStatus
+  price_per_seat : decimal(10,2)
+}
+
+class Booking {
+  id : bigint
+  seats_reserved : int
+  status : BookingStatus
+  booked_at : datetime
+}
+
+class Review {
+  id : bigint
+  rating : tinyint
+  comment : text?
+}
+
+class City {
+  id : bigint
+  name : string
+}
+
+class Notification {
+  id : bigint
+  type : string
+  channel : NotificationChannel
+  title : string
+  message : text
+  recipient_phone : string?
+  delivery_status : NotificationDeliveryStatus?
+  sent_at : datetime?
+  is_read : boolean
+}
+
+' =======================
+' Relationships
+' =======================
+
 User "1" -- "0..1" DriverProfile : has
-DriverProfile "1" -- "1..*" Vehicle : owns
-Vehicle "1" -- "0..*" Ride : used for
-City "1" <-- "0..*" Ride : departure
-City "1" <-- "0..*" Ride : arrival
-User "1" -- "0..*" Booking : traveler
+DriverProfile "1" -- "1" Vehicle : owns
+DriverProfile "1" -- "0..*" Ride : publishes
+
+User "1" -- "0..*" Booking : makes
 Ride "1" -- "0..*" Booking : has
 Booking "1" -- "0..1" Review : receives
+
 User "1" -- "0..*" Notification : receives
-Ride "0..1" <-- "0..*" Notification : ride context
-Booking "0..1" <-- "0..*" Notification : booking context
 
-' Enum type dependencies keep enum boxes connected in the rendered diagram.
-User ..> UserRole : role
-User ..> AccountStatus : account_status
-Ride ..> RideStatus : status
-Booking ..> BookingStatus : status
-Notification ..> NotificationChannel : channel
-Notification ..> NotificationDeliveryStatus : delivery_status
+City "1" -- "0..*" Ride : departure
+City "1" -- "0..*" Ride : arrival
 
-note right of Ride
-Normalization:
-Ride does not store a driver reference.
+' =======================
+' Enum usage dependencies
+' =======================
 
-Functional dependency:
-Vehicle -> DriverProfile
-Ride -> Vehicle
-therefore Ride -> DriverProfile transitively.
-
-Business rules:
-departure city must be different from arrival city.
-/available_seats is derived from total_seats minus active bookings.
-end note
-
-note bottom of Vehicle
-Business rule:
-the vehicle used for a ride must belong to
-the driver publishing that ride.
-end note
-
-note bottom of Booking
-Business rules:
-seats_reserved must be at least 1.
-A traveler cannot have duplicate active bookings
-for the same ride.
-
-Active statuses:
-pending, confirmed.
-
-Contact is visible only after the booking is
-confirmed or completed.
-end note
-
-note right of Review
-Normalization:
-Review does not store traveler or driver.
-
-Functional dependency:
-Review -> Booking
-Booking -> Traveler
-Booking -> Ride
-Ride -> Vehicle
-Vehicle -> DriverProfile
-
-Business rules:
-one review per booking.
-rating must be between 1 and 5.
-end note
-
-note bottom of DriverProfile
-/avg_rating is derived from received review ratings.
-/total_trips is derived from completed rides.
-
-CIN validation requires front and back photos.
-end note
-
-note bottom of Notification
-recipient_phone is a delivery snapshot.
-It is kept to preserve the exact phone used
-when the notification was sent.
-end note
+User ..> UserRole
+User ..> AccountStatus
+Ride ..> RideStatus
+Booking ..> BookingStatus
+Notification ..> NotificationChannel
+Notification ..> NotificationDeliveryStatus
 
 @enduml

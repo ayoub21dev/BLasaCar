@@ -3,3 +3,5 @@ id,user_id,cin_number,cin_photo,cin_front_photo,cin_back_photo,cin_verified,avg_
 2,2,AB234567,cin/front/sara-front.jpg,cin/front/sara-front.jpg,cin/back/sara-back.jpg,1,4.70,17,2026-02-10 09:30:00,2026-03-02 11:00:00
 3,3,CD345678,cin/front/mehdi-front.jpg,cin/front/mehdi-front.jpg,cin/back/mehdi-back.jpg,1,5.00,31,2026-02-11 08:00:00,2026-03-03 09:00:00
 4,4,EF456789,cin/front/imane-front.jpg,cin/front/imane-front.jpg,cin/back/imane-back.jpg,0,4.20,8,2026-02-12 14:00:00,2026-03-04 15:00:00
+5,10,GH567890,cin/front/noura-front.jpg,cin/front/noura-front.jpg,cin/back/noura-back.jpg,1,4.90,12,2026-02-12 15:00:00,2026-03-04 16:00:00
+6,11,IJ678901,cin/front/hamza-front.jpg,cin/front/hamza-front.jpg,cin/back/hamza-back.jpg,1,4.60,19,2026-02-12 15:30:00,2026-03-04 16:30:00

@@ -23,7 +23,7 @@ class FrontendController extends Controller
         $cities = City::query()->orderBy('name')->get();
 
         $featuredRides = $this->bookableRidesQuery()
-            ->limit(4)
+            ->limit(5)
             ->get();
 
         return Inertia::render('Home', [

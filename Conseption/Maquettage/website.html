@@ -1,0 +1,254 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>BlasaCar - Travel between cities</title>
+  <link rel="stylesheet" href="styles/mockups.css">
+</head>
+
+<body>
+  <div class="page">
+    <header class="app-header">
+      <nav class="shell app-nav" aria-label="Main navigation">
+        <a href="website.html" class="brand" aria-label="BlasaCar home">
+          <img src="../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+          <span class="brand-text">Blasa<span>Car</span></span>
+        </a>
+
+        <div class="nav-pills" aria-label="Primary">
+          <a href="website.html" class="active">Home</a>
+          <a href="components/search-rides.html">Search rides</a>
+          <a href="publish-ride.html">Publish a ride</a>
+          <a href="#how-it-works">How it works</a>
+        </div>
+
+        <div class="header-actions">
+          <a href="components/11-login.html" class="login-link">Log in</a>
+          <a href="components/10-signup.html" class="btn btn-dark">Sign up</a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="page-main">
+      <section class="shell">
+        <div class="hero-shell">
+          <div class="hero-bg">
+            <img src="../../public/images/Heropage.png" alt="Moroccan cityscape">
+          </div>
+          <div class="hero-content">
+            <div class="hero-grid-cols">
+              <div>
+                <h1 class="hero-title">Reliable Travel <br><span>Solutions</span></h1>
+                <p class="hero-copy">Join thousands of Moroccans traveling together. Safe, reliable, and cost-effective carpooling for all your intercity trips.</p>
+              </div>
+
+              <aside class="search-card" aria-label="Find your ride">
+                <h2>Find your <br> ride today!</h2>
+                <form class="form-stack">
+                  <label class="field">
+                    <span class="overline">Leaving from</span>
+                    <select class="select input-lg">
+                      <option>Casablanca</option>
+                      <option>Rabat</option>
+                      <option>Marrakech</option>
+                    </select>
+                  </label>
+                  <label class="field">
+                    <span class="overline">Going to</span>
+                    <select class="select input-lg">
+                      <option>Rabat</option>
+                      <option>Fes</option>
+                      <option>Agadir</option>
+                    </select>
+                  </label>
+                  <div class="form-grid-2">
+                    <label class="field">
+                      <span class="overline">Date</span>
+                      <input class="input input-lg" type="date" value="2026-07-07">
+                    </label>
+                    <label class="field">
+                      <span class="overline">Seats</span>
+                      <select class="select input-lg">
+                        <option>1 seat</option>
+                        <option>2 seats</option>
+                        <option>3 seats</option>
+                      </select>
+                    </label>
+                  </div>
+                  <button class="brand-button" type="button" style="min-height:80px;border-radius:16px;font-size:20px;">Find your ride</button>
+                </form>
+              </aside>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section id="how-it-works" class="shell section-gap">
+        <div class="how-layout">
+          <div class="how-copy">
+            <p class="overline" style="margin-left:0;color:var(--brand-500);">How it works</p>
+            <h2>Simple process</h2>
+            <p>Say goodbye to Facebook groups and endless negotiations. BlasaCar connects you in three simple steps.</p>
+            <a href="components/search-rides.html" class="brand-button" style="margin-top:28px;min-height:48px;">Get Started</a>
+          </div>
+
+          <div class="timeline" aria-label="How it works timeline">
+            <svg class="timeline-svg" viewBox="0 0 1000 430" fill="none" preserveAspectRatio="none" aria-hidden="true">
+              <text x="105" y="292" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#dbeafe">1</text>
+              <text x="445" y="198" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#dbeafe">2</text>
+              <text x="790" y="108" text-anchor="middle" dominant-baseline="central" font-weight="900" fill="#dbeafe">3</text>
+              <path d="M-80 285 C-4 335 58 330 105 292 C194 168 300 166 445 198 C562 230 654 193 720 128 C748 101 766 108 790 108 C872 108 922 109 1030 99" stroke="var(--brand-500)" stroke-width="5" stroke-linecap="round"></path>
+              <g>
+                <circle cx="105" cy="292" r="28" fill="#f3f4f6" opacity="0.95"></circle>
+                <circle cx="105" cy="292" r="14" fill="#ffffff"></circle>
+                <circle cx="105" cy="292" r="6" fill="var(--brand-400)"></circle>
+              </g>
+              <g>
+                <circle cx="445" cy="198" r="28" fill="#f3f4f6" opacity="0.95"></circle>
+                <circle cx="445" cy="198" r="14" fill="#ffffff"></circle>
+                <circle cx="445" cy="198" r="6" fill="var(--brand-400)"></circle>
+              </g>
+              <g>
+                <circle cx="790" cy="108" r="28" fill="#f3f4f6" opacity="0.95"></circle>
+                <circle cx="790" cy="108" r="14" fill="#ffffff"></circle>
+                <circle cx="790" cy="108" r="6" fill="var(--brand-400)"></circle>
+              </g>
+            </svg>
+
+            <article class="timeline-copy timeline-copy-one" data-step="1">
+              <div>
+                <h3>Search a trip</h3>
+                <p>Enter your departure, destination, travel date, and seats.</p>
+              </div>
+            </article>
+            <article class="timeline-copy timeline-copy-two" data-step="2">
+              <div>
+                <h3>Choose your ride</h3>
+                <p>Compare verified drivers, prices, pickup points, and seats.</p>
+              </div>
+            </article>
+            <article class="timeline-copy timeline-copy-three" data-step="3">
+              <div>
+                <h3>Book and go</h3>
+                <p>Confirm instantly and travel with support close when needed.</p>
+              </div>
+            </article>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell section-gap">
+        <div class="rounded-section soft">
+          <div class="soft-orb"></div>
+          <div style="position:relative;z-index:1;">
+            <div class="section-header">
+              <div>
+                <span class="eyebrow">Popular Rides</span>
+                <h2 class="display-title">Join these <span class="serif">trips</span> <br> leaving soon.</h2>
+              </div>
+              <a href="components/search-rides.html" style="border-bottom:2px solid var(--brand-500);padding-bottom:4px;font-size:18px;font-weight:800;color:var(--slate-900);">View all rides</a>
+            </div>
+
+            <div class="ride-grid">
+              <article class="ride-card">
+                <a class="ride-card-inner" href="components/05-booking-card.html">
+                  <div class="driver-row">
+                    <div class="avatar-wrap">
+                      <img class="avatar" src="../../public/assets/profiles/yassine.png" alt="Yassine">
+                      <span class="verified-dot">&#10003;</span>
+                    </div>
+                    <div>
+                      <p class="driver-name">Yassine E.</p>
+                      <div class="rating-row">&#9733; <span>4.9</span> <span style="color:var(--slate-300);">(58 trips)</span></div>
+                    </div>
+                  </div>
+                  <div class="route-row">
+                    <div class="route-time"><strong>08:00</strong><span>Casablanca</span></div>
+                    <div class="route-connector"><span class="route-dot-start"></span><span class="route-car">&#8761;</span></div>
+                    <div class="route-time end"><strong>09:15</strong><span>Rabat</span></div>
+                  </div>
+                  <div class="ride-footer">
+                    <div class="meta-row"><span>2 seats left</span><span>&bull;</span><span>Tue, Jul 7</span></div>
+                    <div class="price-row"><span class="price">70 DH</span><span class="book-pill">Book</span></div>
+                  </div>
+                </a>
+              </article>
+
+              <article class="ride-card">
+                <a class="ride-card-inner" href="components/05-booking-card.html">
+                  <div class="driver-row">
+                    <div class="avatar-wrap">
+                      <img class="avatar" src="../../public/assets/profiles/sara.png" alt="Sara">
+                      <span class="verified-dot">&#10003;</span>
+                    </div>
+                    <div>
+                      <p class="driver-name">Sara B.</p>
+                      <div class="rating-row">&#9733; <span>4.8</span> <span style="color:var(--slate-300);">(41 trips)</span></div>
+                    </div>
+                  </div>
+                  <div class="route-row">
+                    <div class="route-time"><strong>09:15</strong><span>Rabat</span></div>
+                    <div class="route-connector"><span class="route-dot-start"></span><span class="route-car">&#8761;</span></div>
+                    <div class="route-time end"><strong>12:20</strong><span>Fes</span></div>
+                  </div>
+                  <div class="ride-footer">
+                    <div class="meta-row"><span>3 seats left</span><span>&bull;</span><span>Fri, Jul 10</span></div>
+                    <div class="price-row"><span class="price">95 DH</span><span class="book-pill">Book</span></div>
+                  </div>
+                </a>
+              </article>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="shell section-gap">
+        <div class="rounded-section white">
+          <div class="soft-orb"></div>
+          <div class="cta-section" style="position:relative;z-index:1;">
+            <div>
+              <h2>Driving <span>Soon?</span></h2>
+              <p>Turn your empty seats into travel savings. Join thousands of drivers sharing their journeys across Morocco every day.</p>
+              <a href="publish-ride.html" class="btn btn-dark" style="margin-top:48px;min-height:64px;font-size:18px;">Offer a ride now <span class="icon-circle">&#8599;</span></a>
+            </div>
+            <img class="cta-art" src="../../public/images/carRod.svg" alt="Driving illustration">
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer class="app-footer">
+      <div class="shell">
+        <div class="footer-grid">
+          <div>
+            <a href="website.html" class="brand">
+              <img src="../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+              <span class="brand-text">Blasa<span>Car</span></span>
+            </a>
+            <p class="footer-copy">A modern Moroccan carpooling interface focused on trust, clarity, and affordable intercity travel.</p>
+          </div>
+          <div>
+            <h3 class="footer-title">Explore</h3>
+            <div class="footer-links">
+              <a href="website.html">Home</a>
+              <a href="components/search-rides.html">Search rides</a>
+              <a href="publish-ride.html">Publish a ride</a>
+            </div>
+          </div>
+          <div>
+            <h3 class="footer-title">Account</h3>
+            <div class="footer-links">
+              <a href="components/11-login.html">Log in</a>
+              <a href="components/10-signup.html">Sign up</a>
+            </div>
+          </div>
+        </div>
+        <div class="footer-bottom">&copy; 2026 BlassaCar. All rights reserved.</div>
+      </div>
+    </footer>
+  </div>
+</body>
+
+</html>

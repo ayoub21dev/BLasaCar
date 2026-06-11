@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Driver Dashboard - BlasaCar</title>
+  <link rel="stylesheet" href="../styles/mockups.css">
+</head>
+
+<body class="mockup-embed">
+  <section class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-inner">
+        <a href="../website.html" class="brand">
+          <img src="../../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+          <span class="brand-text" style="font-size:20px;">Blasa<span>Car</span></span>
+        </a>
+        <p class="dash-label">Driver</p>
+        <nav class="side-nav">
+          <a class="side-link active" href="#">Overview</a>
+          <a class="side-link" href="../publish-ride.html">Publish ride</a>
+          <a class="side-link" href="search-rides.html">Search rides</a>
+          <a class="side-link" href="#booking-requests">Booking requests</a>
+          <a class="side-link danger" href="#">Log out</a>
+        </nav>
+        <div class="side-note">
+          <h3>Ready to fill seats?</h3>
+          <p>Publish a route and manage requests from this dashboard.</p>
+          <a class="mini-button dark" href="../publish-ride.html" style="margin-top:16px;width:100%;">Publish ride</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+      <header class="topbar">
+        <a class="bell-button" href="#notifications" aria-label="Open notifications">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span class="bell-badge">3</span>
+        </a>
+        <div class="user-chip">
+          <img class="avatar" style="width:40px;height:40px;" src="../../../public/assets/profiles/yassine.png" alt="Yassine">
+          <div><p>Yassine</p><span>Driver</span></div>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Published rides</p><p class="stat-value">7</p><p class="stat-note">All listed rides</p></div><span class="stat-icon">C</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Upcoming rides</p><p class="stat-value">2</p><p class="stat-note">Scheduled departures</p></div><span class="stat-icon">D</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Completion rate</p><p class="stat-value">86%</p><p class="stat-note">Finished rides</p></div><span class="stat-icon">V</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Handled bookings</p><p class="stat-value">92%</p><p class="stat-note">Requests answered</p></div><span class="stat-icon">B</span></div></article>
+        </div>
+
+        <div class="dash-grid">
+          <section id="notifications" class="panel">
+            <div class="panel-head">
+              <h2>My rides</h2>
+              <a class="mini-button dark" href="../publish-ride.html">Publish ride</a>
+            </div>
+            <div class="row-list">
+              <article class="dash-row">
+                <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;">
+                  <div>
+                    <h3>Casablanca <span style="color:var(--slate-300);">-&gt;</span> Rabat</h3>
+                    <div class="data-pills"><span>Jul 7, 08:00</span><span>2 seats left</span><span>70 DH</span></div>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center;"><span class="status-chip status-scheduled">Scheduled</span><span class="mini-button">Edit</span><span class="mini-button danger">Cancel</span></div>
+                </div>
+              </article>
+              <article class="dash-row">
+                <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;">
+                  <div>
+                    <h3>Marrakech <span style="color:var(--slate-300);">-&gt;</span> Tangier</h3>
+                    <div class="data-pills"><span>Mar 4, 15:30</span><span>0 seats left</span><span>115 DH</span></div>
+                  </div>
+                  <div style="display:flex;gap:8px;align-items:center;"><span class="status-chip status-completed">Completed</span><span class="mini-button">View</span></div>
+                </div>
+              </article>
+            </div>
+          </section>
+
+          <aside class="panel">
+            <div class="panel-head"><h2>Notifications</h2><span class="panel-subtle">Recent</span></div>
+            <div class="row-list">
+              <article class="dash-row" style="background:#fff;"><strong>New booking request</strong><p class="panel-subtle">Ayoub requested 1 seat for Casablanca to Rabat.</p></article>
+              <article class="dash-row" style="background:#fff;"><strong>Ride reminder</strong><p class="panel-subtle">Your Rabat departure is scheduled for tomorrow.</p></article>
+            </div>
+          </aside>
+        </div>
+
+        <section id="booking-requests" class="panel">
+          <div class="panel-head"><h2>Recent booking requests</h2><span class="status-chip">4 total</span></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Traveler</th><th>Route</th><th>Seats</th><th>Status</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Ayoub Rami</strong><p class="panel-subtle">Contact unlocks after acceptance</p></td><td>Casablanca -&gt; Rabat</td><td>1</td><td><span class="status-chip status-pending">Pending</span></td><td><span class="mini-button success">Accept</span> <span class="mini-button danger">Reject</span></td></tr>
+                <tr><td><strong>Lina Ouahbi</strong><p class="panel-subtle">0666666666</p></td><td>Marrakech -&gt; Tangier</td><td>2</td><td><span class="status-chip status-confirmed">Accepted</span></td><td><span class="panel-subtle">No action</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </section>
+</body>
+
+</html>

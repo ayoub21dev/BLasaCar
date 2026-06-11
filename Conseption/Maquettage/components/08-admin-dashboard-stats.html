@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard - BlasaCar</title>
+  <link rel="stylesheet" href="../styles/mockups.css">
+</head>
+
+<body class="mockup-embed">
+  <section class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-inner">
+        <a href="../website.html" class="brand">
+          <img src="../../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+          <span class="brand-text" style="font-size:20px;">Blasa<span>Car</span></span>
+        </a>
+        <p class="dash-label">Admin</p>
+        <nav class="side-nav">
+          <a class="side-link active" href="#">Overview</a>
+          <a class="side-link" href="#">Driver verification</a>
+          <a class="side-link" href="#">All users</a>
+          <a class="side-link" href="#">Ride activity</a>
+          <a class="side-link" href="search-rides.html">Search rides</a>
+          <a class="side-link danger" href="#">Log out</a>
+        </nav>
+        <div class="side-note">
+          <h3>Driver reviews</h3>
+          <p>Check CIN photos before approving driver profiles.</p>
+          <a class="mini-button dark" href="#" style="margin-top:16px;width:100%;">Review drivers</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+      <header class="topbar">
+        <a class="bell-button" href="#" aria-label="Open pending driver reviews">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span class="bell-badge">2</span>
+        </a>
+        <div class="user-chip">
+          <span class="avatar" style="width:40px;height:40px;background:var(--slate-950);color:#fff;">A</span>
+          <div><p>Admin</p><span>Admin</span></div>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <div class="stat-grid">
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Total users</p><p class="stat-value">9</p><p class="stat-note">All accounts</p></div><span class="stat-icon">U</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Pending ID checks</p><p class="stat-value">2</p><p class="stat-note">Need review</p></div><span class="stat-icon">S</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Verified drivers</p><p class="stat-value">3</p><p class="stat-note">Approved profiles</p></div><span class="stat-icon">V</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Bookings</p><p class="stat-value">12</p><p class="stat-note">All requests</p></div><span class="stat-icon">B</span></div></article>
+        </div>
+
+        <div class="dash-grid">
+          <section class="panel">
+            <div class="panel-head">
+              <h2>Admin sections</h2>
+              <span class="status-chip status-active">Overview</span>
+            </div>
+            <div class="row-list" style="grid-template-columns:repeat(3,minmax(0,1fr));display:grid;">
+              <article class="dash-row"><span class="stat-icon">S</span><h3 style="margin-top:16px;">Driver ID reviews</h3><p class="panel-subtle" style="line-height:1.6;">2 driver profiles waiting for review.</p></article>
+              <article class="dash-row"><span class="stat-icon">U</span><h3 style="margin-top:16px;">User records</h3><p class="panel-subtle" style="line-height:1.6;">8 active and 1 suspended accounts.</p></article>
+              <article class="dash-row"><span class="stat-icon">R</span><h3 style="margin-top:16px;">Ride activity</h3><p class="panel-subtle" style="line-height:1.6;">4 completed and 2 cancelled rides.</p></article>
+            </div>
+          </section>
+
+          <aside class="form-stack">
+            <section class="panel">
+              <div class="panel-head"><h2>Attention</h2><span class="panel-subtle">Now</span></div>
+              <div class="row-list">
+                <div class="dash-row" style="display:flex;justify-content:space-between;align-items:center;background:#fff;"><span>Pending driver reviews</span><strong>2</strong></div>
+                <div class="dash-row" style="display:flex;justify-content:space-between;align-items:center;background:#fff;"><span>Suspended users</span><strong>1</strong></div>
+                <div class="dash-row" style="display:flex;justify-content:space-between;align-items:center;background:#fff;"><span>Cancelled rides</span><strong>2</strong></div>
+              </div>
+            </section>
+            <section class="panel">
+              <div class="panel-head"><h2>Recent rides</h2><a class="panel-subtle" href="#">View all</a></div>
+              <div class="row-list">
+                <article class="dash-row" style="background:#fff;"><strong>Casablanca -&gt; Rabat</strong><p class="panel-subtle">Yassine ElMansouri</p></article>
+                <article class="dash-row" style="background:#fff;"><strong>Rabat -&gt; Fes</strong><p class="panel-subtle">Sara Bennani</p></article>
+              </div>
+            </section>
+          </aside>
+        </div>
+      </div>
+    </main>
+  </section>
+</body>
+
+</html>

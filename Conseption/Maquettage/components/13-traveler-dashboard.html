@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Traveler Dashboard - BlasaCar</title>
+  <link rel="stylesheet" href="../styles/mockups.css">
+</head>
+
+<body class="mockup-embed">
+  <section class="dash-layout">
+    <aside class="dash-sidebar">
+      <div class="dash-sidebar-inner">
+        <a href="../website.html" class="brand">
+          <img src="../../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+          <span class="brand-text" style="font-size:20px;">Blasa<span>Car</span></span>
+        </a>
+        <p class="dash-label">Traveler</p>
+        <nav class="side-nav">
+          <a class="side-link active" href="#">Overview</a>
+          <a class="side-link" href="search-rides.html">Search rides</a>
+          <a class="side-link" href="#">Become a driver</a>
+          <a class="side-link" href="#booking-history">Booking history</a>
+          <a class="side-link danger" href="#">Log out</a>
+        </nav>
+        <div class="side-note">
+          <h3>Become a driver</h3>
+          <p>Publish rides and earn from empty seats.</p>
+          <a class="mini-button dark" href="#" style="margin-top:16px;width:100%;">Get started</a>
+        </div>
+      </div>
+    </aside>
+
+    <main class="dash-main">
+      <header class="topbar">
+        <a class="bell-button" href="#notifications" aria-label="Open notifications">
+          <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9"></path><path d="M13.7 21a2 2 0 0 1-3.4 0"></path></svg>
+          <span class="bell-badge">1</span>
+        </a>
+        <div class="user-chip">
+          <span class="avatar" style="width:40px;height:40px;background:var(--slate-950);color:#fff;">A</span>
+          <div><p>Ayoub</p><span>Traveler</span></div>
+        </div>
+      </header>
+
+      <div class="dash-content">
+        <div class="stat-grid three">
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Upcoming trips</p><p class="stat-value">1</p><p class="stat-note">Trips coming up</p></div><span class="stat-icon">D</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Completed trips</p><p class="stat-value">5</p><p class="stat-note">Finished rides</p></div><span class="stat-icon">V</span></div></article>
+          <article class="stat-card"><div class="stat-card-row"><div><p class="stat-label">Cancelled trips</p><p class="stat-value">0</p><p class="stat-note">No cancellations</p></div><span class="stat-icon">X</span></div></article>
+        </div>
+
+        <section id="notifications" class="panel">
+          <div class="panel-head"><h2>Next ride</h2><span class="status-chip status-confirmed">Accepted</span></div>
+          <article class="dash-row" style="margin-top:20px;">
+            <div style="display:flex;justify-content:space-between;gap:16px;align-items:flex-start;">
+              <div>
+                <h3>Casablanca <span style="color:var(--slate-300);">-&gt;</span> Rabat</h3>
+                <div class="data-pills"><span>Jul 7, 08:00</span><span>Gare Casa Voyageurs</span><span>1 seat</span></div>
+              </div>
+              <a class="mini-button dark" href="05-booking-card.html">View trip details</a>
+            </div>
+            <div class="info-grid" style="grid-template-columns:repeat(3,minmax(0,1fr));margin-top:20px;">
+              <div class="dash-row" style="background:#fff;"><p class="detail-label">Driver</p><p class="driver-name">Yassine ElMansouri</p></div>
+              <div class="dash-row" style="background:#fff;"><p class="detail-label">Seats</p><p class="driver-name">1</p></div>
+              <div class="dash-row" style="background:#fff;"><p class="detail-label">Price</p><p class="driver-name">70 DH</p></div>
+            </div>
+          </article>
+        </section>
+
+        <section id="booking-history" class="panel">
+          <div class="panel-head"><h2>Booking history</h2><span class="status-chip">6 total</span></div>
+          <div class="table-wrap">
+            <table class="table">
+              <thead><tr><th>Route</th><th>Date</th><th>Driver</th><th>Status</th><th>Price</th><th>Action</th></tr></thead>
+              <tbody>
+                <tr><td><strong>Casablanca -&gt; Rabat</strong></td><td>Jul 7, 08:00</td><td>Yassine ElMansouri</td><td><span class="status-chip status-confirmed">Accepted</span></td><td><strong>70 DH</strong></td><td><span class="mini-button">View</span></td></tr>
+                <tr><td><strong>Rabat -&gt; Fes</strong></td><td>Mar 8, 17:00</td><td>Sara Bennani</td><td><span class="status-chip status-completed">Completed</span></td><td><strong>95 DH</strong></td><td><span class="mini-button">Review</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+        </section>
+      </div>
+    </main>
+  </section>
+</body>
+
+</html>

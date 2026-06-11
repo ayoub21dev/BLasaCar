@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Booking Card - BlasaCar</title>
+  <link rel="stylesheet" href="../styles/mockups.css">
+</head>
+
+<body class="mockup-embed">
+  <main class="embed-pad">
+    <div class="details-grid">
+      <div class="form-stack">
+        <section class="details-panel">
+          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:24px;">
+            <div>
+              <span class="eyebrow">Ride details</span>
+              <h1 class="display-title"><span class="serif">Casablanca</span> -&gt; Rabat</h1>
+              <p style="margin:24px 0 0;color:var(--slate-500);font-size:20px;">Tuesday, July 7 at <strong style="color:var(--slate-900);">08:00</strong></p>
+            </div>
+            <span class="status-chip status-scheduled">Scheduled</span>
+          </div>
+
+          <div class="info-grid">
+            <article class="info-panel">
+              <h3>Route</h3>
+              <div class="info-stack">
+                <div>
+                  <p class="detail-label">Departure</p>
+                  <p class="detail-value">Casablanca</p>
+                  <p style="margin:6px 0 0;color:var(--slate-500);font-size:14px;">Gare Casa Voyageurs</p>
+                </div>
+                <div class="divider"></div>
+                <div>
+                  <p class="detail-label">Arrival</p>
+                  <p class="detail-value">Rabat</p>
+                  <p style="margin:6px 0 0;color:var(--slate-500);font-size:14px;">Direct city-to-city trip</p>
+                </div>
+              </div>
+            </article>
+
+            <article class="info-panel">
+              <h3>Ride setup</h3>
+              <div class="info-grid" style="grid-template-columns:1fr 1fr;margin-top:24px;">
+                <div><p class="detail-label">Vehicle</p><p class="detail-value" style="font-size:18px;">Dacia Logan</p></div>
+                <div><p class="detail-label">Seats left</p><p class="detail-value" style="font-size:18px;">2</p></div>
+                <div><p class="detail-label">Price per seat</p><p class="detail-value brand" style="font-size:18px;">70 DH</p></div>
+                <div><p class="detail-label">Notes</p><p class="detail-value" style="font-size:18px;">Near taxi lane</p></div>
+              </div>
+            </article>
+          </div>
+        </section>
+
+        <section class="profile-card">
+          <img class="avatar lg" src="../../../public/assets/profiles/yassine.png" alt="Yassine">
+          <div>
+            <p class="overline" style="margin-left:0;">Driver</p>
+            <h2 style="margin:6px 0 0;color:var(--slate-950);font-size:26px;">Yassine ElMansouri</h2>
+            <p style="margin:6px 0 0;color:var(--slate-500);font-size:14px;">Rating 4.9 &middot; 58 trips &middot; ID verified</p>
+            <a href="06-user-profile-card.html" class="mini-button" style="margin-top:16px;">View driver profile</a>
+          </div>
+        </section>
+      </div>
+
+      <aside class="booking-card">
+        <h3>Booking card</h3>
+        <h2>Request a seat</h2>
+        <form class="form-stack" style="margin-top:24px;">
+          <label class="field">
+            <span>Passengers</span>
+            <select class="select">
+              <option>1 seat</option>
+              <option>2 seats</option>
+            </select>
+          </label>
+          <button class="brand-button" type="button" style="width:100%;border-radius:20px;">Request this ride</button>
+        </form>
+      </aside>
+    </div>
+  </main>
+</body>
+
+</html>

@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Publish a Ride - BlasaCar</title>
+  <link rel="stylesheet" href="styles/mockups.css">
+</head>
+
+<body>
+  <header class="app-header">
+    <nav class="shell app-nav" aria-label="Main navigation">
+      <a href="website.html" class="brand" aria-label="BlasaCar home">
+        <img src="../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+        <span class="brand-text">Blasa<span>Car</span></span>
+      </a>
+      <div class="nav-pills" aria-label="Primary">
+        <a href="website.html">Home</a>
+        <a href="components/search-rides.html">Search rides</a>
+        <a href="publish-ride.html" class="active">Publish a ride</a>
+        <a href="website.html#how-it-works">How it works</a>
+      </div>
+      <div class="header-actions">
+        <a href="components/11-login.html" class="login-link">Log in</a>
+        <a href="components/10-signup.html" class="btn btn-dark">Sign up</a>
+      </div>
+    </nav>
+  </header>
+
+  <main class="section-pad">
+    <div class="narrow">
+      <section class="page-panel">
+        <div class="page-panel-header">
+          <h1 class="display-title" style="margin-top:0;">Publish a <span class="serif">ride</span>.</h1>
+          <p>Share your journey, save on travel costs, and meet great people along the way.</p>
+        </div>
+
+        <form class="form-panel form-grid-publish">
+          <label class="field wide">
+            <span>Vehicle</span>
+            <select class="select">
+              <option>Dacia Logan</option>
+              <option>Toyota Corolla</option>
+              <option>Renault Clio</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>From</span>
+            <select class="select">
+              <option>Casablanca</option>
+              <option>Rabat</option>
+              <option>Marrakech</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>To</span>
+            <select class="select">
+              <option>Rabat</option>
+              <option>Fes</option>
+              <option>Agadir</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Date</span>
+            <input class="input" type="date" value="2026-07-07">
+          </label>
+
+          <label class="field">
+            <span>Departure time</span>
+            <input class="input" type="time" value="08:00">
+          </label>
+
+          <label class="field">
+            <span>Seats offered</span>
+            <select class="select">
+              <option>1 seat</option>
+              <option selected>2 seats</option>
+              <option>3 seats</option>
+              <option>4 seats</option>
+            </select>
+          </label>
+
+          <label class="field">
+            <span>Price per seat (DH)</span>
+            <input class="input" type="number" value="70">
+          </label>
+
+          <label class="field wide">
+            <span>Meeting point</span>
+            <input class="input" type="text" value="Gare Casa Voyageurs">
+          </label>
+
+          <label class="field wide">
+            <span>Notes</span>
+            <textarea class="textarea">Departure near the main taxi lane. One medium bag per traveler.</textarea>
+          </label>
+
+          <div class="wide">
+            <button class="brand-button" type="button" style="width:100%;border-radius:22px;min-height:56px;font-size:16px;">Publish my ride</button>
+          </div>
+        </form>
+      </section>
+    </div>
+  </main>
+
+  <footer class="app-footer">
+    <div class="shell">
+      <div class="footer-grid">
+        <div>
+          <a href="website.html" class="brand">
+            <img src="../../public/assets/logoBlasaCar.png" alt="BlasaCar">
+            <span class="brand-text">Blasa<span>Car</span></span>
+          </a>
+          <p class="footer-copy">A modern Moroccan carpooling interface focused on trust, clarity, and affordable intercity travel.</p>
+        </div>
+        <div>
+          <h3 class="footer-title">Explore</h3>
+          <div class="footer-links">
+            <a href="website.html">Home</a>
+            <a href="components/search-rides.html">Search rides</a>
+            <a href="publish-ride.html">Publish a ride</a>
+          </div>
+        </div>
+        <div>
+          <h3 class="footer-title">Account</h3>
+          <div class="footer-links">
+            <a href="components/11-login.html">Log in</a>
+            <a href="components/10-signup.html">Sign up</a>
+          </div>
+        </div>
+      </div>
+      <div class="footer-bottom">&copy; 2026 BlassaCar. All rights reserved.</div>
+    </div>
+  </footer>
+</body>
+
+</html>
