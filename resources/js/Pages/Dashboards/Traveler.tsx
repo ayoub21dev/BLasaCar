@@ -476,6 +476,10 @@ function BookingAction({ booking, reviewOpen, onToggleReview }: { booking: Booki
         return <span className="inline-flex items-center gap-1.5 rounded-xl bg-emerald-50 px-3 py-2 text-xs font-black text-emerald-700"><IconCheck className="h-4 w-4" /> Reviewed</span>;
     }
 
+    if (booking.status === 'confirmed') {
+        return <span className="inline-flex rounded-xl bg-slate-100 px-3 py-2 text-xs font-black text-slate-500">Awaiting completion</span>;
+    }
+
     return null;
 }
 
