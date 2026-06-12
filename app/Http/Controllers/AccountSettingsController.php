@@ -12,6 +12,9 @@ use Inertia\Response;
 
 class AccountSettingsController extends Controller
 {
+    /**
+     * Render the account settings page for the signed-in user.
+     */
     public function edit(): Response
     {
         return Inertia::render('Account/Settings', [
@@ -19,6 +22,9 @@ class AccountSettingsController extends Controller
         ]);
     }
 
+    /**
+     * Update profile fields and reset verification flags when contact data changes.
+     */
     public function updateProfile(UpdateAccountProfileRequest $request): RedirectResponse
     {
         $user = $request->user();
@@ -37,6 +43,9 @@ class AccountSettingsController extends Controller
         return back()->with('status', 'Your account details have been updated.');
     }
 
+    /**
+     * Change the signed-in user's password after checking the current password.
+     */
     public function updatePassword(UpdateAccountPasswordRequest $request): RedirectResponse
     {
         $user = $request->user();

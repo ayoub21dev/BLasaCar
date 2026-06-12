@@ -13,6 +13,9 @@ class DriverIdentityPhotos
 
     public const BACK = 'back';
 
+    /**
+     * Return the stored path for one side of a driver's CIN document.
+     */
     public static function path(DriverProfile $profile, string $side): ?string
     {
         return match ($side) {
@@ -22,6 +25,9 @@ class DriverIdentityPhotos
         };
     }
 
+    /**
+     * Check whether the requested CIN photo exists on the configured disk.
+     */
     public static function exists(DriverProfile $profile, string $side): bool
     {
         $path = self::path($profile, $side);

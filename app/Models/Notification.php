@@ -30,6 +30,9 @@ class Notification extends Model
         'is_read',
     ];
 
+    /**
+     * Cast notification flags and delivery timestamps to useful PHP types.
+     */
     protected function casts(): array
     {
         return [
@@ -40,16 +43,25 @@ class Notification extends Model
         ];
     }
 
+    /**
+     * Get the user who receives this notification.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get the ride connected to this notification, when present.
+     */
     public function ride(): BelongsTo
     {
         return $this->belongsTo(Ride::class);
     }
 
+    /**
+     * Get the booking connected to this notification, when present.
+     */
     public function booking(): BelongsTo
     {
         return $this->belongsTo(Booking::class);

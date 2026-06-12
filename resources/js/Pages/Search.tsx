@@ -17,6 +17,7 @@ type SearchProps = {
     };
 };
 
+// Shows desktop search filters and the resulting list of bookable rides.
 export default function Search({ cities, rides, filters }: SearchProps) {
     const [data, setData] = useState({
         departure_city_id: filters.departure_city_id ? String(filters.departure_city_id) : '',
@@ -25,6 +26,7 @@ export default function Search({ cities, rides, filters }: SearchProps) {
         seats: filters.seats ? String(filters.seats) : '1',
     });
 
+    // Refreshes the search page with the current filter values in the URL.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         router.get(path('rides.search'), data);
@@ -90,6 +92,7 @@ export default function Search({ cities, rides, filters }: SearchProps) {
     );
 }
 
+// Renders the location marker used in city inputs.
 function LocationIcon() {
     return <svg className="h-5 w-5 text-slate-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" /></svg>;
 }

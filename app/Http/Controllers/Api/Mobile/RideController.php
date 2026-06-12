@@ -12,6 +12,9 @@ use Illuminate\Support\Carbon;
 
 class RideController extends Controller
 {
+    /**
+     * Return bookable mobile rides, optionally filtered by route, date, seats, and limit.
+     */
     public function index(RideIndexRequest $request, PublicRideService $publicRideService): JsonResponse
     {
         $filters = $request->validated();
@@ -45,6 +48,9 @@ class RideController extends Controller
         ]);
     }
 
+    /**
+     * Return public ride details for a mobile client.
+     */
     public function show(Ride $ride, PublicRideService $publicRideService): JsonResponse
     {
         abort_unless($publicRideService->canViewRideDetails(null, $ride), 404);

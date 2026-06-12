@@ -13,6 +13,7 @@ type AccountProps = {
     };
 };
 
+// Shows mobile account details, stats, quick links, and notifications.
 export default function Account({ bookings, notifications, stats }: AccountProps) {
     const { auth } = usePage<SharedProps>().props;
 
@@ -96,6 +97,7 @@ export default function Account({ bookings, notifications, stats }: AccountProps
     );
 }
 
+// Renders one mobile account statistic.
 function Stat({ value, label }: { value: number; label: string }) {
     return (
         <div className="rounded-lg border border-slate-200 bg-white px-3 py-4 text-center shadow-sm">
@@ -105,6 +107,7 @@ function Stat({ value, label }: { value: number; label: string }) {
     );
 }
 
+// Renders one mobile account navigation link.
 function AccountLink({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
     return (
         <Link href={href} className="flex min-h-12 items-center justify-between rounded-lg px-3 py-2 text-sm font-black text-slate-800 active:bg-slate-50">

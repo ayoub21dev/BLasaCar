@@ -7,6 +7,9 @@ use Illuminate\Validation\Rule;
 
 class UpdateAccountProfileRequest extends FormRequest
 {
+    /**
+     * Trim account profile fields before validation.
+     */
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -17,12 +20,17 @@ class UpdateAccountProfileRequest extends FormRequest
         ]);
     }
 
+    /**
+     * Allow signed-in users to update their account profile.
+     */
     public function authorize(): bool
     {
         return $this->user() !== null;
     }
 
     /**
+     * Validate account profile fields and keep email/phone unique.
+     *
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array

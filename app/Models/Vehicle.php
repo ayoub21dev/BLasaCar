@@ -18,11 +18,17 @@ class Vehicle extends Model
         'photo',
     ];
 
+    /**
+     * Get the driver profile that owns this vehicle.
+     */
     public function driverProfile(): BelongsTo
     {
         return $this->belongsTo(DriverProfile::class);
     }
 
+    /**
+     * Get rides that use this vehicle.
+     */
     public function rides(): HasMany
     {
         return $this->hasMany(Ride::class);

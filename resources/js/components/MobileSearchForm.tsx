@@ -22,6 +22,7 @@ type MobileSearchFormProps = {
 
 const inputClassName = 'h-12 w-full rounded-lg border border-slate-200 bg-white px-4 text-sm font-black text-slate-800 outline-none transition focus:border-brand-400 focus:ring-4 focus:ring-brand-50';
 
+// Renders the reusable mobile ride search form used by home and search pages.
 export function MobileSearchForm({ cities, initialFilters = {}, defaultDate = '', buttonLabel = 'Search rides', preserveState = false }: MobileSearchFormProps) {
     const [filters, setFilters] = useState({
         departure_city_id: initialFilters.departure_city_id ? String(initialFilters.departure_city_id) : '',
@@ -30,6 +31,7 @@ export function MobileSearchForm({ cities, initialFilters = {}, defaultDate = ''
         seats: initialFilters.seats ? String(initialFilters.seats) : '1',
     });
 
+    // Navigates to mobile search with the current filter values.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         router.get(path('mobile.search'), filters, {
@@ -98,6 +100,7 @@ export function MobileSearchForm({ cities, initialFilters = {}, defaultDate = ''
     );
 }
 
+// Wraps one labeled control inside the mobile search form.
 function SearchField({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <label className="block space-y-1.5">

@@ -25,40 +25,49 @@ const statCards = [
     { key: 'response_rate', label: 'Handled bookings', note: 'Requests answered', icon: 'bell', suffix: '%' },
 ];
 
+// Renders the driver dashboard home icon.
 function IconHome({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>;
 }
 
+// Renders the driver dashboard search icon.
 function IconSearch({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>;
 }
 
+// Renders the driver dashboard car icon.
 function IconCar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M8 11l1.4-4h5.2L16 11" /></svg>;
 }
 
+// Renders the driver dashboard calendar icon.
 function IconCalendar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>;
 }
 
+// Renders the driver dashboard check icon.
 function IconCheck({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="m5 12 5 5L20 7" /></svg>;
 }
 
+// Renders the driver dashboard notification icon.
 function IconBell({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" /></svg>;
 }
 
+// Renders the driver dashboard forward arrow icon.
 function IconArrow({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7" /></svg>;
 }
 
 
 
+// Renders the driver dashboard add icon.
 function IconPlus({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="M12 5v14M5 12h14" /></svg>;
 }
 
+// Shows the full driver dashboard with rides, requests, notifications, and stats.
 export default function Driver({ driver, rides, bookings, notifications, stats }: DriverProps) {
     const { errors } = usePage<SharedProps>().props;
     const unreadNotifications = notifications.filter((notification) => ! notification.is_read).length;
@@ -96,6 +105,7 @@ export default function Driver({ driver, rides, bookings, notifications, stats }
     );
 }
 
+// Renders desktop navigation and logout for drivers.
 function DriverSidebar() {
     const logout = useForm({});
 
@@ -137,6 +147,7 @@ function DriverSidebar() {
     );
 }
 
+// Renders one driver sidebar link.
 function SideLink({ href, active = false, icon, children }: { href: string; active?: boolean; icon: ReactNode; children: ReactNode }) {
     return (
         <Link href={href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${active ? 'bg-slate-950 text-white' : 'text-slate-600'}`}>
@@ -146,6 +157,7 @@ function SideLink({ href, active = false, icon, children }: { href: string; acti
     );
 }
 
+// Shows the driver top bar with profile and unread notification count.
 function TopBar({ driver, unreadNotifications }: { driver: UserSummary; unreadNotifications: number }) {
     return (
         <header className="mx-auto flex max-w-[1320px] flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 md:flex-row md:items-center md:justify-between">
@@ -175,6 +187,7 @@ function TopBar({ driver, unreadNotifications }: { driver: UserSummary; unreadNo
     );
 }
 
+// Renders one driver dashboard statistic card.
 function StatCard({ card, value }: { card: { label: string; note: string; icon: string; suffix?: string }; value: string | number }) {
     const icon = card.icon === 'calendar' ? <IconCalendar /> : card.icon === 'check' ? <IconCheck /> : card.icon === 'bell' ? <IconBell /> : <IconCar />;
 
@@ -194,6 +207,7 @@ function StatCard({ card, value }: { card: { label: string; note: string; icon: 
     );
 }
 
+// Shows the driver's published rides and ride-level errors.
 function RidesPanel({ rides, error }: { rides: Ride[]; error?: string }) {
     return (
         <section id="notifications" className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -214,6 +228,7 @@ function RidesPanel({ rides, error }: { rides: Ride[]; error?: string }) {
     );
 }
 
+// Renders one ride row with edit, cancel, and complete actions.
 function DriverRideRow({ ride }: { ride: Ride }) {
     const form = useForm({});
 
@@ -244,6 +259,7 @@ function DriverRideRow({ ride }: { ride: Ride }) {
     );
 }
 
+// Shows recent driver notifications.
 function NotificationsPanel({ notifications }: { notifications: Notification[] }) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -278,6 +294,7 @@ function NotificationsPanel({ notifications }: { notifications: Notification[] }
 
 
 
+// Shows recent booking requests for the driver's rides.
 function BookingRequests({ bookings, error }: { bookings: Booking[]; error?: string }) {
     return (
         <section id="booking-requests" className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -317,6 +334,7 @@ function BookingRequests({ bookings, error }: { bookings: Booking[]; error?: str
     );
 }
 
+// Renders one desktop booking-request table row.
 function DriverBookingTableRow({ booking }: { booking: Booking }) {
     const ride = booking.ride;
     const traveler = booking.traveler;
@@ -339,6 +357,7 @@ function DriverBookingTableRow({ booking }: { booking: Booking }) {
     );
 }
 
+// Renders one mobile booking-request card.
 function DriverBookingMobileCard({ booking }: { booking: Booking }) {
     const ride = booking.ride;
     const traveler = booking.traveler;
@@ -364,6 +383,7 @@ function DriverBookingMobileCard({ booking }: { booking: Booking }) {
     );
 }
 
+// Shows traveler contact only after a booking is accepted.
 function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
     if (! contact) {
         return <p className="mt-1 text-xs font-medium text-slate-400">{lockedLabel}</p>;
@@ -379,6 +399,7 @@ function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null
     );
 }
 
+// Lets drivers accept or reject pending booking requests.
 function BookingAction({ booking }: { booking: Booking }) {
     const confirm = useForm({});
     const reject = useForm({});
@@ -395,6 +416,7 @@ function BookingAction({ booking }: { booking: Booking }) {
     );
 }
 
+// Shows a reusable driver dashboard empty state.
 function EmptyState({ title, message, actionLabel, actionHref, compact = false }: { title: string; message: string; actionLabel?: string; actionHref?: string; compact?: boolean }) {
     return (
         <div className={`mt-5 rounded-[1rem] border border-dashed border-slate-200 bg-slate-50 text-center ${compact ? 'px-4 py-8' : 'px-6 py-12'}`}>

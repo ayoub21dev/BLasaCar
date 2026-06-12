@@ -6,12 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
+    /**
+     * Let only guests create a new traveler account.
+     */
     public function authorize(): bool
     {
         return $this->user() === null;
     }
 
     /**
+     * Validate desktop signup fields before creating a traveler.
+     *
      * @return array<string, array<int, string>>
      */
     public function rules(): array

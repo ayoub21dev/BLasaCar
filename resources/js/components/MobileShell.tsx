@@ -14,6 +14,7 @@ type IconProps = {
     className?: string;
 };
 
+// Provides the framed mobile app layout, header, flash message, and bottom nav.
 export function MobileShell({ title, active, showNav = true, rightAction, children }: MobileShellProps) {
     const { auth, flash } = usePage<SharedProps>().props;
 
@@ -53,6 +54,7 @@ export function MobileShell({ title, active, showNav = true, rightAction, childr
     );
 }
 
+// Renders the fixed bottom tab navigation for mobile pages.
 function MobileBottomNav({ active }: { active?: MobileShellProps['active'] }) {
     const tabs = [
         { key: 'home', label: 'Home', href: path('mobile.home'), icon: <IconHome /> },
@@ -83,6 +85,7 @@ function MobileBottomNav({ active }: { active?: MobileShellProps['active'] }) {
     );
 }
 
+// Shows login/signup actions while preserving the current mobile redirect target.
 export function AuthPrompt({ title, message }: { title: string; message: string }) {
     const currentUrl = usePage().url;
     const redirectTo = currentUrl.startsWith('/mobile') ? currentUrl : path('mobile.home');
@@ -106,6 +109,7 @@ export function AuthPrompt({ title, message }: { title: string; message: string 
     );
 }
 
+// Logs out of the current session from mobile account screens.
 export function LogoutButton() {
     const logout = useForm({ redirect_to: path('mobile.home') });
 
@@ -121,38 +125,47 @@ export function LogoutButton() {
     );
 }
 
+// Exported icon helpers keep mobile pages visually consistent.
 export function IconHome({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>;
 }
 
+// Renders the mobile search icon.
 export function IconSearch({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>;
 }
 
+// Renders the mobile trips/ticket icon.
 export function IconTicket({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round" strokeLinejoin="round"><path d="M2 9a3 3 0 0 0 0 6v3a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-3a3 3 0 0 0 0-6V6a2 2 0 0 0-2-2H4a2 2 0 0 0-2 2Z" /><path d="M13 5v14" /></svg>;
 }
 
+// Renders the mobile account/user icon.
 export function IconUser({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M20 21a8 8 0 0 0-16 0" /><circle cx="12" cy="7" r="4" /></svg>;
 }
 
+// Renders the mobile location pin icon.
 export function IconPin({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M20 10c0 6-8 12-8 12S4 16 4 10a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>;
 }
 
+// Renders the mobile calendar icon.
 export function IconCalendar({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>;
 }
 
+// Renders the mobile clock icon.
 export function IconClock({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>;
 }
 
+// Renders the mobile forward arrow icon.
 export function IconArrowRight({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7" /></svg>;
 }
 
+// Renders the mobile car icon.
 export function IconCar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.2" strokeLinecap="round"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M8 11l1.4-4h5.2L16 11" /></svg>;
 }

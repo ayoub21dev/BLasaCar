@@ -7,6 +7,9 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class BecomeDriverRequest extends FormRequest
 {
+    /**
+     * Normalize CIN and vehicle text before validation.
+     */
     protected function prepareForValidation(): void
     {
         $this->merge([
@@ -16,6 +19,9 @@ class BecomeDriverRequest extends FormRequest
         ]);
     }
 
+    /**
+     * Allow only active travelers without a driver profile to start onboarding.
+     */
     public function authorize(): bool
     {
         $user = $this->user();
@@ -26,6 +32,8 @@ class BecomeDriverRequest extends FormRequest
     }
 
     /**
+     * Validate CIN photos and first vehicle details.
+     *
      * @return array<string, array<int, string>>
      */
     public function rules(): array

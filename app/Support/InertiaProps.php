@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Storage;
 class InertiaProps
 {
     /**
+     * Convert a city model into a small option payload.
+     *
      * @return array{id:int,name:string}
      */
     public static function city(City $city): array
@@ -27,6 +29,8 @@ class InertiaProps
     }
 
     /**
+     * Convert an authenticated user into dashboard-safe props.
+     *
      * @return array<string, mixed>
      */
     public static function user(User $user, bool $withProfile = false): array
@@ -57,6 +61,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a private driver profile into admin/dashboard props.
+     *
      * @return array<string, mixed>
      */
     public static function driverProfile(DriverProfile $profile): array
@@ -89,6 +95,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a driver profile into public props for traveler-facing pages.
+     *
      * @return array<string, mixed>
      */
     public static function publicDriverProfile(DriverProfile $profile): array
@@ -105,6 +113,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a vehicle into the small payload used by ride cards and forms.
+     *
      * @return array{id:int,brand:string,model:string}
      */
     public static function vehicle(Vehicle $vehicle): array
@@ -117,6 +127,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a ride into UI props, including derived labels and action flags.
+     *
      * @return array<string, mixed>
      */
     public static function ride(Ride $ride): array
@@ -167,6 +179,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a booking into UI props and unlock contact details when allowed.
+     *
      * @return array<string, mixed>
      */
     public static function booking(Booking $booking): array
@@ -197,6 +211,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a notification into the compact dashboard payload.
+     *
      * @return array<string, mixed>
      */
     public static function notification(Notification $notification): array
@@ -211,6 +227,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a user into public profile props without private contact fields.
+     *
      * @return array<string, mixed>
      */
     public static function profileUser(User $user): array
@@ -225,6 +243,8 @@ class InertiaProps
     }
 
     /**
+     * Convert a review into public profile props with route context.
+     *
      * @return array<string, mixed>
      */
     public static function review(Review $review): array
@@ -245,12 +265,17 @@ class InertiaProps
         ];
     }
 
+    /**
+     * Build two-letter initials from a user's first and last name.
+     */
     private static function initials(User $user): string
     {
         return strtoupper(str($user->first_name)->substr(0, 1).str($user->last_name)->substr(0, 1));
     }
 
     /**
+     * Convert a user into public-safe identity props.
+     *
      * @return array<string, mixed>
      */
     public static function publicUser(User $user): array
@@ -265,6 +290,9 @@ class InertiaProps
         ];
     }
 
+    /**
+     * Resolve a profile photo from an external URL, public file, or storage disk.
+     */
     private static function profilePhotoUrl(User $user): ?string
     {
         if (! $user->profile_photo) {
@@ -289,6 +317,8 @@ class InertiaProps
     }
 
     /**
+     * Build the contact payload shown after a booking is accepted.
+     *
      * @return array{name:string,phone:string,whatsapp_url:string}
      */
     private static function contact(User $user): array
@@ -302,6 +332,9 @@ class InertiaProps
         ];
     }
 
+    /**
+     * Normalize a local or international phone number for WhatsApp deep links.
+     */
     private static function whatsAppDigits(string $phone): string
     {
         $trimmed = trim($phone);
@@ -323,6 +356,9 @@ class InertiaProps
         return $digits;
     }
 
+    /**
+     * Return a friendly date label for ride cards.
+     */
     private static function dayLabel(Carbon $date): string
     {
         if ($date->isToday()) {

@@ -14,6 +14,9 @@ use Inertia\Response;
 
 class ProfileController extends Controller
 {
+    /**
+     * Render a public driver profile with reviews and upcoming rides.
+     */
     public function showDriver(DriverProfile $driverProfile): Response
     {
         $driverProfile->loadMissing(['user', 'vehicles']);
@@ -54,6 +57,9 @@ class ProfileController extends Controller
         ]);
     }
 
+    /**
+     * Render a traveler profile only for drivers who have bookings with that traveler.
+     */
     public function showTraveler(Request $request, User $traveler): Response
     {
         $driver = $request->user();

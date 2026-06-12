@@ -12,6 +12,7 @@ type DriverProfileProps = {
     rides: Ride[];
 };
 
+// Shows a public driver profile with reviews and available rides.
 export default function DriverProfilePage({ driver, profile, stats, reviews, rides }: DriverProfileProps) {
     return (
         <Layout title={`${driver.name} profile`}>
@@ -100,6 +101,7 @@ export default function DriverProfilePage({ driver, profile, stats, reviews, rid
     );
 }
 
+// Renders the driver's identity verification badge.
 function VerifiedBadge({ verified }: { verified: boolean }) {
     return (
         <span className={`rounded-full px-3 py-1 text-xs font-black ${verified ? 'bg-emerald-50 text-emerald-700' : 'bg-amber-50 text-amber-700'}`}>
@@ -108,6 +110,7 @@ function VerifiedBadge({ verified }: { verified: boolean }) {
     );
 }
 
+// Renders one driver profile statistic.
 function Stat({ label, value }: { label: string; value: string }) {
     return (
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
@@ -117,6 +120,7 @@ function Stat({ label, value }: { label: string; value: string }) {
     );
 }
 
+// Renders one traveler review on the driver profile.
 function ReviewCard({ review }: { review: ReviewSummary }) {
     return (
         <article className="rounded-xl border border-slate-200 bg-white p-4">
@@ -132,6 +136,7 @@ function ReviewCard({ review }: { review: ReviewSummary }) {
     );
 }
 
+// Renders one available ride on the driver profile.
 function RideCard({ ride }: { ride: Ride }) {
     return (
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -150,6 +155,7 @@ function RideCard({ ride }: { ride: Ride }) {
     );
 }
 
+// Shows a profile empty state.
 function EmptyState({ title, message, compact = false }: { title: string; message: string; compact?: boolean }) {
     return (
         <div className={`mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 text-center ${compact ? 'py-8' : 'py-12'}`}>

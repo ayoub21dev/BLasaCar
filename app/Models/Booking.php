@@ -19,6 +19,9 @@ class Booking extends Model
         'booked_at',
     ];
 
+    /**
+     * Cast booking counts and timestamps to useful PHP types.
+     */
     protected function casts(): array
     {
         return [
@@ -27,16 +30,25 @@ class Booking extends Model
         ];
     }
 
+    /**
+     * Get the ride this traveler booking belongs to.
+     */
     public function ride(): BelongsTo
     {
         return $this->belongsTo(Ride::class);
     }
 
+    /**
+     * Get the traveler who requested the booking.
+     */
     public function traveler(): BelongsTo
     {
         return $this->belongsTo(User::class, 'traveler_id');
     }
 
+    /**
+     * Get the review written for this completed booking.
+     */
     public function review(): HasOne
     {
         return $this->hasOne(Review::class);

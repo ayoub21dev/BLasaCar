@@ -4,6 +4,7 @@ import { IconArrowRight, IconUser, MobileShell } from '../../components/MobileSh
 import { ErrorText } from '../../components/ui';
 import { path } from '../../routes';
 
+// Shows the mobile login form and preserves the desired post-login target.
 export default function Login() {
     const page = usePage();
     const redirectTo = redirectTarget(page.url, path('mobile.home'));
@@ -14,6 +15,7 @@ export default function Login() {
         redirect_to: redirectTo,
     });
 
+    // Submits credentials to the shared web login endpoint.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('login.store'));
@@ -79,6 +81,7 @@ export default function Login() {
     );
 }
 
+// Renders one labeled mobile auth field wrapper.
 function MobileField({ label, children }: { label: string; children: React.ReactNode }) {
     return (
         <label className="block space-y-1.5">
@@ -88,6 +91,7 @@ function MobileField({ label, children }: { label: string; children: React.React
     );
 }
 
+// Reads a safe mobile redirect target from the current URL.
 function redirectTarget(pageUrl: string, fallback: string): string {
     const queryString = pageUrl.split('?')[1] ?? '';
     const redirectTo = new URLSearchParams(queryString).get('redirect_to');

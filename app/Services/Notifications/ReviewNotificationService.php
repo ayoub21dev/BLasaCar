@@ -8,6 +8,9 @@ use App\Models\User;
 
 class ReviewNotificationService
 {
+    /**
+     * Notify the driver when a traveler submits a review.
+     */
     public function reviewReceived(Review $review): Notification
     {
         $review = $review->loadMissing([
@@ -34,6 +37,9 @@ class ReviewNotificationService
         ]);
     }
 
+    /**
+     * Format the reviewed ride route for notification copy.
+     */
     private function routeLabel(Review $review): string
     {
         return sprintf(
@@ -43,6 +49,9 @@ class ReviewNotificationService
         );
     }
 
+    /**
+     * Format a user's display name for notification copy.
+     */
     private function userName(User $user): string
     {
         return trim($user->first_name.' '.$user->last_name) ?: $user->email;

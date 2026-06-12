@@ -9,6 +9,9 @@ use Illuminate\Http\JsonResponse;
 
 class CityController extends Controller
 {
+    /**
+     * Return all city options for mobile search forms.
+     */
     public function index(): JsonResponse
     {
         $cities = City::query()

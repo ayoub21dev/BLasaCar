@@ -7,6 +7,9 @@ use Illuminate\Support\Str;
 
 class LogWhatsAppClient implements WhatsAppClient
 {
+    /**
+     * Log the WhatsApp message instead of sending it to an external provider.
+     */
     public function send(string $recipientPhone, string $message): WhatsAppMessageResult
     {
         Log::info('WhatsApp notification prepared.', [

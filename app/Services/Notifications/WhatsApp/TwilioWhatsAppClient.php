@@ -7,6 +7,9 @@ use RuntimeException;
 
 class TwilioWhatsAppClient implements WhatsAppClient
 {
+    /**
+     * Send a WhatsApp notification through Twilio's Messages API.
+     */
     public function send(string $recipientPhone, string $message): WhatsAppMessageResult
     {
         $accountSid = (string) config('services.twilio.account_sid');
@@ -38,6 +41,9 @@ class TwilioWhatsAppClient implements WhatsAppClient
         return new WhatsAppMessageResult('twilio', $response->json('sid'));
     }
 
+    /**
+     * Prefix a phone number with Twilio's WhatsApp address scheme.
+     */
     private function whatsAppAddress(string $phone): string
     {
         return str_starts_with($phone, 'whatsapp:')

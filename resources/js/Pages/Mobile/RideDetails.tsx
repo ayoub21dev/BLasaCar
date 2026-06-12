@@ -5,6 +5,7 @@ import { StatusChip } from '../../components/ui';
 import { path } from '../../routes';
 import { Ride, SharedProps } from '../../types';
 
+// Shows mobile ride details and the mobile booking request form.
 export default function RideDetails({ ride }: { ride: Ride }) {
     const { auth } = usePage<SharedProps>().props;
     const maxSeats = Math.max(1, Math.min(4, ride.available_seats));
@@ -13,6 +14,7 @@ export default function RideDetails({ ride }: { ride: Ride }) {
         redirect_to: path('mobile.trips'),
     });
 
+    // Sends the booking request and asks the backend to redirect back to mobile trips.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('rides.book', ride.id));
@@ -140,6 +142,7 @@ export default function RideDetails({ ride }: { ride: Ride }) {
     );
 }
 
+// Renders one compact ride fact on mobile details.
 function Detail({ icon, label, value }: { icon: React.ReactNode; label: string; value: string }) {
     return (
         <div className="rounded-lg border border-slate-200 bg-white p-4 shadow-sm">

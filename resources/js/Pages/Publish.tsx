@@ -15,6 +15,7 @@ type PublishProps = {
     ride?: Ride;
 };
 
+// Shows the create/edit ride form for drivers.
 export default function Publish({ cities, canPublishRide, verificationPending, vehicles, mode = 'create', ride }: PublishProps) {
     const { auth, errors } = usePage<SharedProps>().props;
     const isEditing = mode === 'edit' && ride !== undefined;
@@ -30,6 +31,7 @@ export default function Publish({ cities, canPublishRide, verificationPending, v
         notes: ride?.notes ?? '',
     });
 
+    // Sends the form to create a new ride or patch an existing scheduled ride.
     const submit = (event: FormEvent) => {
         event.preventDefault();
 
@@ -124,6 +126,7 @@ export default function Publish({ cities, canPublishRide, verificationPending, v
     );
 }
 
+// Renders one reusable publish/edit form text input.
 function TextField({ label, value, onChange, error, type = 'text', placeholder, wide = false }: { label: string; value: string; onChange: (value: string) => void; error?: string; type?: string; placeholder?: string; wide?: boolean }) {
     return (
         <label className={`space-y-2 ${wide ? 'lg:col-span-2' : ''}`}>

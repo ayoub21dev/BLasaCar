@@ -15,6 +15,9 @@ use Illuminate\Support\Str;
 
 class AuthController extends Controller
 {
+    /**
+     * Register a traveler account and return a mobile bearer token.
+     */
     public function register(RegisterRequest $request): JsonResponse
     {
         $name = Str::of($request->validated('full_name'))->squish();
@@ -35,6 +38,9 @@ class AuthController extends Controller
         return $this->tokenResponse($user, $request->validated('device_name', 'mobile'), 201);
     }
 
+    /**
+     * Authenticate an active user and return a mobile bearer token.
+     */
     public function login(LoginRequest $request): JsonResponse
     {
         $credentials = [
@@ -60,6 +66,9 @@ class AuthController extends Controller
         return $this->tokenResponse($user, $request->validated('device_name', 'mobile'));
     }
 
+    /**
+     * Return the authenticated mobile user's profile payload.
+     */
     public function me(Request $request): JsonResponse
     {
         return response()->json([
@@ -67,6 +76,9 @@ class AuthController extends Controller
         ]);
     }
 
+    /**
+     * Revoke the current mobile API token.
+     */
     public function logout(Request $request): JsonResponse
     {
         $request->attributes->get('mobileApiToken')?->delete();
@@ -74,6 +86,9 @@ class AuthController extends Controller
         return response()->json(null, 204);
     }
 
+    /**
+     * Issue a token and package it with the user profile response.
+     */
     private function tokenResponse(User $user, string $deviceName, int $status = 200): JsonResponse
     {
         [$token, $plainTextToken] = MobileApiToken::issueFor($user, $deviceName);

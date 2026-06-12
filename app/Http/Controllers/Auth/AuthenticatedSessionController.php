@@ -10,6 +10,9 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthenticatedSessionController extends Controller
 {
+    /**
+     * Sign in an active account and send users to the correct dashboard or mobile page.
+     */
     public function store(LoginRequest $request): RedirectResponse
     {
         $credentials = [
@@ -35,6 +38,9 @@ class AuthenticatedSessionController extends Controller
         return redirect()->intended(route($request->user()->dashboardRoute()));
     }
 
+    /**
+     * Sign out the current web session and redirect to the right home page.
+     */
     public function destroy(Request $request): RedirectResponse
     {
         Auth::guard('web')->logout();
@@ -47,6 +53,9 @@ class AuthenticatedSessionController extends Controller
         return redirect()->route($route)->with('status', 'You have been logged out.');
     }
 
+    /**
+     * Detect whether auth was submitted from the mobile Inertia flow.
+     */
     private function expectsMobileRedirect(Request $request): bool
     {
         $redirectTo = (string) $request->input('redirect_to', '');
@@ -56,6 +65,9 @@ class AuthenticatedSessionController extends Controller
             || str_contains($referer, '/mobile');
     }
 
+    /**
+     * Keep mobile auth redirects inside the mobile route namespace.
+     */
     private function mobileRedirectUrl(Request $request, string $fallback): string
     {
         $redirectTo = (string) $request->input('redirect_to', '');

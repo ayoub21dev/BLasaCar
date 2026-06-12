@@ -8,6 +8,7 @@ type MobileRideCardProps = {
     ctaLabel?: string;
 };
 
+// Renders one compact mobile ride card that opens the ride details page.
 export function MobileRideCard({ ride, ctaLabel = 'View' }: MobileRideCardProps) {
     const driver = ride.driver;
     const driverInitials = driver?.initials ?? driver?.first_name?.slice(0, 1).toUpperCase() ?? 'BC';

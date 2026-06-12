@@ -10,6 +10,7 @@ type CityComboboxProps = {
     onChange?: (value: string) => void;
 };
 
+// Renders a searchable city picker used by ride search and publish forms.
 export function CityCombobox({ cities, name, value, placeholder = 'Select city', inputClassName, onChange }: CityComboboxProps) {
     const [open, setOpen] = useState(false);
     const [query, setQuery] = useState('');
@@ -25,6 +26,7 @@ export function CityCombobox({ cities, name, value, placeholder = 'Select city',
         return cities.filter((city) => city.name.toLowerCase().includes(normalized));
     }, [cities, query]);
 
+    // Stores the selected city id and closes the dropdown.
     const selectCity = (city: City) => {
         onChange?.(String(city.id));
         setOpen(false);

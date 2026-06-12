@@ -23,6 +23,9 @@ class MobileApiToken extends Model
         'token_hash',
     ];
 
+    /**
+     * Cast token timestamps so expiry checks can use Carbon helpers.
+     */
     protected function casts(): array
     {
         return [
@@ -31,12 +34,17 @@ class MobileApiToken extends Model
         ];
     }
 
+    /**
+     * Get the user that owns this mobile token.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
     /**
+     * Issue a new mobile token and return the model plus the one-time plain token.
+     *
      * @return array{0: self, 1: string}
      */
     public static function issueFor(User $user, string $name = 'mobile'): array
@@ -53,6 +61,9 @@ class MobileApiToken extends Model
         return [$token, $plainTextToken];
     }
 
+    /**
+     * Check whether the token is past its expiry date.
+     */
     public function isExpired(): bool
     {
         return $this->expires_at !== null && $this->expires_at->isPast();

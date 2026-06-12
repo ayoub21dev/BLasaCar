@@ -11,6 +11,7 @@ type SearchProps = {
     filters: MobileSearchFilterValues;
 };
 
+// Shows mobile search filters and ride cards for the current search.
 export default function Search({ cities, rides, filters }: SearchProps) {
     return (
         <MobileShell title="Search" active="search">

@@ -18,6 +18,9 @@ use Inertia\Response;
 
 class FrontendController extends Controller
 {
+    /**
+     * Render the public homepage with cities and a few upcoming rides.
+     */
     public function home(): Response
     {
         $cities = City::query()->orderBy('name')->get();
@@ -33,6 +36,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render search results using route, date, and seat filters.
+     */
     public function search(Request $request, PublicRideService $publicRideService): Response
     {
         $filters = $request->validate([
@@ -69,6 +75,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render a ride details page when the viewer is allowed to see it.
+     */
     public function showRide(Request $request, Ride $ride, PublicRideService $publicRideService): Response
     {
         abort_unless($publicRideService->canViewRideDetails($request->user(), $ride), 404);
@@ -78,6 +87,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render the publish form with the driver's vehicles and verification status.
+     */
     public function publishRide(): Response
     {
         $vehicles = collect();
@@ -99,6 +111,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render the ride edit form for the owning verified driver.
+     */
     public function editRide(Ride $ride): Response
     {
         $user = auth()->user();
@@ -129,36 +144,57 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render the desktop login page.
+     */
     public function login(): Response
     {
         return Inertia::render('Auth/Login');
     }
 
+    /**
+     * Render the desktop signup page.
+     */
     public function signup(): Response
     {
         return Inertia::render('Auth/Signup');
     }
 
+    /**
+     * Render the admin dashboard overview section.
+     */
     public function adminDashboard(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'overview');
     }
 
+    /**
+     * Render the admin section for pending driver verification.
+     */
     public function adminDriverVerification(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'driver-verification');
     }
 
+    /**
+     * Render the admin user management section.
+     */
     public function adminUsers(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'users');
     }
 
+    /**
+     * Render the admin ride activity section.
+     */
     public function adminRideActivity(AdminService $adminService): Response
     {
         return $this->adminDashboardView($adminService, 'rides');
     }
 
+    /**
+     * Build the shared data payload for all admin dashboard sections.
+     */
     private function adminDashboardView(AdminService $adminService, string $section): Response
     {
         $users = $adminService->listUsers();
@@ -184,6 +220,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render a driver's dashboard with rides, booking requests, and stats.
+     */
     public function driverDashboard(): Response
     {
         $driver = User::query()
@@ -245,6 +284,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Render a traveler's dashboard with bookings, upcoming trips, reviews, and stats.
+     */
     public function travelerDashboard(PublicRideService $publicRideService): Response
     {
         $traveler = User::query()
@@ -298,6 +340,9 @@ class FrontendController extends Controller
         ]);
     }
 
+    /**
+     * Build the shared query for visible, future rides with open seats.
+     */
     private function bookableRidesQuery()
     {
         return Ride::query()
@@ -314,6 +359,9 @@ class FrontendController extends Controller
             ->orderBy('departure_time');
     }
 
+    /**
+     * Convert recent bookings into a seven-day seat-count chart series.
+     */
     private function weeklySeatSales($bookings): array
     {
         $countsByDay = $bookings

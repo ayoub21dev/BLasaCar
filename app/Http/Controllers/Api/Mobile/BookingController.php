@@ -15,6 +15,9 @@ use RuntimeException;
 
 class BookingController extends Controller
 {
+    /**
+     * Return the authenticated traveler's mobile booking list.
+     */
     public function index(Request $request, PublicRideService $publicRideService): JsonResponse
     {
         $bookings = $publicRideService->listBookingStatuses($request->user())
@@ -29,6 +32,9 @@ class BookingController extends Controller
         ]);
     }
 
+    /**
+     * Create a pending booking request for the authenticated traveler.
+     */
     public function store(BookRideRequest $request, Ride $ride, PublicRideService $publicRideService): JsonResponse
     {
         try {
@@ -47,14 +53,13 @@ class BookingController extends Controller
         ], 201);
     }
 
+    /**
+     * Cancel the authenticated traveler's own pending or confirmed booking.
+     */
     public function cancel(Request $request, Booking $booking, PublicRideService $publicRideService): JsonResponse
     {
-        if ($booking->traveler_id !== $request->user()->id) {
-            return response()->json(['message' => 'This booking does not belong to your account.'], 403);
-        }
-
         try {
-            $booking = $publicRideService->cancelBooking($booking);
+            $booking = $publicRideService->cancelTravelerBooking($request->user(), $booking);
         } catch (RuntimeException $exception) {
             return response()->json([
                 'message' => $exception->getMessage(),

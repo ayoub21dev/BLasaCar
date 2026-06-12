@@ -4,6 +4,7 @@ import { Layout } from '../../components/Layout';
 import { ErrorText } from '../../components/ui';
 import { path } from '../../routes';
 
+// Shows the form that upgrades a traveler into a driver account.
 export default function Onboarding() {
     const form = useForm({
         cin_number: '',
@@ -13,6 +14,7 @@ export default function Onboarding() {
         vehicle_model: '',
     });
 
+    // Uploads CIN photos and vehicle data to create the driver profile.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('drivers.onboarding.store'), { forceFormData: true });
@@ -51,6 +53,7 @@ export default function Onboarding() {
     );
 }
 
+// Renders one text input for driver onboarding fields.
 function TextField({ label, value, onChange, error, placeholder }: { label: string; value: string; onChange: (value: string) => void; error?: string; placeholder?: string }) {
     return (
         <label className="space-y-2">
@@ -61,6 +64,7 @@ function TextField({ label, value, onChange, error, placeholder }: { label: stri
     );
 }
 
+// Renders one file input for CIN photo uploads.
 function FileField({ label, onChange, error }: { label: string; onChange: (file: File | null) => void; error?: string }) {
     return (
         <label className="space-y-2">

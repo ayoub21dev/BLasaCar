@@ -12,10 +12,16 @@ class SendWhatsAppNotificationJob implements ShouldQueue
 {
     use Queueable;
 
+    /**
+     * Store the notification id so the queued job can load fresh data later.
+     */
     public function __construct(
         public int $notificationId,
     ) {}
 
+    /**
+     * Send a pending WhatsApp notification and record delivery status.
+     */
     public function handle(WhatsAppClient $client): void
     {
         $notification = Notification::query()->find($this->notificationId);

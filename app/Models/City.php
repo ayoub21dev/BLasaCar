@@ -16,11 +16,17 @@ class City extends Model
         'name',
     ];
 
+    /**
+     * Get rides that depart from this city.
+     */
     public function departureRides(): HasMany
     {
         return $this->hasMany(Ride::class, 'departure_city_id');
     }
 
+    /**
+     * Get rides that arrive in this city.
+     */
     public function arrivalRides(): HasMany
     {
         return $this->hasMany(Ride::class, 'arrival_city_id');

@@ -11,6 +11,9 @@ use Illuminate\Validation\Validator;
 
 class UpdateRideRequest extends FormRequest
 {
+    /**
+     * Allow only the owning verified driver to edit a future scheduled ride.
+     */
     public function authorize(): bool
     {
         $user = $this->user();
@@ -26,6 +29,8 @@ class UpdateRideRequest extends FormRequest
     }
 
     /**
+     * Validate updated ride details before saving.
+     *
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array
@@ -50,6 +55,8 @@ class UpdateRideRequest extends FormRequest
     }
 
     /**
+     * Add a cross-field check that the updated departure date and time is future.
+     *
      * @return array<int, callable>
      */
     public function after(): array

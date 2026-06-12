@@ -9,6 +9,8 @@ use Symfony\Component\HttpFoundation\Response;
 class EnsureUserHasRole
 {
     /**
+     * Allow only users with one of the required roles to continue.
+     *
      * @param  array<int, string>  $roles
      */
     public function handle(Request $request, Closure $next, string ...$roles): Response

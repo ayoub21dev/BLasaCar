@@ -5,9 +5,12 @@ import { StatusChip } from '../components/ui';
 import { path } from '../routes';
 import { Ride } from '../types';
 
+// Shows the full desktop ride details page and booking request form.
 export default function RideDetails({ ride }: { ride: Ride }) {
     const maxSeats = Math.min(4, ride.available_seats);
     const form = useForm({ seats: '1' });
+
+    // Sends the traveler seat request to the shared booking endpoint.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('rides.book', ride.id));
@@ -110,6 +113,7 @@ export default function RideDetails({ ride }: { ride: Ride }) {
     );
 }
 
+// Groups related ride details inside a reusable panel.
 function InfoPanel({ title, children }: { title: string; children: React.ReactNode }) {
     return (
         <div className="rounded-[2rem] border border-slate-100 bg-slate-50 p-8">
@@ -119,6 +123,7 @@ function InfoPanel({ title, children }: { title: string; children: React.ReactNo
     );
 }
 
+// Renders a label/value pair for ride metadata.
 function Detail({ label, value, brand = false }: { label: string; value: string; brand?: boolean }) {
     return (
         <div>

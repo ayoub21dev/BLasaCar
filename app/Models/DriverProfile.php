@@ -22,6 +22,9 @@ class DriverProfile extends Model
         'total_trips',
     ];
 
+    /**
+     * Cast verification, rating, and trip counts to useful PHP types.
+     */
     protected function casts(): array
     {
         return [
@@ -31,21 +34,33 @@ class DriverProfile extends Model
         ];
     }
 
+    /**
+     * Get the user account that owns this driver profile.
+     */
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
     }
 
+    /**
+     * Get vehicles registered to this driver profile.
+     */
     public function vehicles(): HasMany
     {
         return $this->hasMany(Vehicle::class);
     }
 
+    /**
+     * Get rides published by this driver profile.
+     */
     public function rides(): HasMany
     {
         return $this->hasMany(Ride::class);
     }
 
+    /**
+     * Get reviews received by this driver profile.
+     */
     public function receivedReviews(): HasMany
     {
         return $this->hasMany(Review::class);

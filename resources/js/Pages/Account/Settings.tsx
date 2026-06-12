@@ -5,6 +5,7 @@ import { ErrorText } from '../../components/ui';
 import { path } from '../../routes';
 import { UserSummary } from '../../types';
 
+// Shows profile and password settings for the signed-in user.
 export default function Settings({ user }: { user: UserSummary }) {
     const profileForm = useForm({
         first_name: user.first_name,
@@ -18,10 +19,13 @@ export default function Settings({ user }: { user: UserSummary }) {
         password_confirmation: '',
     });
 
+    // Saves profile and contact detail changes.
     const submitProfile = (event: FormEvent) => {
         event.preventDefault();
         profileForm.patch(path('account.settings.profile.update'));
     };
+
+    // Saves a new password after backend current-password verification.
     const submitPassword = (event: FormEvent) => {
         event.preventDefault();
         passwordForm.patch(path('account.settings.password.update'));
@@ -92,6 +96,7 @@ export default function Settings({ user }: { user: UserSummary }) {
     );
 }
 
+// Renders one settings panel.
 function Panel({ title, children }: { title: string; children: React.ReactNode }) {
     return (
         <div className="rounded-[2.5rem] border border-slate-100 bg-white p-8 shadow-sm">
@@ -101,6 +106,7 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
     );
 }
 
+// Renders one editable settings field.
 function Field({ label, value, onChange, error, type = 'text' }: { label: string; value: string; onChange: (value: string) => void; error?: string; type?: string }) {
     return (
         <label className="space-y-2">
@@ -111,6 +117,7 @@ function Field({ label, value, onChange, error, type = 'text' }: { label: string
     );
 }
 
+// Renders one read-only account information row.
 function Info({ label, value }: { label: string; value: string }) {
     return (
         <div className="rounded-2xl bg-slate-50 px-5 py-4">

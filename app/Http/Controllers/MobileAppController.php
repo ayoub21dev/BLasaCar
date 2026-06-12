@@ -16,21 +16,33 @@ use Inertia\Response;
 
 class MobileAppController extends Controller
 {
+    /**
+     * Render the mobile onboarding entry screen.
+     */
     public function index(): Response
     {
         return Inertia::render('Mobile/Onboarding');
     }
 
+    /**
+     * Render the mobile login screen.
+     */
     public function login(): Response
     {
         return Inertia::render('Mobile/Login');
     }
 
+    /**
+     * Render the mobile signup screen.
+     */
     public function signup(): Response
     {
         return Inertia::render('Mobile/Signup');
     }
 
+    /**
+     * Render the mobile home screen with cities and featured rides.
+     */
     public function home(PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -44,6 +56,9 @@ class MobileAppController extends Controller
         ]);
     }
 
+    /**
+     * Render mobile ride search results from the same filters as desktop search.
+     */
     public function search(Request $request, PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -80,6 +95,9 @@ class MobileAppController extends Controller
         ]);
     }
 
+    /**
+     * Render mobile ride details when the current viewer can see the ride.
+     */
     public function ride(Ride $ride, PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -91,6 +109,9 @@ class MobileAppController extends Controller
         ]);
     }
 
+    /**
+     * Render the mobile trips screen with traveler bookings and review flags.
+     */
     public function trips(PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -126,6 +147,9 @@ class MobileAppController extends Controller
         ]);
     }
 
+    /**
+     * Render the mobile account screen with booking stats and notifications.
+     */
     public function account(PublicRideService $publicRideService): Response
     {
         $this->seedNativeDatabaseIfEmpty();
@@ -159,6 +183,9 @@ class MobileAppController extends Controller
         ]);
     }
 
+    /**
+     * Return city options in the shape expected by mobile React pages.
+     */
     private function cities()
     {
         return City::query()
@@ -168,6 +195,9 @@ class MobileAppController extends Controller
             ->values();
     }
 
+    /**
+     * Seed bundled data for NativePHP builds when the local database is empty.
+     */
     private function seedNativeDatabaseIfEmpty(): void
     {
         if (! config('nativephp-internal.running') || City::query()->exists()) {

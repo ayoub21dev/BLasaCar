@@ -10,6 +10,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class AuthenticateMobileApiToken
 {
+    /**
+     * Authenticate a mobile API request from its bearer token.
+     */
     public function handle(Request $request, Closure $next): Response
     {
         $plainTextToken = $request->bearerToken();

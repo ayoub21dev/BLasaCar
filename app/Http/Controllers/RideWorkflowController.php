@@ -11,39 +11,38 @@ use App\Models\Ride;
 use App\Services\PublicApp\PublicRideService;
 use App\Services\PublicApp\ReviewService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Carbon;
+use Illuminate\Http\Request;
 use InvalidArgumentException;
 use RuntimeException;
 
 class RideWorkflowController extends Controller
 {
+    /**
+     * Keep ride and review business rules in services, leaving this controller to handle HTTP responses.
+     */
+    public function __construct(
+        private readonly PublicRideService $rides,
+        private readonly ReviewService $reviews,
+    ) {}
+
+    /**
+     * Publish a new scheduled ride for a verified driver.
+     */
     public function store(PublishRideRequest $request): RedirectResponse
     {
-        $validated = $request->validated();
-        $driverProfile = $request->user()->driverProfile;
-
-        $ride = Ride::query()->create([
-            'driver_profile_id' => $driverProfile->id,
-            'vehicle_id' => $validated['vehicle_id'],
-            'departure_city_id' => $validated['departure_city_id'],
-            'arrival_city_id' => $validated['arrival_city_id'],
-            'departure_time' => Carbon::parse($validated['departure_date'].' '.$validated['departure_time']),
-            'price_per_seat' => $validated['price_per_seat'],
-            'total_seats' => $validated['seats_offered'],
-            'available_seats' => $validated['seats_offered'],
-            'meeting_point' => $validated['meeting_point'],
-            'notes' => $validated['notes'] ?? null,
-            'status' => 'scheduled',
-        ]);
+        $ride = $this->rides->publishRide($request->user(), $request->validated());
 
         return redirect()->route('rides.show', $ride)
             ->with('status', 'Your ride has been published.');
     }
 
-    public function update(UpdateRideRequest $request, Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Save edits to a driver's future ride and report validation errors back to the form.
+     */
+    public function update(UpdateRideRequest $request, Ride $ride): RedirectResponse
     {
         try {
-            $publicRideService->updateRide($request->user(), $ride, $request->validated());
+            $this->rides->updateRide($request->user(), $ride, $request->validated());
         } catch (RuntimeException $exception) {
             return back()
                 ->withErrors(['ride' => $exception->getMessage()])
@@ -54,10 +53,13 @@ class RideWorkflowController extends Controller
             ->with('status', 'Ride updated.');
     }
 
-    public function cancelRide(Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Cancel a driver's future ride and return the user to the current page.
+     */
+    public function cancelRide(Request $request, Ride $ride): RedirectResponse
     {
         try {
-            $publicRideService->cancelRide(auth()->user(), $ride);
+            $this->rides->cancelRide($request->user(), $ride);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['ride' => $exception->getMessage()]);
         }
@@ -65,10 +67,13 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Ride cancelled.');
     }
 
-    public function book(BookRideRequest $request, Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Turn a traveler's seat request into a pending booking.
+     */
+    public function book(BookRideRequest $request, Ride $ride): RedirectResponse
     {
         try {
-            $publicRideService->requestSeat($request->user(), $ride, (int) $request->validated('seats'));
+            $this->rides->requestSeat($request->user(), $ride, (int) $request->validated('seats'));
         } catch (InvalidArgumentException|RuntimeException $exception) {
             return back()
                 ->withErrors(['seats' => $exception->getMessage()])
@@ -84,10 +89,13 @@ class RideWorkflowController extends Controller
             ->with('status', 'Your seat request has been sent.');
     }
 
-    public function confirmBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Let a driver accept a pending booking request for their ride.
+     */
+    public function confirmBooking(Request $request, Booking $booking): RedirectResponse
     {
         try {
-            $publicRideService->confirmBooking(auth()->user(), $booking);
+            $this->rides->confirmBooking($request->user(), $booking);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['booking' => $exception->getMessage()]);
         }
@@ -95,10 +103,13 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Booking request accepted.');
     }
 
-    public function rejectBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Let a driver reject a pending booking request for their ride.
+     */
+    public function rejectBooking(Request $request, Booking $booking): RedirectResponse
     {
         try {
-            $publicRideService->rejectBooking(auth()->user(), $booking);
+            $this->rides->rejectBooking($request->user(), $booking);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['booking' => $exception->getMessage()]);
         }
@@ -106,10 +117,13 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Booking request rejected.');
     }
 
-    public function completeRide(Ride $ride, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Let a driver close a ride after departure.
+     */
+    public function completeRide(Request $request, Ride $ride): RedirectResponse
     {
         try {
-            $publicRideService->completeRide(auth()->user(), $ride);
+            $this->rides->completeRide($request->user(), $ride);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['ride' => $exception->getMessage()]);
         }
@@ -117,14 +131,13 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Ride completed.');
     }
 
-    public function cancelBooking(Booking $booking, PublicRideService $publicRideService): RedirectResponse
+    /**
+     * Let a traveler cancel only their own active booking.
+     */
+    public function cancelBooking(Request $request, Booking $booking): RedirectResponse
     {
-        if ($booking->traveler_id !== auth()->id()) {
-            abort(403);
-        }
-
         try {
-            $publicRideService->cancelBooking($booking);
+            $this->rides->cancelTravelerBooking($request->user(), $booking);
         } catch (RuntimeException $exception) {
             return back()->withErrors(['booking' => $exception->getMessage()]);
         }
@@ -132,14 +145,13 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Booking cancelled.');
     }
 
-    public function reviewBooking(StoreReviewRequest $request, Booking $booking, ReviewService $reviewService): RedirectResponse
+    /**
+     * Save a traveler review for their completed booking.
+     */
+    public function reviewBooking(StoreReviewRequest $request, Booking $booking): RedirectResponse
     {
-        if ($booking->traveler_id !== $request->user()->id) {
-            abort(403);
-        }
-
         try {
-            $reviewService->submitDriverReview(
+            $this->reviews->submitDriverReview(
                 traveler: $request->user(),
                 booking: $booking,
                 rating: (int) $request->validated('rating'),
@@ -154,6 +166,9 @@ class RideWorkflowController extends Controller
         return back()->with('status', 'Review submitted.');
     }
 
+    /**
+     * Detect whether a shared booking endpoint was submitted from the mobile UI.
+     */
     private function expectsMobileRedirect($request): bool
     {
         $redirectTo = (string) $request->input('redirect_to', '');
@@ -163,6 +178,9 @@ class RideWorkflowController extends Controller
             || str_contains($referer, '/mobile');
     }
 
+    /**
+     * Prefer a safe mobile redirect target when the booking came from mobile pages.
+     */
     private function mobileRedirectUrl($request, string $fallback): string
     {
         $redirectTo = (string) $request->input('redirect_to', '');

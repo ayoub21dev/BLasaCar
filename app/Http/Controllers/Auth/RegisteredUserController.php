@@ -11,6 +11,9 @@ use Illuminate\Support\Str;
 
 class RegisteredUserController extends Controller
 {
+    /**
+     * Create a traveler account, sign it in, and redirect to desktop or mobile.
+     */
     public function store(RegisterRequest $request): RedirectResponse
     {
         $name = Str::of($request->validated('full_name'))->squish();
@@ -40,6 +43,9 @@ class RegisteredUserController extends Controller
             ->with('status', 'Your account has been created.');
     }
 
+    /**
+     * Detect whether signup was submitted from the mobile Inertia flow.
+     */
     private function expectsMobileRedirect(RegisterRequest $request): bool
     {
         $redirectTo = (string) $request->input('redirect_to', '');
@@ -49,6 +55,9 @@ class RegisteredUserController extends Controller
             || str_contains($referer, '/mobile');
     }
 
+    /**
+     * Keep mobile signup redirects inside the mobile route namespace.
+     */
     private function mobileRedirectUrl(RegisterRequest $request, string $fallback): string
     {
         $redirectTo = (string) $request->input('redirect_to', '');

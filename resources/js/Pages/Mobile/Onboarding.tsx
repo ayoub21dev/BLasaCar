@@ -5,6 +5,7 @@ import { asset, path } from '../../routes';
 
 const onboardingKey = 'blasacar_mobile_onboarding_seen';
 
+// Shows the first-run mobile onboarding screen.
 export default function Onboarding() {
     useEffect(() => {
         if (typeof window !== 'undefined' && window.localStorage.getItem(onboardingKey) === '1') {
@@ -12,6 +13,7 @@ export default function Onboarding() {
         }
     }, []);
 
+    // Marks onboarding as seen and moves the user into the mobile home flow.
     const start = () => {
         if (typeof window !== 'undefined') {
             window.localStorage.setItem(onboardingKey, '1');
@@ -58,6 +60,7 @@ export default function Onboarding() {
     );
 }
 
+// Renders one compact onboarding benefit tile.
 function OnboardingStep({ icon, label }: { icon: React.ReactNode; label: string }) {
     return (
         <div className="rounded-lg border border-slate-200 bg-white px-3 py-4 text-center shadow-sm">

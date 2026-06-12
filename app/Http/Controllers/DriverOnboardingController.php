@@ -14,6 +14,9 @@ use Throwable;
 
 class DriverOnboardingController extends Controller
 {
+    /**
+     * Render onboarding unless the user is already a driver.
+     */
     public function create(): Response|RedirectResponse
     {
         $user = auth()->user();
@@ -25,6 +28,9 @@ class DriverOnboardingController extends Controller
         return Inertia::render('Drivers/Onboarding');
     }
 
+    /**
+     * Create a driver profile, store CIN photos, add the first vehicle, and switch roles.
+     */
     public function store(BecomeDriverRequest $request): RedirectResponse
     {
         $validated = $request->validated();

@@ -9,6 +9,7 @@ type TripsProps = {
     upcomingBookings: Booking[];
 };
 
+// Shows mobile booking history, next trip, and login prompt when needed.
 export default function Trips({ bookings, upcomingBookings }: TripsProps) {
     const { auth } = usePage<SharedProps>().props;
     const nextBooking = upcomingBookings[0];
@@ -73,6 +74,7 @@ export default function Trips({ bookings, upcomingBookings }: TripsProps) {
     );
 }
 
+// Renders one mobile booking card with details and cancellation action.
 function BookingCard({ booking }: { booking: Booking }) {
     const cancel = useForm({});
     const ride = booking.ride;

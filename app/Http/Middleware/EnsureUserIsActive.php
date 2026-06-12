@@ -9,6 +9,9 @@ use Symfony\Component\HttpFoundation\Response;
 
 class EnsureUserIsActive
 {
+    /**
+     * Allow active users through and log out suspended web sessions.
+     */
     public function handle(Request $request, Closure $next): Response
     {
         $user = $request->user();

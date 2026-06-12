@@ -9,6 +9,9 @@ use App\Models\User;
 
 class BookingNotificationService
 {
+    /**
+     * Notify the driver when a traveler creates a pending booking request.
+     */
     public function bookingRequested(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -28,6 +31,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Notify the traveler when the driver accepts their booking request.
+     */
     public function bookingConfirmed(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -46,6 +52,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Notify the traveler when the driver rejects their booking request.
+     */
     public function bookingRejected(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -64,6 +73,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Notify the driver when a traveler cancels an active booking.
+     */
     public function bookingCancelledByTraveler(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -83,6 +95,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Notify the traveler that a completed ride is ready for review.
+     */
     public function rideCompleted(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -99,6 +114,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Notify the traveler when the driver cancels a scheduled ride.
+     */
     public function rideCancelledByDriver(Booking $booking): Notification
     {
         $booking = $this->loadBookingContext($booking);
@@ -116,6 +134,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Store an in-app notification and optionally mirror it to WhatsApp.
+     */
     private function createForUser(User $user, string $type, string $title, string $message, Booking $booking, bool $sendWhatsApp = false): Notification
     {
         $notification = Notification::query()->create([
@@ -136,6 +157,9 @@ class BookingNotificationService
         return $notification;
     }
 
+    /**
+     * Store a WhatsApp notification and dispatch it when a recipient phone exists.
+     */
     private function createWhatsAppForUser(User $user, string $type, string $title, string $message, Booking $booking): ?Notification
     {
         if (! config('services.whatsapp.enabled')) {
@@ -166,6 +190,9 @@ class BookingNotificationService
         return $notification;
     }
 
+    /**
+     * Load the booking relations needed to build notification messages.
+     */
     private function loadBookingContext(Booking $booking): Booking
     {
         return $booking->loadMissing([
@@ -176,6 +203,9 @@ class BookingNotificationService
         ]);
     }
 
+    /**
+     * Format a booking route for notification copy.
+     */
     private function routeLabel(Booking $booking): string
     {
         return sprintf(
@@ -185,6 +215,9 @@ class BookingNotificationService
         );
     }
 
+    /**
+     * Format the reserved seat count for notification copy.
+     */
     private function seatLabel(Booking $booking): string
     {
         return $booking->seats_reserved === 1
@@ -192,11 +225,17 @@ class BookingNotificationService
             : $booking->seats_reserved.' seats';
     }
 
+    /**
+     * Format a user's display name for notification copy.
+     */
     private function userName(User $user): string
     {
         return trim($user->first_name.' '.$user->last_name) ?: $user->email;
     }
 
+    /**
+     * Normalize phone numbers to E.164 for WhatsApp delivery.
+     */
     private function e164Phone(?string $phone): ?string
     {
         if (! $phone) {

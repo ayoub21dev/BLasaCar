@@ -11,6 +11,7 @@ type HomeProps = {
     today: string;
 };
 
+// Shows the mobile home screen with search, quick actions, and featured rides.
 export default function Home({ cities, featuredRides, today }: HomeProps) {
     const { auth } = usePage<SharedProps>().props;
     const firstName = auth.user?.first_name ?? 'Traveler';
@@ -70,6 +71,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
     );
 }
 
+// Renders one small metric in the mobile home hero.
 function Metric({ value, label }: { value: string | number; label: string }) {
     return (
         <div className="rounded-lg bg-white/10 px-2 py-3">
@@ -79,6 +81,7 @@ function Metric({ value, label }: { value: string | number; label: string }) {
     );
 }
 
+// Renders one shortcut tile on the mobile home screen.
 function QuickAction({ href, icon, label }: { href: string; icon: React.ReactNode; label: string }) {
     return (
         <Link href={href} className="rounded-lg border border-slate-200 bg-white px-2 py-3 text-center shadow-sm">
@@ -88,6 +91,7 @@ function QuickAction({ href, icon, label }: { href: string; icon: React.ReactNod
     );
 }
 
+// Shows an empty state when no featured ride data is available.
 function EmptyPanel({ title, message }: { title: string; message: string }) {
     return (
         <div className="rounded-lg border border-dashed border-slate-300 bg-white p-5 text-center">

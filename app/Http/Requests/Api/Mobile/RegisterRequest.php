@@ -6,12 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RegisterRequest extends FormRequest
 {
+    /**
+     * Let only guests create new mobile accounts.
+     */
     public function authorize(): bool
     {
         return $this->user() === null;
     }
 
     /**
+     * Validate mobile signup fields and optional device label.
+     *
      * @return array<string, array<int, string>>
      */
     public function rules(): array

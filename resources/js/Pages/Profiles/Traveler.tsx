@@ -11,6 +11,7 @@ type TravelerProfileProps = {
     reviews: ReviewSummary[];
 };
 
+// Shows a traveler profile to drivers who have bookings with that traveler.
 export default function TravelerProfilePage({ traveler, stats, bookings, reviews }: TravelerProfileProps) {
     return (
         <Layout title={`${traveler.name} profile`}>
@@ -73,6 +74,7 @@ export default function TravelerProfilePage({ traveler, stats, bookings, reviews
     );
 }
 
+// Renders one traveler profile statistic.
 function Stat({ label, value }: { label: string; value: string }) {
     return (
         <div className="rounded-xl border border-slate-200 bg-slate-50 px-4 py-3">
@@ -82,6 +84,7 @@ function Stat({ label, value }: { label: string; value: string }) {
     );
 }
 
+// Renders one booking shared between the current driver and this traveler.
 function BookingCard({ booking }: { booking: Booking }) {
     const ride = booking.ride;
 
@@ -99,6 +102,7 @@ function BookingCard({ booking }: { booking: Booking }) {
     );
 }
 
+// Shows traveler contact only after an accepted booking unlocks it.
 function ContactBlock({ contact }: { contact?: BookingContact | null }) {
     if (! contact) {
         return (
@@ -120,6 +124,7 @@ function ContactBlock({ contact }: { contact?: BookingContact | null }) {
     );
 }
 
+// Renders one review left by this traveler.
 function ReviewCard({ review }: { review: ReviewSummary }) {
     return (
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-4">
@@ -135,6 +140,7 @@ function ReviewCard({ review }: { review: ReviewSummary }) {
     );
 }
 
+// Shows an empty state on the traveler profile.
 function EmptyState({ title, message }: { title: string; message: string }) {
     return (
         <div className="mt-5 rounded-xl border border-dashed border-slate-200 bg-slate-50 px-5 py-10 text-center">

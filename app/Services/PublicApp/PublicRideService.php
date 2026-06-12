@@ -6,6 +6,7 @@ use App\Models\Booking;
 use App\Models\Ride;
 use App\Models\User;
 use App\Services\Notifications\BookingNotificationService;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Support\Carbon;
@@ -15,11 +16,46 @@ use RuntimeException;
 
 class PublicRideService
 {
+    /**
+     * Keep notification delivery close to booking state changes.
+     */
     public function __construct(
         private readonly BookingNotificationService $notifications,
     ) {}
 
     /**
+     * Publish a scheduled ride for an active verified driver.
+     *
+     * @param  array<string, mixed>  $validated
+     *
+     * @throws AuthorizationException
+     */
+    public function publishRide(User $driver, array $validated): Ride
+    {
+        $driver->loadMissing('driverProfile');
+
+        if (! $driver->isDriver() || $driver->account_status !== 'active' || $driver->driverProfile?->cin_verified !== true) {
+            throw new AuthorizationException('Only active verified drivers can publish rides.');
+        }
+
+        return Ride::query()->create([
+            'driver_profile_id' => $driver->driverProfile->id,
+            'vehicle_id' => $validated['vehicle_id'],
+            'departure_city_id' => $validated['departure_city_id'],
+            'arrival_city_id' => $validated['arrival_city_id'],
+            'departure_time' => Carbon::parse($validated['departure_date'].' '.$validated['departure_time']),
+            'price_per_seat' => $validated['price_per_seat'],
+            'total_seats' => $validated['seats_offered'],
+            'available_seats' => $validated['seats_offered'],
+            'meeting_point' => $validated['meeting_point'],
+            'notes' => $validated['notes'] ?? null,
+            'status' => 'scheduled',
+        ]);
+    }
+
+    /**
+     * Fetch future scheduled rides that travelers are allowed to book.
+     *
      * @return Collection<int, Ride>
      */
     public function listBookableRides(?int $limit = null): Collection
@@ -34,6 +70,8 @@ class PublicRideService
     }
 
     /**
+     * Find bookable rides for a city pair and optional departure date.
+     *
      * @return Collection<int, Ride>
      */
     public function searchRides(int $departureCityId, int $arrivalCityId, ?Carbon $departureDate = null): Collection
@@ -51,6 +89,9 @@ class PublicRideService
         return $query->get();
     }
 
+    /**
+     * Build the shared base query for rides visible to travelers.
+     */
     private function bookableRidesQuery(): Builder
     {
         return Ride::query()
@@ -67,6 +108,9 @@ class PublicRideService
             ->orderBy('departure_time');
     }
 
+    /**
+     * Load every relation needed to show a ride details page.
+     */
     public function getRideDetails(Ride $ride): Ride
     {
         return $ride->load([
@@ -78,6 +122,9 @@ class PublicRideService
         ]);
     }
 
+    /**
+     * Decide whether a viewer can open details for public, owned, or booked rides.
+     */
     public function canViewRideDetails(?User $viewer, Ride $ride): bool
     {
         $ride->loadMissing('driverProfile.user');
@@ -104,6 +151,9 @@ class PublicRideService
             ->exists();
     }
 
+    /**
+     * Create a pending booking request and reserve seats until the driver responds.
+     */
     public function requestSeat(User $traveler, Ride $ride, int $seatsRequested): Booking
     {
         if ($seatsRequested < 1) {
@@ -138,6 +188,8 @@ class PublicRideService
     }
 
     /**
+     * List all bookings for a traveler with ride data for dashboards and trips.
+     *
      * @return Collection<int, Booking>
      */
     public function listBookingStatuses(User $traveler): Collection
@@ -153,9 +205,12 @@ class PublicRideService
             ->get();
     }
 
-    public function cancelBooking(Booking $booking): Booking
+    /**
+     * Cancel a pending or confirmed traveler booking and return the seats to the ride.
+     */
+    public function cancelBooking(Booking $booking, ?User $traveler = null): Booking
     {
-        return DB::transaction(function () use ($booking): Booking {
+        return DB::transaction(function () use ($booking, $traveler): Booking {
             /** @var Booking $lockedBooking */
             $lockedBooking = Booking::query()
                 ->with('ride')
@@ -163,6 +218,7 @@ class PublicRideService
                 ->lockForUpdate()
                 ->firstOrFail();
 
+            $this->assertTravelerOwnsBooking($traveler, $lockedBooking);
             $this->assertBookingCanBeCancelled($lockedBooking);
 
             /** @var Ride $ride */
@@ -184,6 +240,19 @@ class PublicRideService
         });
     }
 
+    /**
+     * Cancel a booking only when it belongs to the authenticated traveler.
+     *
+     * @throws AuthorizationException
+     */
+    public function cancelTravelerBooking(User $traveler, Booking $booking): Booking
+    {
+        return $this->cancelBooking($booking, $traveler);
+    }
+
+    /**
+     * Let the ride owner accept a pending booking request.
+     */
     public function confirmBooking(User $driver, Booking $booking): Booking
     {
         return DB::transaction(function () use ($driver, $booking): Booking {
@@ -208,6 +277,8 @@ class PublicRideService
     }
 
     /**
+     * Update a driver's future ride while preserving already reserved seats.
+     *
      * @param  array<string, mixed>  $validated
      */
     public function updateRide(User $driver, Ride $ride, array $validated): Ride
@@ -249,6 +320,9 @@ class PublicRideService
         });
     }
 
+    /**
+     * Cancel a future ride and close every active booking on it.
+     */
     public function cancelRide(User $driver, Ride $ride): Ride
     {
         return DB::transaction(function () use ($driver, $ride): Ride {
@@ -282,6 +356,9 @@ class PublicRideService
         });
     }
 
+    /**
+     * Let the ride owner reject a pending booking and restore its seats.
+     */
     public function rejectBooking(User $driver, Booking $booking): Booking
     {
         return DB::transaction(function () use ($driver, $booking): Booking {
@@ -313,6 +390,9 @@ class PublicRideService
         });
     }
 
+    /**
+     * Mark a departed ride complete, complete confirmed bookings, and reject pending ones.
+     */
     public function completeRide(User $driver, Ride $ride): Ride
     {
         return DB::transaction(function () use ($driver, $ride): Ride {
@@ -358,6 +438,9 @@ class PublicRideService
         });
     }
 
+    /**
+     * Guard the booking request against inactive users, bad ride states, and seat overflow.
+     */
     private function assertRideCanBeBooked(User $traveler, Ride $ride, int $seatsRequested): void
     {
         if ($traveler->account_status !== 'active') {
@@ -385,6 +468,9 @@ class PublicRideService
         }
     }
 
+    /**
+     * Ensure only active bookings on future scheduled rides can be cancelled.
+     */
     private function assertBookingCanBeCancelled(Booking $booking): void
     {
         if (! in_array($booking->status, ['pending', 'confirmed'], true)) {
@@ -400,6 +486,21 @@ class PublicRideService
         }
     }
 
+    /**
+     * Keep traveler ownership checks inside the booking workflow service.
+     *
+     * @throws AuthorizationException
+     */
+    private function assertTravelerOwnsBooking(?User $traveler, Booking $booking): void
+    {
+        if ($traveler !== null && $booking->traveler_id !== $traveler->id) {
+            throw new AuthorizationException('This booking does not belong to your account.');
+        }
+    }
+
+    /**
+     * Check whether a ride should be visible to guests and normal travelers.
+     */
     private function isPubliclyVisible(Ride $ride): bool
     {
         return $ride->status === 'scheduled'
@@ -408,6 +509,9 @@ class PublicRideService
             && $ride->driverProfile?->user?->account_status === 'active';
     }
 
+    /**
+     * Prevent one traveler from holding multiple active requests for the same ride.
+     */
     private function assertTravelerHasNoActiveBooking(User $traveler, Ride $ride): void
     {
         $hasActiveBooking = Booking::query()
@@ -421,6 +525,9 @@ class PublicRideService
         }
     }
 
+    /**
+     * Ensure only the ride owner can accept or reject pending bookings.
+     */
     private function assertDriverCanHandleBooking(User $driver, Booking $booking): void
     {
         if ($booking->ride?->driverProfile?->user_id !== $driver->id) {
@@ -440,6 +547,9 @@ class PublicRideService
         }
     }
 
+    /**
+     * Ensure a driver can complete only their own ride after departure.
+     */
     private function assertDriverCanCompleteRide(User $driver, Ride $ride): void
     {
         if ($ride->driverProfile?->user_id !== $driver->id) {
@@ -455,6 +565,9 @@ class PublicRideService
         }
     }
 
+    /**
+     * Ensure a driver can edit only their own future scheduled ride.
+     */
     private function assertDriverCanEditRide(User $driver, Ride $ride): void
     {
         if ($ride->driverProfile?->user_id !== $driver->id) {
@@ -470,6 +583,9 @@ class PublicRideService
         }
     }
 
+    /**
+     * Ensure a driver can cancel only their own future scheduled ride.
+     */
     private function assertDriverCanCancelRide(User $driver, Ride $ride): void
     {
         if ($ride->driverProfile?->user_id !== $driver->id) {

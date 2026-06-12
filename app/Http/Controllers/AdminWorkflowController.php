@@ -13,6 +13,9 @@ use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class AdminWorkflowController extends Controller
 {
+    /**
+     * Verify a driver's CIN photos from the admin dashboard.
+     */
     public function verifyDriverProfile(DriverProfile $driverProfile, AdminService $adminService): RedirectResponse
     {
         try {
@@ -24,6 +27,9 @@ class AdminWorkflowController extends Controller
         return back()->with('status', 'Driver profile verified.');
     }
 
+    /**
+     * Suspend a user while preventing admins from suspending themselves.
+     */
     public function suspendUser(User $user, AdminService $adminService): RedirectResponse
     {
         if ($user->id === auth()->id()) {
@@ -35,6 +41,9 @@ class AdminWorkflowController extends Controller
         return back()->with('status', 'User suspended.');
     }
 
+    /**
+     * Reactivate a suspended user from the admin dashboard.
+     */
     public function activateUser(User $user, AdminService $adminService): RedirectResponse
     {
         $adminService->activateUser($user);
@@ -42,6 +51,9 @@ class AdminWorkflowController extends Controller
         return back()->with('status', 'User activated.');
     }
 
+    /**
+     * Stream a driver's stored CIN photo to authorized admins.
+     */
     public function showDriverProfileCinPhoto(DriverProfile $driverProfile, string $side): StreamedResponse
     {
         $path = DriverIdentityPhotos::path($driverProfile, $side);

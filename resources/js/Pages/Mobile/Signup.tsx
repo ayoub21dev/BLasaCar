@@ -4,6 +4,7 @@ import { IconArrowRight, IconUser, MobileShell } from '../../components/MobileSh
 import { ErrorText } from '../../components/ui';
 import { path } from '../../routes';
 
+// Shows the mobile traveler signup form and preserves the desired redirect.
 export default function Signup() {
     const page = usePage();
     const redirectTo = redirectTarget(page.url, path('mobile.home'));
@@ -15,6 +16,7 @@ export default function Signup() {
         redirect_to: redirectTo,
     });
 
+    // Creates a traveler account through the shared signup endpoint.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('signup.store'));
@@ -55,6 +57,7 @@ export default function Signup() {
     );
 }
 
+// Renders one labeled mobile signup input.
 function MobileField({ label, value, onChange, placeholder, type = 'text', autoComplete }: { label: string; value: string; onChange: (value: string) => void; placeholder: string; type?: string; autoComplete?: string }) {
     return (
         <label className="block space-y-1.5">
@@ -71,6 +74,7 @@ function MobileField({ label, value, onChange, placeholder, type = 'text', autoC
     );
 }
 
+// Reads a safe mobile redirect target from the current URL.
 function redirectTarget(pageUrl: string, fallback: string): string {
     const queryString = pageUrl.split('?')[1] ?? '';
     const redirectTo = new URLSearchParams(queryString).get('redirect_to');

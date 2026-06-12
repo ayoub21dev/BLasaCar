@@ -19,6 +19,8 @@ class AdminService
     private const RIDE_STATUSES = ['scheduled', 'completed', 'cancelled'];
 
     /**
+     * Count high-level platform metrics for the admin dashboard.
+     *
      * @return array<string, int>
      */
     public function dashboardMetrics(): array
@@ -37,6 +39,8 @@ class AdminService
     }
 
     /**
+     * List users for admin screens, optionally filtered by account status.
+     *
      * @return Collection<int, User>
      */
     public function listUsers(?string $status = null): Collection
@@ -55,6 +59,8 @@ class AdminService
     }
 
     /**
+     * List driver profiles still waiting for CIN verification.
+     *
      * @return Collection<int, DriverProfile>
      */
     public function listPendingDriverVerifications(): Collection
@@ -66,6 +72,9 @@ class AdminService
             ->get();
     }
 
+    /**
+     * Suspend a user and clear their active web sessions.
+     */
     public function suspendUser(User $user, ?Carbon $suspendedAt = null): User
     {
         $user->forceFill([
@@ -78,6 +87,9 @@ class AdminService
         return $user->refresh();
     }
 
+    /**
+     * Reactivate a suspended user account.
+     */
     public function activateUser(User $user): User
     {
         $user->forceFill([
@@ -89,6 +101,8 @@ class AdminService
     }
 
     /**
+     * List rides for admin screens, optionally filtered by ride status.
+     *
      * @return Collection<int, Ride>
      */
     public function listRides(?string $status = null): Collection
@@ -105,6 +119,9 @@ class AdminService
         return $query->get();
     }
 
+    /**
+     * Mark a driver profile as verified after both CIN photos exist.
+     */
     public function verifyDriverProfile(DriverProfile $driverProfile): DriverProfile
     {
         if (
@@ -121,6 +138,9 @@ class AdminService
         return $driverProfile->refresh();
     }
 
+    /**
+     * Reject unsupported user status filters before querying.
+     */
     private function assertValidUserStatus(string $status): void
     {
         if (! in_array($status, self::USER_STATUSES, true)) {
@@ -128,6 +148,9 @@ class AdminService
         }
     }
 
+    /**
+     * Reject unsupported ride status filters before querying.
+     */
     private function assertValidRideStatus(string $status): void
     {
         if (! in_array($status, self::RIDE_STATUSES, true)) {

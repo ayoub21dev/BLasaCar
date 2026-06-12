@@ -1,6 +1,7 @@
 import { Link, usePage } from '@inertiajs/react';
 import { path } from '../routes';
 
+// Shows a validation message only when one exists.
 export function ErrorText({ message }: { message?: string }) {
     if (! message) {
         return null;
@@ -9,6 +10,7 @@ export function ErrorText({ message }: { message?: string }) {
     return <p className="text-sm font-medium text-red-600">{message}</p>;
 }
 
+// Displays a colored label for ride, booking, and account statuses.
 export function StatusChip({ status, label }: { status: string; label?: string }) {
     const map: Record<string, string> = {
         scheduled: 'bg-sky-100 text-sky-700',
@@ -25,6 +27,7 @@ export function StatusChip({ status, label }: { status: string; label?: string }
     return <span className={`inline-flex items-center rounded-full px-3 py-1 text-xs font-semibold ${map[status] ?? 'bg-slate-100 text-slate-700'}`}>{displayLabel}</span>;
 }
 
+// Renders one reusable statistic tile.
 export function StatTile({ label, value }: { label: string; value: string | number }) {
     return (
         <div className="stat-tile">
@@ -34,6 +37,7 @@ export function StatTile({ label, value }: { label: string; value: string | numb
     );
 }
 
+// Renders a dashboard sidebar with active-link detection.
 export function DashboardSidebar({ label, items }: { label: string; items: Array<{ label: string; route: string; icon: string }> }) {
     const currentUrl = usePage().url.split('?')[0];
 
@@ -60,6 +64,7 @@ export function DashboardSidebar({ label, items }: { label: string; items: Array
     );
 }
 
+// Renders recent notifications or a simple empty message.
 export function NotificationList({ notifications }: { notifications: Array<{ id: number; title: string; message: string; is_read: boolean; created_label: string | null }> }) {
     if (notifications.length === 0) {
         return <p className="text-sm text-slate-500">No notifications yet.</p>;

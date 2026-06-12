@@ -27,42 +27,52 @@ const statCards = [
     { key: 'total_bookings', label: 'Bookings', note: 'All requests', icon: 'calendar' },
 ];
 
+// Renders the admin dashboard home icon.
 function IconHome({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>;
 }
 
+// Renders the admin shield/verification icon.
 function IconShield({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M12 3 4 7v5c0 5 3.4 8.3 8 9 4.6-.7 8-4 8-9V7l-8-4Z" /><path d="m9 12 2 2 4-4" /></svg>;
 }
 
+// Renders the admin users icon.
 function IconUsers({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2" /><circle cx="9" cy="7" r="4" /><path d="M22 21v-2a4 4 0 0 0-3-3.87" /><path d="M16 3.13a4 4 0 0 1 0 7.75" /></svg>;
 }
 
+// Renders the admin car icon.
 function IconCar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M8 11l1.4-4h5.2L16 11" /></svg>;
 }
 
+// Renders the admin search icon.
 function IconSearch({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>;
 }
 
+// Renders the admin calendar icon.
 function IconCalendar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>;
 }
 
+// Renders the admin check icon.
 function IconCheck({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="m5 12 5 5L20 7" /></svg>;
 }
 
+// Renders the admin notification bell icon.
 function IconBell({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" /></svg>;
 }
 
+// Renders the admin forward arrow icon.
 function IconArrow({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7" /></svg>;
 }
 
+// Shows the admin dashboard and switches between admin sections.
 export default function Admin(props: AdminProps) {
     const { auth, errors } = usePage<SharedProps>().props;
     const admin = auth.user;
@@ -95,6 +105,7 @@ export default function Admin(props: AdminProps) {
     );
 }
 
+// Renders desktop admin navigation and logout.
 function AdminSidebar({ section }: { section: AdminSection }) {
     const logout = useForm({});
 
@@ -137,6 +148,7 @@ function AdminSidebar({ section }: { section: AdminSection }) {
     );
 }
 
+// Renders one admin sidebar link.
 function SideLink({ href, active = false, icon, children }: { href: string; active?: boolean; icon: ReactNode; children: ReactNode }) {
     return (
         <Link href={href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${active ? 'bg-slate-950 text-white' : 'text-slate-600'}`}>
@@ -146,6 +158,7 @@ function SideLink({ href, active = false, icon, children }: { href: string; acti
     );
 }
 
+// Shows the admin top bar with pending verification count.
 function TopBar({ admin, pendingCount }: { admin: UserSummary | null; pendingCount: number }) {
     const initials = admin?.initials ?? admin?.first_name.slice(0, 1) ?? 'A';
 
@@ -173,6 +186,7 @@ function TopBar({ admin, pendingCount }: { admin: UserSummary | null; pendingCou
     );
 }
 
+// Renders the contextual header for non-overview admin sections.
 function PageHeader({ section, admin, pendingCount, metrics, alerts }: { section: AdminSection; admin: UserSummary | null; pendingCount: number; metrics: Record<string, number>; alerts: Record<string, number> }) {
     const header = {
         overview: {
@@ -236,6 +250,7 @@ function PageHeader({ section, admin, pendingCount, metrics, alerts }: { section
     );
 }
 
+// Shows the admin overview metrics and shortcuts.
 function Overview(props: AdminProps) {
     return (
         <>
@@ -265,6 +280,7 @@ function Overview(props: AdminProps) {
     );
 }
 
+// Renders one admin metric card.
 function StatCard({ card, value }: { card: { label: string; note: string; icon: string }; value: string | number }) {
     const icon = card.icon === 'users' ? <IconUsers /> : card.icon === 'shield' ? <IconShield /> : card.icon === 'check' ? <IconCheck /> : <IconCalendar />;
 
@@ -284,6 +300,7 @@ function StatCard({ card, value }: { card: { label: string; note: string; icon: 
     );
 }
 
+// Renders one overview shortcut to an admin section.
 function OverviewLink({ route, icon, title, copy }: { route: string; icon: ReactNode; title: string; copy: string }) {
     return (
         <Link href={path(route)} className="rounded-xl border border-slate-200 bg-slate-50 p-5 transition hover:border-brand-200 hover:bg-white">
@@ -294,6 +311,7 @@ function OverviewLink({ route, icon, title, copy }: { route: string; icon: React
     );
 }
 
+// Shows admin alerts that need attention.
 function AlertPanel({ alerts, pendingCount }: { alerts: Record<string, number>; pendingCount: number }) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -310,6 +328,7 @@ function AlertPanel({ alerts, pendingCount }: { alerts: Record<string, number>; 
     );
 }
 
+// Renders one alert row with tone-specific styling.
 function AlertRow({ label, value, tone }: { label: string; value: number; tone: 'amber' | 'rose' | 'slate' }) {
     const dotClass = tone === 'amber' ? 'bg-amber-500' : tone === 'rose' ? 'bg-rose-500' : 'bg-slate-300';
 
@@ -324,6 +343,7 @@ function AlertRow({ label, value, tone }: { label: string; value: number; tone: 
     );
 }
 
+// Shows a compact list of recent rides on the admin overview.
 function RecentRidesPanel({ rides }: { rides: Ride[] }) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -339,6 +359,7 @@ function RecentRidesPanel({ rides }: { rides: Ride[] }) {
     );
 }
 
+// Renders one compact ride row.
 function CompactRideRow({ ride }: { ride: Ride }) {
     return (
         <article className="rounded-xl border border-slate-200 bg-white p-4">
@@ -353,6 +374,7 @@ function CompactRideRow({ ride }: { ride: Ride }) {
     );
 }
 
+// Shows pending driver profiles that need identity review.
 function DriverVerification({ metrics, pendingDriverProfiles }: AdminProps) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -370,6 +392,7 @@ function DriverVerification({ metrics, pendingDriverProfiles }: AdminProps) {
     );
 }
 
+// Renders one driver verification review card.
 function DriverProfileReview({ profile }: { profile: DriverProfile & { user: UserSummary } }) {
     const form = useForm({});
 
@@ -407,6 +430,7 @@ function DriverProfileReview({ profile }: { profile: DriverProfile & { user: Use
     );
 }
 
+// Shows the admin user management table and mobile cards.
 function Users({ metrics, alerts, users }: AdminProps) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -444,6 +468,7 @@ function Users({ metrics, alerts, users }: AdminProps) {
     );
 }
 
+// Shows the admin ride activity list.
 function Rides({ metrics, rides }: AdminProps) {
     return (
         <section className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -463,6 +488,7 @@ function Rides({ metrics, rides }: AdminProps) {
     );
 }
 
+// Renders one ride activity card.
 function RideCard({ ride }: { ride: Ride }) {
     return (
         <article className="rounded-xl border border-slate-200 bg-slate-50 p-5">
@@ -488,6 +514,7 @@ function RideCard({ ride }: { ride: Ride }) {
     );
 }
 
+// Renders a CIN photo preview or missing-photo notice.
 function PhotoPreview({ label, photo, missing }: { label: string; photo: { url: string | null; path: string | null; exists: boolean }; missing: string }) {
     return (
         <div>
@@ -508,6 +535,7 @@ function PhotoPreview({ label, photo, missing }: { label: string; photo: { url: 
     );
 }
 
+// Renders one desktop user row.
 function UserRow({ user }: { user: UserSummary }) {
     const profile = user.driver_profile;
 
@@ -524,6 +552,7 @@ function UserRow({ user }: { user: UserSummary }) {
     );
 }
 
+// Renders one mobile user management card.
 function UserMobileCard({ user }: { user: UserSummary }) {
     const profile = user.driver_profile;
 
@@ -549,6 +578,7 @@ function UserMobileCard({ user }: { user: UserSummary }) {
     );
 }
 
+// Renders the suspend or activate action for one user.
 function UserAdminActions({ user }: { user: UserSummary }) {
     const form = useForm({});
     const isSuspended = user.account_status === 'suspended';
@@ -565,6 +595,7 @@ function UserAdminActions({ user }: { user: UserSummary }) {
     );
 }
 
+// Shows detailed account and driver data for one user.
 function UserDetails({ user }: { user: UserSummary }) {
     const profile = user.driver_profile;
 
@@ -586,10 +617,12 @@ function UserDetails({ user }: { user: UserSummary }) {
     );
 }
 
+// Renders one label/value definition item.
 function Data({ label, value }: { label: string; value: string }) {
     return <div className="min-w-0 rounded-lg bg-white px-3 py-3"><dt className="font-semibold text-slate-900">{label}</dt><dd className="mt-1 break-words">{value}</dd></div>;
 }
 
+// Shows a reusable admin empty state.
 function EmptyState({ title, message, compact = false }: { title: string; message: string; compact?: boolean }) {
     return (
         <div className={`mt-5 rounded-[1rem] border border-dashed border-slate-200 bg-slate-50 text-center ${compact ? 'px-4 py-8' : 'px-6 py-12'}`}>
@@ -602,6 +635,7 @@ function EmptyState({ title, message, compact = false }: { title: string; messag
     );
 }
 
+// Formats a role value for display.
 function formatRole(role: string) {
     return role.replace(/^\w/, (char) => char.toUpperCase());
 }

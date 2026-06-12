@@ -12,8 +12,11 @@ type HomeProps = {
     today: string;
 };
 
+// Shows the public homepage with hero search, how-it-works, and featured rides.
 export default function Home({ cities, featuredRides, today }: HomeProps) {
     const [filters, setFilters] = useState({ departure_city_id: '', arrival_city_id: '', departure_date: today, seats: '1' });
+
+    // Sends the hero search filters to the ride search page.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         router.get(path('rides.search'), filters);
@@ -120,6 +123,7 @@ export default function Home({ cities, featuredRides, today }: HomeProps) {
     );
 }
 
+// Renders one city selector inside the homepage search form.
 function SearchCity({ label, cities, value, onChange }: { label: string; cities: City[]; value: string; onChange: (value: string) => void }) {
     return (
         <div className="space-y-2">
@@ -131,6 +135,7 @@ function SearchCity({ label, cities, value, onChange }: { label: string; cities:
 
 
 
+// Shows the three-step explanation section on the homepage.
 function HowItWorks() {
     const features = [
         ['1', 'Search a trip', 'Enter your departure, destination, travel date, and seats.'],
@@ -196,6 +201,7 @@ function HowItWorks() {
     );
 }
 
+// Renders one SVG marker for the desktop how-it-works timeline.
 function TimelineDot({ cx, cy }: { cx: string; cy: string }) {
     return (
         <g>

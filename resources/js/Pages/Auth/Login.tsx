@@ -3,6 +3,7 @@ import { FormEvent } from 'react';
 import { Layout } from '../../components/Layout';
 import { asset, path } from '../../routes';
 
+// Shows the desktop login form.
 export default function Login() {
     const form = useForm({
         email: '',
@@ -10,6 +11,7 @@ export default function Login() {
         remember: false,
     });
 
+    // Submits credentials to the shared login endpoint.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('login.store'));

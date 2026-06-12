@@ -2,6 +2,7 @@ import { Link } from '@inertiajs/react';
 import { path } from '../routes';
 import { Ride } from '../types';
 
+// Renders one desktop ride result card that links to ride details.
 export function RideCard({ ride }: { ride: Ride }) {
     const driver = ride.driver;
     const firstInitial = driver?.first_name?.slice(0, 1).toUpperCase() || 'B';

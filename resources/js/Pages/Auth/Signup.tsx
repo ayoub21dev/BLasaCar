@@ -4,6 +4,7 @@ import { Layout } from '../../components/Layout';
 import { asset, path } from '../../routes';
 import { ErrorText } from '../../components/ui';
 
+// Shows the desktop traveler signup form.
 export default function Signup() {
     const form = useForm({
         full_name: '',
@@ -12,6 +13,7 @@ export default function Signup() {
         password: '',
     });
 
+    // Creates a new traveler account.
     const submit = (event: FormEvent) => {
         event.preventDefault();
         form.post(path('signup.store'));
@@ -55,6 +57,7 @@ export default function Signup() {
     );
 }
 
+// Renders one icon-enhanced signup input.
 function Field({ icon, value, onChange, placeholder, type = 'text' }: { icon: 'user' | 'phone' | 'email' | 'lock'; value: string; onChange: (value: string) => void; placeholder: string; type?: string }) {
     return (
         <div className="input-shell">

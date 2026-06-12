@@ -10,6 +10,9 @@ use Illuminate\Validation\Validator;
 
 class PublishRideRequest extends FormRequest
 {
+    /**
+     * Allow only active, verified drivers to publish rides.
+     */
     public function authorize(): bool
     {
         $user = $this->user();
@@ -20,6 +23,8 @@ class PublishRideRequest extends FormRequest
     }
 
     /**
+     * Validate the ride details required to publish a new ride.
+     *
      * @return array<string, array<int, mixed>>
      */
     public function rules(): array
@@ -44,6 +49,8 @@ class PublishRideRequest extends FormRequest
     }
 
     /**
+     * Add a cross-field check that the combined departure date and time is future.
+     *
      * @return array<int, callable>
      */
     public function after(): array

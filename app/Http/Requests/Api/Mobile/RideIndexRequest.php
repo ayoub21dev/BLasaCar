@@ -6,12 +6,17 @@ use Illuminate\Foundation\Http\FormRequest;
 
 class RideIndexRequest extends FormRequest
 {
+    /**
+     * Let guests and signed-in users search mobile rides.
+     */
     public function authorize(): bool
     {
         return true;
     }
 
     /**
+     * Validate optional mobile ride search filters.
+     *
      * @return array<string, array<int, string>>
      */
     public function rules(): array

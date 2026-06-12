@@ -23,54 +23,67 @@ const statCards = [
     { key: 'cancelled_trips', label: 'Cancelled trips', note: 'No cancellations', icon: 'x' },
 ];
 
+// Inline icon helpers keep this dashboard self-contained.
 function IconHome({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="m3 11 9-8 9 8" /><path d="M5 10v10h14V10" /><path d="M9 20v-6h6v6" /></svg>;
 }
 
+// Renders the dashboard search icon.
 function IconSearch({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="11" cy="11" r="8" /><path d="m21 21-4.3-4.3" /></svg>;
 }
 
+// Renders the dashboard car icon.
 function IconCar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M19 17h2l-1.4-4.2A3 3 0 0 0 16.8 11H7.2a3 3 0 0 0-2.8 1.8L3 17h2" /><circle cx="7" cy="17" r="2" /><circle cx="17" cy="17" r="2" /><path d="M8 11l1.4-4h5.2L16 11" /></svg>;
 }
 
+// Renders the dashboard calendar icon.
 function IconCalendar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><rect x="3" y="4" width="18" height="18" rx="2" /><path d="M16 2v4M8 2v4M3 10h18" /></svg>;
 }
 
+// Renders the dashboard check icon.
 function IconCheck({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><path d="m5 12 5 5L20 7" /></svg>;
 }
 
+// Renders the dashboard cancelled icon.
 function IconX({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.3" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="m15 9-6 6M9 9l6 6" /></svg>;
 }
 
+// Renders the dashboard star icon.
 function IconStar({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round"><polygon points="12 2 15.1 8.3 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 8.9 8.3 12 2" /></svg>;
 }
 
+// Renders the dashboard notification bell icon.
 function IconBell({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M18 8a6 6 0 0 0-12 0c0 7-3 7-3 9h18c0-2-3-2-3-9" /><path d="M13.7 21a2 2 0 0 1-3.4 0" /></svg>;
 }
 
+// Renders the dashboard forward arrow icon.
 function IconArrow({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M5 12h14M13 5l7 7-7 7" /></svg>;
 }
 
+// Renders the dashboard overflow menu icon.
 function IconDots({ className = 'h-5 w-5' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="currentColor"><circle cx="12" cy="5" r="1.8" /><circle cx="12" cy="12" r="1.8" /><circle cx="12" cy="19" r="1.8" /></svg>;
 }
 
+// Renders the dashboard location pin icon.
 function IconPin({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><path d="M20 10c0 6-8 12-8 12s-8-6-8-12a8 8 0 0 1 16 0Z" /><circle cx="12" cy="10" r="3" /></svg>;
 }
 
+// Renders the dashboard clock icon.
 function IconClock({ className = 'h-4 w-4' }: IconProps) {
     return <svg className={className} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round"><circle cx="12" cy="12" r="9" /><path d="M12 7v5l3 2" /></svg>;
 }
 
+// Shows the full traveler dashboard with stats, next trip, and booking history.
 export default function Traveler({ traveler, bookings, upcomingBookings, notifications, stats }: TravelerProps) {
     const { errors } = usePage<SharedProps>().props;
     const nextTrip = upcomingBookings[0];
@@ -103,6 +116,7 @@ export default function Traveler({ traveler, bookings, upcomingBookings, notific
     );
 }
 
+// Renders desktop navigation and traveler account actions.
 function TravelerSidebar() {
     const logout = useForm({});
 
@@ -144,6 +158,7 @@ function TravelerSidebar() {
     );
 }
 
+// Renders one sidebar navigation item.
 function SideLink({ href, active = false, icon, children }: { href: string; active?: boolean; icon: ReactNode; children: ReactNode }) {
     return (
         <Link href={href} className={`flex items-center gap-3 rounded-xl px-3 py-2.5 text-sm font-medium ${active ? 'bg-slate-950 text-white' : 'text-slate-600'}`}>
@@ -153,6 +168,7 @@ function SideLink({ href, active = false, icon, children }: { href: string; acti
     );
 }
 
+// Shows the compact top bar with profile and unread notification count.
 function TopBar({ traveler, unreadNotifications }: { traveler: UserSummary; unreadNotifications: number }) {
     return (
         <header className="mx-auto flex max-w-[1320px] flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-3 md:flex-row md:items-center md:justify-between">
@@ -182,6 +198,7 @@ function TopBar({ traveler, unreadNotifications }: { traveler: UserSummary; unre
     );
 }
 
+// Renders one dashboard statistic card.
 function StatCard({ card, value }: { card: { label: string; note: string; icon: string }; value: string | number }) {
     const icon = card.icon === 'calendar' ? <IconCalendar /> : card.icon === 'check' ? <IconCheck /> : card.icon === 'x' ? <IconX /> : <IconStar />;
 
@@ -201,6 +218,7 @@ function StatCard({ card, value }: { card: { label: string; note: string; icon: 
     );
 }
 
+// Shows the next upcoming pending or confirmed booking, if one exists.
 function NextTripPanel({ booking }: { booking?: Booking }) {
     if (! booking) {
         return (
@@ -257,6 +275,7 @@ function NextTripPanel({ booking }: { booking?: Booking }) {
     );
 }
 
+// Renders a compact label/value detail inside the next trip panel.
 function TripInfo({ label, value, sub }: { label: string; value: string; sub?: string }) {
     return (
         <div className="min-w-0 rounded-lg border border-slate-200 bg-white px-3 py-3">
@@ -267,6 +286,7 @@ function TripInfo({ label, value, sub }: { label: string; value: string; sub?: s
     );
 }
 
+// Shows the driver's contact only after the backend marks it visible.
 function ContactPanel({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
     return (
         <div className="mt-5 rounded-xl border border-slate-200 bg-white px-4 py-3">
@@ -283,6 +303,7 @@ function ContactPanel({ contact, lockedLabel }: { contact?: BookingContact | nul
     );
 }
 
+// Shows all traveler bookings and any booking/review validation errors.
 function BookingHistory({ bookings, errors }: { bookings: Booking[]; errors: Record<string, string> }) {
     return (
         <section id="booking-history" className="rounded-2xl border border-slate-200 bg-white p-6">
@@ -324,6 +345,7 @@ function BookingHistory({ bookings, errors }: { bookings: Booking[]; errors: Rec
     );
 }
 
+// Renders the driver's avatar or initials for a booking row/card.
 function DriverAvatar({ driver }: { driver?: PublicDriverSummary | null }) {
     const fallback = driver?.initials
         ?? driver?.name?.split(' ').map((part) => part[0]).join('').slice(0, 2).toUpperCase()
@@ -342,6 +364,7 @@ function DriverAvatar({ driver }: { driver?: PublicDriverSummary | null }) {
     );
 }
 
+// Shows a WhatsApp link only when contact details are unlocked.
 function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null; lockedLabel: string }) {
     if (! contact) {
         return <p className="mt-1 text-xs font-medium text-slate-400">{lockedLabel}</p>;
@@ -355,6 +378,7 @@ function ContactLink({ contact, lockedLabel }: { contact?: BookingContact | null
     );
 }
 
+// Renders one desktop booking table row and its optional review form.
 function BookingTableRow({ booking }: { booking: Booking }) {
     const [showReview, setShowReview] = useState(false);
     const ride = booking.ride;
@@ -398,6 +422,7 @@ function BookingTableRow({ booking }: { booking: Booking }) {
     );
 }
 
+// Renders one mobile-friendly booking card and its optional review form.
 function BookingMobileCard({ booking }: { booking: Booking }) {
     const [showReview, setShowReview] = useState(false);
     const ride = booking.ride;
@@ -435,6 +460,7 @@ function BookingMobileCard({ booking }: { booking: Booking }) {
     );
 }
 
+// Chooses the correct booking action: cancel, review, reviewed, or nothing.
 function BookingAction({ booking, reviewOpen, onToggleReview }: { booking: Booking; reviewOpen: boolean; onToggleReview: () => void }) {
     const cancel = useForm({});
 
@@ -453,9 +479,11 @@ function BookingAction({ booking, reviewOpen, onToggleReview }: { booking: Booki
     return null;
 }
 
+// Lets a traveler submit a rating and optional comment for a completed booking.
 function ReviewForm({ booking, onSuccess }: { booking: Booking; onSuccess: () => void }) {
     const review = useForm({ rating: '', comment: '' });
 
+    // Posts the review and closes the inline form after a successful response.
     const submitReview = (event: FormEvent) => {
         event.preventDefault();
         review.post(path('bookings.reviews.store', booking.id), { onSuccess });
@@ -483,6 +511,7 @@ function ReviewForm({ booking, onSuccess }: { booking: Booking; onSuccess: () =>
     );
 }
 
+// Renders a clickable five-star rating input.
 function StarRating({ value, onChange }: { value: string; onChange: (value: string) => void }) {
     const [hover, setHover] = useState(0);
     const selected = Number(value) || 0;
@@ -506,6 +535,7 @@ function StarRating({ value, onChange }: { value: string; onChange: (value: stri
     );
 }
 
+// Shows a reusable empty state with an optional action link.
 function EmptyState({ title, message, actionLabel, actionHref, compact = false }: { title: string; message: string; actionLabel?: string; actionHref?: string; compact?: boolean }) {
     return (
         <div className={`mt-5 rounded-[1rem] border border-dashed border-slate-200 bg-slate-50 text-center ${compact ? 'px-4 py-8' : 'px-6 py-12'}`}>

@@ -9,6 +9,7 @@ type LayoutProps = PropsWithChildren<{
     showFooter?: boolean;
 }>;
 
+// Provides the shared desktop page frame, flash message, header, and footer.
 export function Layout({ children, title, showHeader = true, showFooter = true }: LayoutProps) {
     const { flash } = usePage<SharedProps>().props;
     const [visible, setVisible] = useState(Boolean(flash.status));
@@ -44,6 +45,7 @@ export function Layout({ children, title, showHeader = true, showFooter = true }
     );
 }
 
+// Renders the desktop navigation and account menu.
 function Header() {
     const { auth } = usePage<SharedProps>().props;
     const logout = useForm({});
@@ -55,6 +57,7 @@ function Header() {
         { label: 'How it works', url: `${path('home')}#how-it-works` },
     ];
 
+    // Submits the shared logout form from desktop navigation.
     const submitLogout = () => logout.post(path('logout'));
 
     return (
@@ -168,6 +171,7 @@ function Header() {
     );
 }
 
+// Renders one account menu link with a matching icon.
 function MenuLink({ href, label, icon }: { href: string; label: string; icon: 'dashboard' | 'settings' }) {
     return (
         <Link href={href} className="flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-bold text-slate-700 transition hover:bg-slate-50 hover:text-brand-700">
@@ -181,6 +185,7 @@ function MenuLink({ href, label, icon }: { href: string; label: string; icon: 'd
     );
 }
 
+// Renders the desktop footer with exploration and account links.
 function Footer() {
     const { auth } = usePage<SharedProps>().props;
     const logout = useForm({});
@@ -229,6 +234,7 @@ function Footer() {
     );
 }
 
+// Renders one footer link column.
 function FooterColumn({ title, links }: { title: string; links: Array<[string, string]> }) {
     return (
         <div>
